@@ -1,0 +1,7 @@
+ChangeLog:
+    o> 15 Jul 2017 (Tonny)
+        -> LibInspira
+            * (+) ShowShortToast, untuk menampilkan pesan pada app dalam jangka waktu singkat
+            * (+) ShowLongToast, untuk menampilkan pesan pada app dalam jangka waktu lama
+        -> MenuFragment
+            * Menambahkan listener pada imagebutton yang terdapat pada UI

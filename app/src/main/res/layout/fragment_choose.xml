@@ -1,0 +1,159 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/choose_container">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvInformation"
+            android:padding="2dp"
+            android:textAlignment="center"
+            android:background="@color/colorGMSToolbar"
+            android:textColor="@color/colorWhite"
+            android:text="Getting existing data"
+            android:visibility="invisible"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rlSearch"
+            android:layout_below="@+id/tvInformation"
+            android:visibility="gone">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/etSearch"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_toLeftOf="@+id/ibtnSearch"
+                android:singleLine="true"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentLeft="true" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/ibtnSearch"
+                android:src="@android:drawable/ic_search_category_default"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:padding="10dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rlFooter"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnLeft"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btnstyle1"
+                        android:text="left"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btnCenter"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btnstyle1"
+                        android:text="Center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btnRight"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btnstyle1"
+                        android:text="Right"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+                </TableRow>
+            </TableLayout>
+        </RelativeLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lvChoose"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/rlSearch"
+            android:layout_above="@+id/rlFooter"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tvNoData"
+            android:text="No Data"
+            android:textAlignment="center"
+            android:padding="20dp"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:background="@color/colorBackground"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/rlSearch"
+            android:layout_above="@+id/rlFooter"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="@color/colorWhite"
+        app:backgroundTint="@color/colorGMSToolbar"
+        android:visibility="gone"/>
+</FrameLayout>
+

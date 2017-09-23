@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#823b41</color>
+    <color name="colorPrimaryDark">#602B30</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorBackground">#f6eee3</color>
+    <color name="colorBackgroundLight">#ededed</color>
+    <color name="colorDanger">#EB3D01</color>
+    <color name="colorAccentDanger">#A04B4B</color>
+    <color name="colorSuccess">#97FB7E</color>
+    <color name="colorMoney">#00cc4a</color>
+    <color name="colorDarkGreen">#00773a</color>
+
+    <color name="colorFacebook">#4B67A0</color>
+    <color name="colorYoutube">#E12B28</color>
+    <color name="colorWhatsApp">#DCF8C7</color>
+    <color name="colorTwitter">#2DA7F2</color>
+    <color name="colorTinder">#F55959</color>
+    <color name="colorBeeTalk">#FFC843</color>
+    <color name="colorBBCNews">#C02519</color>
+    <color name="colorGMSToolbar">#823b41</color>
+    <color name="colorGMS">#823b41</color>
+    <color name="colorButton">#823b41</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorDarkBlue">#005ad1</color>
+</resources>

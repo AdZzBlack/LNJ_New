@@ -1,0 +1,194 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context="layout.MenuFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:background="@color/colorGMS"
+                android:backgroundTint="@color/colorGMS"
+                android:id="@+id/menu_point">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Point : "
+                    android:textColor="@color/colorBackground"
+                    android:textStyle="bold"
+                    android:textSize="25dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvPoint"
+                    android:text="0"
+                    android:textColor="@color/colorBackground"
+                    android:textStyle="bold"
+                    android:textSize="25dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:id="@+id/menu_line1"
+                android:layout_below="@+id/menu_point">
+
+                <RelativeLayout
+                    android:id="@+id/btnCatalogue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnCatalogue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/pricelist"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvCatalogue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnCatalogue"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Catalogue"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnCart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnCart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/cart"
+                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvCart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnCart"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Cart"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_line2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/menu_line1"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/btnTrackingInformation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnTrackingInformation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/salestracking"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvTrackingInformation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnTrackingInformation"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Delivery Tracking Information"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnAccountReceivableReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnAccountReceivableReport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/report"
+                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvAccountReceivableReport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnAccountReceivableReport"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Account Receivable Report"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+</FrameLayout>
+

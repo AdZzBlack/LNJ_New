@@ -1,0 +1,514 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="layout.MenuFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/textViewMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/menu_line1">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_weight="33.3"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnSalesNavigation"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true">
+                    <ImageButton
+                        android:id="@+id/ibtnPriceList"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        app:srcCompat="@drawable/salestracking"
+                        android:clickable="false"/>
+                    <TextView
+                        android:id="@+id/tvSalesNavigation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sales Tracking"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:layout_below="@+id/ibtnPriceList"
+                        android:clickable="false"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:id="@+id/btnSalesSchedule"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true">
+                    <ImageButton
+                        android:id="@+id/ibtnScheduleTask"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        app:srcCompat="@drawable/salestracking"
+                        android:clickable="false"/>
+                    <TextView
+                        android:id="@+id/tvSalesSchedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sales Schedule"
+                        android:textAlignment="center"
+                        android:layout_below="@+id/ibtnScheduleTask"
+                        android:clickable="false"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:id="@+id/btnSalesOrder"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true">
+                    <ImageButton
+                        android:id="@+id/ibtnOmzet"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        app:srcCompat="@drawable/salestracking"
+                        android:clickable="false"/>
+                    <TextView
+                        android:id="@+id/tvSalesOrder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sales Order"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:layout_below="@+id/ibtnOmzet"
+                        android:clickable="false"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/menu_line1">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:id="@+id/btnInputLocation"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true">
+                    <ImageButton
+                        android:id="@+id/ibtnSalesOrder"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        app:srcCompat="@drawable/salestracking"
+                        android:clickable="false"/>
+                    <TextView
+                        android:id="@+id/tvInputLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Input Location"
+                        android:textAlignment="center"
+                        android:layout_below="@+id/ibtnSalesOrder"
+                        android:clickable="false"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:id="@+id/btnStockMonitoring"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true">
+                    <ImageButton
+                        android:id="@+id/ibtnGroup"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginLeft="8dp"
+                        app:srcCompat="@drawable/salestracking"
+                        android:clickable="false"/>
+                    <TextView
+                        android:id="@+id/tvStockMonitoring"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Stock Monitoring"
+                        android:textAlignment="center"
+                        android:layout_below="@+id/ibtnGroup"
+                        android:clickable="false"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:id="@+id/btnDataAccounting"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true">
+                    <ImageButton
+                        android:id="@+id/ibtnNFC"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        app:srcCompat="@drawable/salestracking"
+                        android:clickable="false"/>
+                    <TextView
+                        android:id="@+id/tvDataAccounting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Data Accounting"
+                        android:textAlignment="center"
+                        android:layout_below="@+id/ibtnNFC"
+                        android:clickable="false"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+<!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/sales_menu">-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnSalesNavigation"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnSalesOrder"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="0dp"-->
+                <!--app:layout_constraintRight_toRightOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="@+id/ibtnSalesSchedule"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnSalesSchedule"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--app:layout_constraintLeft_toRightOf="@+id/ibtnSalesNavigation"-->
+                <!--app:layout_constraintRight_toLeftOf="@+id/ibtnSalesOrder"-->
+                <!--app:layout_constraintTop_toTopOf="@+id/ibtnSalesNavigation"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvSalesNavigation"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Sales Tracking"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnSalesNavigation"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnSalesNavigation"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnSalesNavigation" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvSalesOrder"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Sales Order"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnSalesSchedule"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnSalesSchedule"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnSalesSchedule" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvSalesSchedule"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Sales Schedule"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnSalesOrder"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnSalesOrder"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnSalesOrder" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnInputLocation"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:layout_weight="1"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/tvSalesNavigation"-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnStockMonitoring"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/tvSalesOrder"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnSalesSchedule"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnDataAccounting"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:layout_weight="1"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/tvSalesSchedule"-->
+                <!--app:layout_constraintRight_toRightOf="parent"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvInputLocation"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Input Location"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnInputLocation"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnInputLocation"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnInputLocation" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvStockMonitoring"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Stock Monitoring"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnStockMonitoring"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnStockMonitoring"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnStockMonitoring"/>-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvDataAccounting"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Data Accounting"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnDataAccounting"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnDataAccounting"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnDataAccounting"/>-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+    <!--</ScrollView>-->
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/customer_menu"-->
+        <!--android:visibility="gone">-->
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnCatalog"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnDeliveryTracking"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="0dp"-->
+                <!--app:layout_constraintRight_toRightOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="@+id/ibtnCatalog"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnShoppingCart"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--app:layout_constraintLeft_toRightOf="@+id/ibtnCatalog"-->
+                <!--app:layout_constraintRight_toLeftOf="@+id/ibtnDeliveryTracking"-->
+                <!--app:layout_constraintTop_toTopOf="@+id/ibtnCatalog"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvCatalog"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Catalog"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnCatalog"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnCatalog"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnCatalog" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvShoppingCart"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Shopping Cart"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnShoppingCart"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnShoppingCart"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnShoppingCart" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvDeliveryTracking"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Delivery Tracking"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnDeliveryTracking"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnDeliveryTracking"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnDeliveryTracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnPointReimbursement"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:layout_weight="1"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/tvCatalog"-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnPurchaseCredit"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/tvShoppingCart"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnShoppingCart"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/ibtnPurchaseHistory"-->
+                <!--android:layout_width="110dp"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:layout_weight="1"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/tvDeliveryTracking"-->
+                <!--app:layout_constraintRight_toRightOf="parent"-->
+                <!--app:srcCompat="@drawable/salestracking" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvPointReimbursement"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Point Reimbursement"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnPointReimbursement"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnPointReimbursement"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnPointReimbursement" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvPurchaseCredit"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Purchase Credit"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnPurchaseCredit"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnPurchaseCredit"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnPurchaseCredit"/>-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvPurchaseHistory"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Purchase History"-->
+                <!--android:textAlignment="center"-->
+                <!--app:layout_constraintTop_toBottomOf="@+id/ibtnPurchaseHistory"-->
+                <!--app:layout_constraintRight_toRightOf="@+id/ibtnPurchaseHistory"-->
+                <!--app:layout_constraintLeft_toLeftOf="@+id/ibtnPurchaseHistory"/>-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+    <!--</ScrollView>-->
+</FrameLayout>
+

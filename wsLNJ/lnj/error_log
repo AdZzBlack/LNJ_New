@@ -1,0 +1,4 @@
+[16-Nov-2016 08:55:06 UTC] PHP Parse error:  syntax error, unexpected '$jadwal_nomor' (T_VARIABLE) in /home/antonnw/public_html/webserviceBEX/ventris/application/controllers/api/Scheduletask.php on line 378
+[16-Nov-2016 08:55:52 UTC] PHP Parse error:  syntax error, unexpected '$jadwal_nomor' (T_VARIABLE) in /home/antonnw/public_html/webserviceBEX/ventris/application/controllers/api/Scheduletask.php on line 378
+[27-Dec-2016 02:55:03 UTC] PHP Parse error:  syntax error, unexpected '") = ?"' (T_CONSTANT_ENCAPSED_STRING) in /home/antonnw/public_html/webserviceBEX/ventris/application/controllers/api/Login.php on line 151
+[27-Dec-2016 02:55:10 UTC] PHP Parse error:  syntax error, unexpected '") = ?"' (T_CONSTANT_ENCAPSED_STRING) in /home/antonnw/public_html/webserviceBEX/ventris/application/controllers/api/Login.php on line 151

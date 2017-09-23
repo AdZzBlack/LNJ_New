@@ -1,0 +1,347 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context="layout.MenuFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:id="@+id/menu_line1">
+
+                <RelativeLayout
+                    android:id="@+id/btnContact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnContact"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/contact"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:backgroundTint="@color/colorBackground"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" />
+
+                    <TextView
+                        android:id="@+id/tvContact"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnContact"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Contact"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/groupmessage"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnGroup"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Conversation"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnNFC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnNFC"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/nfctools"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvNFC"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnNFC"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="NFC"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_line2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/menu_line1"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/btnSalesOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnSalesOrder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/salesorder"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvSalesOrder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnSalesOrder"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Sales Order"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnStockMonitoring"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnStockMonitoring"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/stockreport"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvStockMonitoring"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnStockMonitoring"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Stock Monitoring"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnPriceList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnPriceList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/pricelist"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvPriceList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnPriceList"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:gravity="center"
+                        android:text="Price List"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_line3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/menu_line2"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/btnScheduleTask"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnScheduleTask"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/scheduletask"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvScheduleTask"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnScheduleTask"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Schedule Task"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnOmzet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnOmzet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/omzet"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvOmzet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnOmzet"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:gravity="center"
+                        android:text="Omzet"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnReport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/report"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvReport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnReport"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Report"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</FrameLayout>
+

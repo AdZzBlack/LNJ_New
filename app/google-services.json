@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "1068687723844",
+    "firebase_url": "https://gmsnew-2db77.firebaseio.com",
+    "project_id": "gmsnew-2db77",
+    "storage_bucket": "gmsnew-2db77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1068687723844:android:0f22ed388df5584c",
+        "android_client_info": {
+          "package_name": "com.inspira.gms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1068687723844-qmv3hjkc5l739711snmsep1nfi6q3t6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inspira.gms",
+            "certificate_hash": "1223532cef4bebe01f7df7a277e60ab46384346e"
+          }
+        },
+        {
+          "client_id": "1068687723844-5laeor32ilpl8bu8b47qqjpm0gd1o0im.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inspira.gms",
+            "certificate_hash": "4b2ea90e8265de4386ed18161038ff4e6c773131"
+          }
+        },
+        {
+          "client_id": "1068687723844-321ctemspca37e3r3ba78jj53gvmkbff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-JDDDezUt2tlQcXR7hJVw5vUoNCCvNqM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1068687723844-321ctemspca37e3r3ba78jj53gvmkbff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

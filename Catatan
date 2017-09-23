@@ -1,0 +1,72 @@
+Catatan ini digunakan mencatat script baru yang diapply pada saat pengerjaan project ini
+o> 03-Aug-2017 (Tonny)
+    * Script untuk menambahkan table tsetting (dump dari venus mobile table tsetting)
+        DROP TABLE IF EXISTS `whsetting_mobile`;
+        CREATE TABLE `whsetting_mobile` (
+          `intNomor` int(11) NOT NULL AUTO_INCREMENT,
+          `vcNama` varchar(200) COLLATE latin1_general_ci NOT NULL DEFAULT '',
+          `intNilai` varchar(200) COLLATE latin1_general_ci NOT NULL DEFAULT '0' COMMENT '[tracking -> 1 = GPS, 2 = GPSNetwork]',
+          `dtInsertDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `intStatus` int(11) NOT NULL DEFAULT '1',
+          PRIMARY KEY (`intNomor`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+o> 01-Aug-2017 (Tonny)
+    * Script untuk menambahkan table whtarget_mobile (dump dari venus table thtarget)
+        DROP TABLE IF EXISTS `whtarget_mobile`;
+        CREATE TABLE `whtarget_mobile` (
+          `intNomor` int(11) NOT NULL AUTO_INCREMENT,
+          `intNomorMSales` int(11) DEFAULT NULL,
+          `vcKode` varchar(50) COLLATE latin1_general_ci NOT NULL DEFAULT '',
+          `dtTanggal` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intPeriode` int(11) DEFAULT NULL,
+          `intTahun` int(11) DEFAULT NULL,
+          `decTarget` decimal(30,6) NOT NULL DEFAULT '0.000000',
+          `vcKeterangan` varchar(250) COLLATE latin1_general_ci NOT NULL DEFAULT '',
+          `intApproved` tinyint(4) NOT NULL DEFAULT '0',
+          `intApproveUserID` int(11) NOT NULL DEFAULT '0',
+          `dtApproveTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intDisapproveUserID` int(11) NOT NULL DEFAULT '0',
+          `dtDisapproveTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intOldApproved` tinyint(4) NOT NULL DEFAULT '0',
+          `intNoApproval` tinyint(4) NOT NULL DEFAULT '0',
+          `intInsertUserID` int(11) NOT NULL DEFAULT '0',
+          `dtInsertTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intUpdateUserID` int(11) NOT NULL DEFAULT '0',
+          `dtUpdateTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intDeleteUserID` int(11) NOT NULL DEFAULT '0',
+          `dtDeleteTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intStatus` tinyint(4) NOT NULL DEFAULT '1',
+          `intPrinted` int(4) NOT NULL DEFAULT '0',
+          PRIMARY KEY (`intNomor`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+o> 23-Jul-2017 (Tonny)
+    * Script untuk menambahkan table whuser_mobile (copy dari project gmr):
+        DROP TABLE IF EXISTS `whuser_mobile`;
+		  CREATE TABLE `whuser_mobile` (
+			`nomor` INT(11) NOT NULL AUTO_INCREMENT,
+			`nomortuser` INT(11) NOT NULL DEFAULT '0',
+			`nomorthsales` INT(11) NOT NULL DEFAULT '0',
+			`nomorrole` INT(11) NULL DEFAULT NULL,
+			`tipeuser` INT(11) NOT NULL DEFAULT '0' COMMENT '0: internal, 1: external',
+			`userid` VARCHAR(100) NOT NULL,
+			`password` VARCHAR(100) NOT NULL,
+			`gcmid` VARCHAR(200) NOT NULL,
+			`status_aktif` INT(4) NOT NULL DEFAULT '1',
+			`hash` VARCHAR(200) NOT NULL DEFAULT '',
+			PRIMARY KEY (`nomor`, `nomortuser`)
+		) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+
+    * Script untuk menambahkan table whrole_mobile (copy dari project gmr):
+        DROP TABLE IF EXISTS `whrole_mobile`;
+        CREATE TABLE `whrole_mobile` (
+          `nomor` int(11) NOT NULL AUTO_INCREMENT,
+          `nama` varchar(50) NOT NULL,
+          `beritaacara` int(1) NOT NULL DEFAULT '0',
+          `approveberitaacara` int(1) NOT NULL DEFAULT '0',
+          `deliveryorder` int(1) NOT NULL DEFAULT '0',
+          `approvedeliveryorder` int(1) NOT NULL DEFAULT '0',
+          `bpm` int(1) NOT NULL DEFAULT '0',
+          `opname` int(1) NOT NULL DEFAULT '0',
+          `dibuat_pada` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`nomor`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;

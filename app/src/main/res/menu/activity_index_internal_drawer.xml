@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/dashboard"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_contact"
+            android:icon="@drawable/contact"
+            android:title="Contact" />
+        <item
+            android:id="@+id/nav_group"
+            android:icon="@drawable/groupmessage"
+            android:title="Group" />
+        <item
+            android:id="@+id/nav_salesorder"
+            android:icon="@drawable/salesorder"
+            android:title="Sales Order" />
+        <item
+            android:id="@+id/nav_stockreport"
+            android:icon="@drawable/stockreport"
+            android:title="Stock Report" />
+        <item
+            android:id="@+id/nav_pricelist"
+            android:icon="@drawable/pricelist"
+            android:title="Price List" />
+        <item
+            android:id="@+id/nav_scheduletask"
+            android:icon="@drawable/scheduletask"
+            android:title="Schedule Task" />
+        <item
+            android:id="@+id/nav_nfc"
+            android:icon="@drawable/nfctools"
+            android:title="NFC Tools" />
+        <item
+            android:id="@+id/nav_customer_prospecting"
+            android:icon="@drawable/user"
+            android:title="Customer Prospecting" />
+    </group>
+
+    <item android:title="Manage">
+        <menu>
+            <item
+                android:id="@+id/nav_omzet"
+                android:icon="@drawable/omzet"
+                android:title="Omzet" />
+            <item
+                android:id="@+id/nav_target"
+                android:icon="@drawable/target"
+                android:title="Target" />
+            <item
+                android:id="@+id/nav_salestracking"
+                android:icon="@drawable/salestracking"
+                android:title="Sales Tracking" />
+            <item
+                android:id="@+id/nav_report"
+                android:icon="@drawable/report"
+                android:title="Report" />
+        </menu>
+    </item>
+
+</menu>

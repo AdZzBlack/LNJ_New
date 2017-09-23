@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="15dp"
+            android:id="@+id/ivCall"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textStyle="bold"
+            android:scaleType="fitCenter"
+            android:background="@drawable/roundcorner1"
+            android:src="@drawable/phone"
+            android:layout_alignParentRight="true"
+            android:tint="@color/colorWhite"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="[ Name ] "
+            android:id="@+id/tvName"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_margin="15dp"
+            android:layout_toLeftOf="@id/ivCall"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="[ NOTE ] "
+            android:id="@+id/tvBigNote"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_below="@id/tvName"
+            android:layout_toLeftOf="@id/ivCall"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvBigNote"
+            android:layout_toLeftOf="@id/ivCall"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="[ Keterangan ] "
+            android:id="@+id/tvKeterangan"
+            android:textSize="15dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="-10dp"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvKeterangan"
+            android:layout_toLeftOf="@id/ivCall"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="[ Keterangan ] "
+            android:id="@+id/tvKeterangan1"
+            android:textSize="15dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginLeft="15dp"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+</RelativeLayout>
