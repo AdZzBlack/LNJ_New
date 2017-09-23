@@ -8,19 +8,13 @@ package layout;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
-
-import static com.inspira.gms.IndexInternal.RefreshUserData;
-import static com.inspira.gms.IndexInternal.global;
+import com.inspira.lnj.LibInspira;
+import com.inspira.lnj.R;
 
 //import android.app.Fragment;
 

@@ -19,17 +19,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
+import com.inspira.lnj.LibInspira;
+import com.inspira.lnj.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
+import static com.inspira.lnj.IndexInternal.global;
+import static com.inspira.lnj.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 

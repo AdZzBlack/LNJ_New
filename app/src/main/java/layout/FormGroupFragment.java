@@ -1,40 +1,26 @@
 package layout;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
-import com.inspira.gms.GlobalVar;
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
+import com.inspira.lnj.GlobalVar;
+import com.inspira.lnj.LibInspira;
+import com.inspira.lnj.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
-import static com.inspira.gms.IndexInternal.global;
+import static com.inspira.lnj.IndexInternal.global;
 
 /**
  * Created by shoma on 06/09/17.

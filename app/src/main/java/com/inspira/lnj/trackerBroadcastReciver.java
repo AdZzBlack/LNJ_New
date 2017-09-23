@@ -1,4 +1,4 @@
-package com.inspira.gms;
+package com.inspira.lnj;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

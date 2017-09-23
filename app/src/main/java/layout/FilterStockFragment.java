@@ -15,20 +15,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
-import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.LibPDF;
-import com.inspira.gms.R;
+import com.inspira.lnj.LibInspira;
+import com.inspira.lnj.LibPDF;
+import com.inspira.lnj.R;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,13 +31,11 @@ import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
+import static com.inspira.lnj.IndexInternal.global;
+import static com.inspira.lnj.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 

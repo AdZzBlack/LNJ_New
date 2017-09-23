@@ -19,8 +19,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
+import com.inspira.lnj.LibInspira;
+import com.inspira.lnj.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.inspira.gms.IndexInternal.global;
+import static com.inspira.lnj.IndexInternal.global;
 
 
 /**

@@ -22,8 +22,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
+import com.inspira.lnj.LibInspira;
+import com.inspira.lnj.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,8 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
+import static com.inspira.lnj.IndexInternal.global;
+import static com.inspira.lnj.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 

@@ -18,14 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
+import com.inspira.lnj.LibInspira;
+import com.inspira.lnj.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,8 +30,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
+import static com.inspira.lnj.IndexInternal.global;
+import static com.inspira.lnj.IndexInternal.jsonObject;
 //import android.app.Fragment;
 
 public class FormSalesOrderDetailItemListFragment extends Fragment implements View.OnClickListener{

@@ -5,7 +5,7 @@
         o> 08-Jul-2017 (Tonny)
            * Create New
 ******************************************************************************/
-package com.inspira.gms;
+package com.inspira.lnj;
 
 //import android.app.Fragment;  // is the Fragment class in the native version of the Android SDK. It was introduced in Android 3 (API 11)
 import android.app.Activity;

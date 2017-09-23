@@ -10,7 +10,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,15 +19,15 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.inspira.gms.GlobalVar;
-import com.inspira.gms.LibInspira;
-import com.inspira.gms.R;
+import com.inspira.lnj.GlobalVar;
+import com.inspira.lnj.LibInspira;
+import com.inspira.lnj.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.inspira.gms.IndexInternal.global;
+import static com.inspira.lnj.IndexInternal.global;
 
 //import android.app.Fragment;
 

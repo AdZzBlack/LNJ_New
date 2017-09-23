@@ -1,43 +1,35 @@
 {
   "project_info": {
-    "project_number": "1068687723844",
-    "firebase_url": "https://gmsnew-2db77.firebaseio.com",
-    "project_id": "gmsnew-2db77",
-    "storage_bucket": "gmsnew-2db77.appspot.com"
+    "project_number": "776964204279",
+    "firebase_url": "https://lnjnew.firebaseio.com",
+    "project_id": "lnjnew",
+    "storage_bucket": "lnjnew.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1068687723844:android:0f22ed388df5584c",
+        "mobilesdk_app_id": "1:776964204279:android:c2fc7c263f127b5c",
         "android_client_info": {
-          "package_name": "com.inspira.gms"
+          "package_name": "com.inspira.lnj"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1068687723844-qmv3hjkc5l739711snmsep1nfi6q3t6t.apps.googleusercontent.com",
+          "client_id": "776964204279-ans50rltam459bhd1du97c8ngq0pv7m6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.inspira.gms",
+            "package_name": "com.inspira.lnj",
             "certificate_hash": "1223532cef4bebe01f7df7a277e60ab46384346e"
           }
         },
         {
-          "client_id": "1068687723844-5laeor32ilpl8bu8b47qqjpm0gd1o0im.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.inspira.gms",
-            "certificate_hash": "4b2ea90e8265de4386ed18161038ff4e6c773131"
-          }
-        },
-        {
-          "client_id": "1068687723844-321ctemspca37e3r3ba78jj53gvmkbff.apps.googleusercontent.com",
+          "client_id": "776964204279-fing2oi35d439jge2q86nrh3c4aqimho.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB-JDDDezUt2tlQcXR7hJVw5vUoNCCvNqM"
+          "current_key": "AIzaSyD7-gWnfjowjqOmt6_4Fq6VkIc_Q1w5M28"
         }
       ],
       "services": {
@@ -48,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1068687723844-321ctemspca37e3r3ba78jj53gvmkbff.apps.googleusercontent.com",
+              "client_id": "776964204279-fing2oi35d439jge2q86nrh3c4aqimho.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

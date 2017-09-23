@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.inspira.gms.R;
+import com.inspira.lnj.R;
 
 //import android.app.Fragment;
 

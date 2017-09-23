@@ -1,4 +1,4 @@
-package com.inspira.gms;
+package com.inspira.lnj;
 
 import org.junit.Test;
 

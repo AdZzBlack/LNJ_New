@@ -1,4 +1,4 @@
-package com.inspira.gms;
+package com.inspira.lnj;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
