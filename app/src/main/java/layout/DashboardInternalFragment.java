@@ -94,43 +94,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
 
         if(id==R.id.btnContact)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());
-        }
-        else if(id==R.id.btnScheduleTask)
-        {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ScheduleTaskFragment());
-        }
-        else if(id==R.id.btnPriceList)
-        {
-            Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
-            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
-            }else{
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
-            }
 
-        }
-        else if(id==R.id.btnStockMonitoring)  //added by Tonny @16-Aug-2017
-        {
-            Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
-            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
-                LibInspira.setShared(global.sharedpreferences, global.shared.position, "stockmonitoring");
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
-            }else{
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());  //modified by Tonny @17-Aug-2017
-            }
-        }else if (id==R.id.btnOmzet){  //added by Tonny @23-Aug-2017
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @23-Aug-2017
-        }
-        else if(id==R.id.btnSalesOrder) //added by ADI @24-Aug-2017
-        {
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_proyek, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "");
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "");
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
-        }else if (id==R.id.btnGroup){  //added by Tonny @23-Aug-2017
-            LibInspira.setShared(global.sharedpreferences, global.shared.position, "Conversation");
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());  //added by ADI @04-Sep-2017
         }
     }
 }

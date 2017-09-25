@@ -3,11 +3,9 @@ package com.inspira.lnj;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -28,16 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
-import layout.ChooseCustomerProspectingFragment;
-import layout.ChooseGroupFragment;
-import layout.ChoosePeriodeFragment;
-import layout.ContactFragment;
 import layout.DashboardInternalFragment;
-import layout.FilterSalesOmzetFragment;
-import layout.PenjualanFragment;
-import layout.SalesNavigationFragment;
-import layout.SalesOrderListFragment;
-import layout.SettingFragment;
 
 
 public class IndexInternal extends AppCompatActivity
@@ -90,7 +79,6 @@ public class IndexInternal extends AppCompatActivity
             navmenu.findItem(R.id.nav_target).setVisible(false);
         }
 
-        LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
 
         //added by Shodiq @01-Aug-2017
@@ -98,22 +86,6 @@ public class IndexInternal extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= 23)
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
-
-        // made by Shodiq @8-aug-2017
-        // check GPS status and ask to activate if GPS is disabled
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
-            startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
-        } else {
-            Runnable commandOk = new Runnable() {
-                @Override
-                public void run() {
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                }
-            };
-            LibInspira.alertbox("Enable Location", "Your Locations Settings is disabled.\nPlease Enable Location to use this app", this, commandOk, null);
-        }
     }
 
     @Override
@@ -132,9 +104,7 @@ public class IndexInternal extends AppCompatActivity
         String actionUrl = "Sales/getOmzetTarget/";
         new checkOmzetTarget().execute( actionUrl );
         tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-        tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
         tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
-        tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
     }
 
     /******************************************************************************
@@ -166,21 +136,7 @@ public class IndexInternal extends AppCompatActivity
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if (!obj.has("query")) {
-                            String success = obj.getString("success");
-                            if (success.equals("true")) {
-                                LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("omzet"));
-                                LibInspira.setShared(global.salespreferences, global.sales.target, obj.getString("target"));
-                                tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
-                                tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
-                            }
-                        }else{
-                            LibInspira.setShared(global.salespreferences, global.sales.omzet, "0");
-                            LibInspira.setShared(global.salespreferences, global.sales.target, "0");
-                        }
-                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -220,7 +176,7 @@ public class IndexInternal extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {  //added by Tonny @30-Jul-2017
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SettingFragment());  //added by Tonny @04-Aug-2017
+
         } else if (id == R.id.action_changepassword) {  //added by Tonny @30-Jul-2017
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
         } else if (id == R.id.action_logout) {
@@ -247,26 +203,8 @@ public class IndexInternal extends AppCompatActivity
         if (id == R.id.nav_dashboard) {
             // Handle the camera action
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
-        } else if (id == R.id.nav_contact) {
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());  //added by Tonny @01-Aug-2017
-        } else if (id == R.id.nav_target) {
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChoosePeriodeFragment());  //added by Tonny @04-Aug-2017
-        } else if (id == R.id.nav_group) {
-            LibInspira.setShared(global.sharedpreferences, global.shared.position, "Conversation");
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());
-        } else if (id == R.id.nav_salesorder) {
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment()); //added by ADI @24-Aug-2017
-        } else if (id == R.id.nav_stockreport) {
-
-        } else if (id == R.id.nav_salestracking){
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
-        } else if (id == R.id.nav_omzet){
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @25-Aug-2017
-        } else if (id == R.id.nav_customer_prospecting){
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
-        } else if (id == R.id.nav_salesorder){
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());  //added by Tonny @01-Sep-2017
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return false;

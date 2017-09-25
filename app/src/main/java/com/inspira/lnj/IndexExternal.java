@@ -22,8 +22,6 @@ import org.json.JSONObject;
 
 import layout.ChangePasswordFragment;
 import layout.DashboardExternalFragment;
-import layout.PriceListFragment;
-import layout.SettingFragment;
 
 
 public class IndexExternal extends AppCompatActivity
@@ -59,7 +57,6 @@ public class IndexExternal extends AppCompatActivity
         LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardExternalFragment());
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        LibInspira.clearShared(global.salespreferences);
         RefreshUserData();
 
         //added by Shodiq @01-Aug-2017
@@ -112,7 +109,7 @@ public class IndexExternal extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {  //added by Tonny @30-Jul-2017
             // Handle the camera action
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SettingFragment());  //added by Tonny @04-Aug-2017
+
         } else if (id == R.id.action_changepassword) {  //added by Tonny @30-Jul-2017
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
         } else if (id == R.id.action_logout) {
@@ -138,7 +135,7 @@ public class IndexExternal extends AppCompatActivity
             // Handle the camera action
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardExternalFragment());  //added by Tonny @01-Aug-2017
         } else if (id == R.id.nav_catalogue) {
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());  //added by Tonny @01-Aug-2017
+
         } else if (id == R.id.nav_cart) {
 
         } else if (id == R.id.nav_trackinginformation) {

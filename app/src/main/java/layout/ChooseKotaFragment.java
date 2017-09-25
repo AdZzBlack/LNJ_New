@@ -156,42 +156,42 @@ public class ChooseKotaFragment extends Fragment implements View.OnClickListener
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.kota, "");
-        String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1 && pieces[0].equals(""))
-        {
-            tvNoData.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            tvNoData.setVisibility(View.GONE);
-            for(int i=0 ; i < pieces.length ; i++){
-                if(!pieces[i].equals(""))
-                {
-                    String[] parts = pieces[i].trim().split("\\~");
-
-                    String nomor = parts[0];
-                    String nama = parts[1];
-                    String nomorpropinsi = parts[2];
-                    String kode = parts[3];
-
-                    if(nomor.equals("null")) nomor = "";
-                    if(nama.equals("null")) nama = "";
-                    if(nomorpropinsi.equals("null")) nomorpropinsi = "";
-                    if(kode.equals("null")) kode = "";
-
-                    ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomor);
-                    dataItem.setNama(nama);
-                    dataItem.setNomorpropinsi(nomorpropinsi);
-                    dataItem.setKode(kode);
-                    list.add(dataItem);
-
-                    itemadapter.add(dataItem);
-                    itemadapter.notifyDataSetChanged();
-                }
-            }
-        }
+//        String data = LibInspira.getShared(global.datapreferences, global.data.kota, "");
+//        String[] pieces = data.trim().split("\\|");
+//        if(pieces.length==1 && pieces[0].equals(""))
+//        {
+//            tvNoData.setVisibility(View.VISIBLE);
+//        }
+//        else
+//        {
+//            tvNoData.setVisibility(View.GONE);
+//            for(int i=0 ; i < pieces.length ; i++){
+//                if(!pieces[i].equals(""))
+//                {
+//                    String[] parts = pieces[i].trim().split("\\~");
+//
+//                    String nomor = parts[0];
+//                    String nama = parts[1];
+//                    String nomorpropinsi = parts[2];
+//                    String kode = parts[3];
+//
+//                    if(nomor.equals("null")) nomor = "";
+//                    if(nama.equals("null")) nama = "";
+//                    if(nomorpropinsi.equals("null")) nomorpropinsi = "";
+//                    if(kode.equals("null")) kode = "";
+//
+//                    ItemAdapter dataItem = new ItemAdapter();
+//                    dataItem.setNomor(nomor);
+//                    dataItem.setNama(nama);
+//                    dataItem.setNomorpropinsi(nomorpropinsi);
+//                    dataItem.setKode(kode);
+//                    list.add(dataItem);
+//
+//                    itemadapter.add(dataItem);
+//                    itemadapter.notifyDataSetChanged();
+//                }
+//            }
+//        }
     }
 
     private class getData extends AsyncTask<String, Void, String> {
@@ -225,15 +225,15 @@ public class ChooseKotaFragment extends Fragment implements View.OnClickListener
                             tempData = tempData + nomor + "~" + nama + "~" + nomorpropinsi + "~" + kode + "|";
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.kota, "")))
-                    {
-                        LibInspira.setShared(
-                                global.datapreferences,
-                                global.data.kota,
-                                tempData
-                        );
-                        refreshList();
-                    }
+//                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.kota, "")))
+//                    {
+//                        LibInspira.setShared(
+//                                global.datapreferences,
+//                                global.data.kota,
+//                                tempData
+//                        );
+//                        refreshList();
+//                    }
                 }
                 tvInformation.animate().translationYBy(-80);
             }

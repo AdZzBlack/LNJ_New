@@ -76,8 +76,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.btnSubmit){
-            String actionUrl = "Login/loginUser/";
-            new loginUser().execute( actionUrl );
+//            String actionUrl = "Login/loginUser/";
+//            new loginUser().execute( actionUrl );
+            Intent intent = new Intent(Login.this, IndexInternal.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+            finish();
         }
     }
 
@@ -110,12 +114,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.role_hpp, obj.getString("role_hpp"));
             LibInspira.setShared(global.userpreferences, global.user.role_crossbranch, obj.getString("role_crossbranch"));
             LibInspira.setShared(global.userpreferences, global.user.role_creategroup, obj.getString("role_creategroup"));
-
-            LibInspira.setShared(global.settingpreferences, global.settings.interval, obj.getString("setting_interval"));
-            LibInspira.setShared(global.settingpreferences, global.settings.radius, obj.getString("setting_radius"));
-            LibInspira.setShared(global.settingpreferences, global.settings.tracking, obj.getString("setting_tracking"));
-            LibInspira.setShared(global.settingpreferences, global.settings.jam_awal, obj.getString("setting_jamawal"));
-            LibInspira.setShared(global.settingpreferences, global.settings.jam_akhir, obj.getString("setting_jamakhir"));
         }
         catch(Exception e)
         {

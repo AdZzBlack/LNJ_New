@@ -69,7 +69,7 @@ public class DashboardExternalFragment extends Fragment implements View.OnClickL
 
         if(id==R.id.btnCatalogue)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
+
         }
         else if(id==R.id.btnCart)
         {
