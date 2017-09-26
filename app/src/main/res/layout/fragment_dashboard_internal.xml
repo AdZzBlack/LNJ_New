@@ -92,14 +92,14 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/btnNFC"
+                    android:id="@+id/btnQRCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="33.3"
                     android:clickable="true">
 
                     <ImageButton
-                        android:id="@+id/ibtnNFC"
+                        android:id="@+id/ibtnQRCode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -107,7 +107,7 @@
                         android:clickable="false"
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/nfctools"
+                        android:src="@drawable/qrcode"
                         android:backgroundTint="@color/colorBackground"
                         android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
@@ -116,10 +116,10 @@
                         android:id="@+id/tvNFC"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/ibtnNFC"
+                        android:layout_below="@+id/ibtnQRCode"
                         android:layout_marginTop="8dp"
                         android:clickable="false"
-                        android:text="NFC"
+                        android:text="QRCode"
                         android:textAlignment="center" />
                 </RelativeLayout>
 
