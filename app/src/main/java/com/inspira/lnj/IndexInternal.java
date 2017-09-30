@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
 import layout.DashboardInternalFragment;
+import layout.SettingFragment;
 
 
 public class IndexInternal extends AppCompatActivity
@@ -159,10 +160,10 @@ public class IndexInternal extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_index_internal_settings, menu);
 
-        if(LibInspira.getShared(global.userpreferences, global.user.role_setting, "0").equals("0"))
-        {
-            menu.findItem(R.id.action_settings).setVisible(false);
-        }
+//        if(LibInspira.getShared(global.userpreferences, global.user.role_setting, "0").equals("0"))
+//        {
+//            menu.findItem(R.id.action_settings).setVisible(false);
+//        }
 
         return true;
     }
@@ -176,7 +177,7 @@ public class IndexInternal extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {  //added by Tonny @30-Jul-2017
-
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SettingFragment());
         } else if (id == R.id.action_changepassword) {  //added by Tonny @30-Jul-2017
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
         } else if (id == R.id.action_logout) {

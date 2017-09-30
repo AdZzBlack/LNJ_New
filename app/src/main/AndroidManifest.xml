@@ -15,6 +15,10 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <!-- added by Tonny @26-Sep-2017 -->
+    <!-- read simcard permission -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
     <permission
         android:name="com.inspira.lnj.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
