@@ -8,6 +8,7 @@
         android:isScrollContainer="true"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="vertical"
+        android:visibility="gone"
         android:paddingBottom="?android:attr/actionBarSize">
 
         <RelativeLayout

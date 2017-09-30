@@ -33,7 +33,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.activity_login);
 
         global = new GlobalVar(this);
-        LibInspira.setShared(global.sharedpreferences, global.shared.server, "vpn.inspiraworld.com:99");
+        LibInspira.setShared(global.sharedpreferences, global.shared.server, "sub.pt-lnj.com");
 
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
@@ -76,12 +76,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.btnSubmit){
-//            String actionUrl = "Login/loginUser/";
-//            new loginUser().execute( actionUrl );
-            Intent intent = new Intent(Login.this, IndexInternal.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            finish();
+            String actionUrl = "Login/loginUser/";
+            new loginUser().execute( actionUrl );
         }
     }
 
@@ -90,30 +86,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         try
         {
             LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
-            LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
-            LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
-            LibInspira.setShared(global.userpreferences, global.user.kode_sales, obj.getString("user_kode_sales"));  //added by Tonny @05-Sep-2017
-            LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
+            LibInspira.setShared(global.userpreferences, global.user.nomor_pegawai, obj.getString("user_nomor_pegawai"));
+            LibInspira.setShared(global.userpreferences, global.user.kode_pegawai, obj.getString("user_kode_pegawai"));
+            LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));
             LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
-            LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
             LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
             LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
             LibInspira.setShared(global.userpreferences, global.user.cabang, obj.getString("user_cabang"));
             LibInspira.setShared(global.userpreferences, global.user.namacabang, obj.getString("user_nama_cabang"));
-            LibInspira.setShared(global.userpreferences, global.user.telp, obj.getString("user_telp"));
 
-            LibInspira.setShared(global.userpreferences, global.user.role_isowner, obj.getString("role_isowner"));
-            LibInspira.setShared(global.userpreferences, global.user.role_issales, obj.getString("role_issales"));
-            LibInspira.setShared(global.userpreferences, global.user.role_setting, obj.getString("role_setting"));
-            LibInspira.setShared(global.userpreferences, global.user.role_settingtarget, obj.getString("role_settingtarget"));
-            LibInspira.setShared(global.userpreferences, global.user.role_salesorder, obj.getString("role_salesorder"));
-            LibInspira.setShared(global.userpreferences, global.user.role_stockmonitoring, obj.getString("role_stockmonitoring"));
-            LibInspira.setShared(global.userpreferences, global.user.role_pricelist, obj.getString("role_pricelist"));
-            LibInspira.setShared(global.userpreferences, global.user.role_addscheduletask, obj.getString("role_addscheduletask"));
-            LibInspira.setShared(global.userpreferences, global.user.role_salestracking, obj.getString("role_salestracking"));
-            LibInspira.setShared(global.userpreferences, global.user.role_hpp, obj.getString("role_hpp"));
-            LibInspira.setShared(global.userpreferences, global.user.role_crossbranch, obj.getString("role_crossbranch"));
-            LibInspira.setShared(global.userpreferences, global.user.role_creategroup, obj.getString("role_creategroup"));
+            LibInspira.setShared(global.userpreferences, global.user.role_isdriver, obj.getString("role_isdriver"));
+            LibInspira.setShared(global.userpreferences, global.user.role_qrcodereader, obj.getString("role_qrcodereader"));
+            LibInspira.setShared(global.userpreferences, global.user.role_checkin, obj.getString("role_checkin"));
         }
         catch(Exception e)
         {
@@ -160,20 +144,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
                             LibInspira.hideLoading();
 
-                            if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
-                            {
-                                Intent intent = new Intent(Login.this, IndexInternal.class);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-                                finish();
-                            }
-                            else if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("1"))
-                            {
-                                Intent intent = new Intent(Login.this, IndexExternal.class);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-                                finish();
-                            }
+                            Intent intent = new Intent(Login.this, IndexInternal.class);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                            finish();
                         }
                         else
                         {
@@ -232,20 +206,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             if(success.equals("true")){
                                 setdatauser(obj);
 
-                                if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
-                                {
-                                    Intent intent = new Intent(Login.this, IndexInternal.class);
-                                    startActivity(intent);
-                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-                                    finish();
-                                }
-                                else if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("1"))
-                                {
-                                    Intent intent = new Intent(Login.this, IndexExternal.class);
-                                    startActivity(intent);
-                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-                                    finish();
-                                }
+                                Intent intent = new Intent(Login.this, IndexInternal.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                                finish();
                             }
                             else
                             {

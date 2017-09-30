@@ -1,5 +1,7 @@
 package com.inspira.lnj;
 
+import android.*;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -75,18 +77,14 @@ public class IndexInternal extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
         Menu navmenu = navigationView.getMenu();
-        if(LibInspira.getShared(global.userpreferences, global.user.role_settingtarget, "0").equals("0"))
-        {
-            navmenu.findItem(R.id.nav_target).setVisible(false);
-        }
 
         RefreshUserData();
 
         //added by Shodiq @01-Aug-2017
         // Permission for enabling location feature only for SDK Marshmallow | Android 6
         if (Build.VERSION.SDK_INT >= 23)
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, 1600);
     }
 
     @Override
@@ -102,47 +100,10 @@ public class IndexInternal extends AppCompatActivity
         tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
         tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         //modified by Tonny @03-Aug-2017 function untuk get omzet dan target dijadikan satu
-        String actionUrl = "Sales/getOmzetTarget/";
-        new checkOmzetTarget().execute( actionUrl );
-        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
-    }
-
-    /******************************************************************************
-        Class     : checkOmzetTarget
-        Author    : Tonny
-        Date      : 01-Aug-2017
-        Function  : Untuk mendapatkan omzet dan target dari sales berdasarkan kode/nomor sales
-    ******************************************************************************/
-    private static class checkOmzetTarget extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                jsonObject = new JSONObject();
-                Log.d("kodesales: ", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-                jsonObject.put("kodesales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return LibInspira.executePost(context, urls[0], jsonObject);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            //Log.d("omzettarget", result);  //remarked by Tonny @04-Aug-2017
-            try {
-                JSONArray jsonarray = new JSONArray(result);
-                if (jsonarray.length() > 0) {
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        String actionUrl = "Sales/getOmzetTarget/";
+//        new checkOmzetTarget().execute( actionUrl );
+//        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
+//        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
     }
 
     @Override
@@ -159,12 +120,6 @@ public class IndexInternal extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_index_internal_settings, menu);
-
-//        if(LibInspira.getShared(global.userpreferences, global.user.role_setting, "0").equals("0"))
-//        {
-//            menu.findItem(R.id.action_settings).setVisible(false);
-//        }
-
         return true;
     }
 
@@ -177,7 +132,7 @@ public class IndexInternal extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {  //added by Tonny @30-Jul-2017
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SettingFragment());
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SettingFragment());  //added by Tonny @04-Aug-2017
         } else if (id == R.id.action_changepassword) {  //added by Tonny @30-Jul-2017
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
         } else if (id == R.id.action_logout) {

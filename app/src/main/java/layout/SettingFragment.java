@@ -107,18 +107,18 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.btnGetNumber){
-            TelephonyManager tMgr = (TelephonyManager)getContext().getSystemService(getContext().TELEPHONY_SERVICE);
-            String mPhoneNumber = tMgr.getDeviceId();
-            LibInspira.ShowLongToast(getContext(), mPhoneNumber);
-//            int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE);
-//
-//            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
-//            } else {
-//                TelephonyManager tMgr = (TelephonyManager)getContext().getSystemService(getContext().TELEPHONY_SERVICE);
-//                String mPhoneNumber = tMgr.getDeviceId();
-//                LibInspira.ShowLongToast(getContext(), mPhoneNumber);
-//            }
+//            TelephonyManager tMgr = (TelephonyManager)getContext().getSystemService(getContext().TELEPHONY_SERVICE);
+//            String mPhoneNumber = tMgr.getDeviceId();
+//            LibInspira.ShowLongToast(getContext(), mPhoneNumber);
+            int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE);
+
+            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
+            } else {
+                TelephonyManager tMgr = (TelephonyManager)getContext().getSystemService(getContext().TELEPHONY_SERVICE);
+                String mPhoneNumber = tMgr.getDeviceId();
+                LibInspira.ShowLongToast(getContext(), mPhoneNumber);
+            }
         }else if(id == R.id.btnUpdate) {
             String actionUrl = "Settings/setSettings/";
             new updateSettings().execute(actionUrl);

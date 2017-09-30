@@ -164,126 +164,69 @@ class Login extends REST_Controller {
         $value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
 
-        $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "a");
-        $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "a"));
+        $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "adi");
+        $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "admin"));
         $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "a");
 
-        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
-        $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
-        $tracking  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 3 LIMIT 1")->row()->intnilai;
-        $jam_awal  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 6 LIMIT 1")->row()->intnilai;
-        $jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
+//        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
 		
-		$query = "	UPDATE whuser_mobile a 
+		$query1 = "	UPDATE mhadmin a
 					SET hash = UUID(),
-					token = '$token'
-					WHERE a.status_aktif > 0 
-					AND a.userid = ? 
-					AND BINARY a.password = ?";
-        $this->db->query($query, array($user, $pass));
+					gcm_id = '$token'
+					WHERE a.status_aktif = 1
+					AND a.kode = '$user'
+                    AND BINARY a.sandi = '$pass'";
+        $this->db->query($query1);
 		
         $query = "	SELECT 
-						a.nomor AS nomor_android,
-						a.nomortuser AS nomor,
-						a.password AS `password`,
-						a.nomorthsales AS nomor_sales,
-						d.kode AS kode_sales,
-						a.userid AS nama,
-						a.tipeuser AS tipe,
-						a.nomorrole AS role,
+						a.nomor AS nomor,
+						a.sandi AS `password`,
+						a.nomormhpegawai AS nomor_pegawai,
+						d.kode AS kode_pegawai,
+						a.nama AS nama,
+						a.role_android AS role,
 						a.hash AS `hash`,
-						IFNULL(a.telp, '') AS telp,
-						a.nomorcabang AS cabang,
-						e.cabang AS namacabang,
-						b.isowner AS isowner,
-						b.issales AS issales,
-						b.setting AS setting,
-						b.settingtarget AS settingtarget,
-						b.salesorder AS salesorder,
-						b.stockmonitoring AS stockmonitoring,
-						b.pricelist AS pricelist,
-						b.addscheduletask AS addscheduletask,
-						b.salestracking AS salestracking,
-						b.hpp AS hpp,
-						b.crossbranch AS crossbranch,
-						b.creategroup AS creategroup
-					FROM whuser_mobile a
-					JOIN whrole_mobile b ON a.nomorrole = b.nomor
-					LEFT JOIN tuser c ON a.nomortuser = c.nomor
-					LEFT JOIN thsales d ON a.nomorthsales = d.nomor
-					JOIN tcabang e ON a.nomorcabang = e.nomor
+						a.nomormhcabang AS cabang,
+						e.nama AS namacabang,
+						b.isdriver AS isdriver,
+						b.qrcodereader AS qrcodereader,
+						b.checkin AS checkin
+					FROM mhadmin a
+					JOIN whrole_mobile b ON a.role_android = b.nomor
+					LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
+					JOIN mhcabang e ON a.nomormhcabang = e.nomor
 					WHERE a.status_aktif = 1
-					AND a.userid = '$user'
-					AND BINARY a.password = '$pass'";
-        $result = $this->db->query($query, array($user, $pass));
+					AND a.kode = '$user'
+					AND BINARY a.sandi = '$pass'";
+        $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
 
                 array_push($data['data'], array(
-                								'user_nomor_android'			=> $r['nomor_android'],
-												'user_nomor'					=> $r['nomor'],
+                								'user_nomor'    	    		=> $r['nomor'],
 												'user_password'					=> $r['password'],
-                                                'user_nomor_sales'         		=> $r['nomor_sales'],
-                                                'user_kode_sales'         		=> $r['kode_sales'],
-                								'user_nama' 					=> $r['nama'], 
-												'user_tipe' 					=> $r['tipe'], 
+                                                'user_nomor_pegawai'         	=> $r['nomor_pegawai'],
+                                                'user_kode_pegawai'        		=> $r['kode_pegawai'],
+                								'user_nama' 					=> $r['nama'],
 												'user_role' 					=> $r['role'], 
 												'user_hash' 					=> $r['hash'],
-												'user_telp' 					=> $r['telp'],
 												'user_cabang' 					=> $r['cabang'],
 												'user_nama_cabang' 				=> $r['namacabang'],
-												'role_isowner'					=> $r['isowner'],
-												'role_issales'					=> $r['issales'],
-												'role_setting'					=> $r['setting'],
-												'role_settingtarget'			=> $r['settingtarget'],
-												'role_salesorder'				=> $r['salesorder'],
-												'role_stockmonitoring'			=> $r['stockmonitoring'],
-												'role_pricelist'				=> $r['pricelist'],
-												'role_addscheduletask'			=> $r['addscheduletask'],
-												'role_salestracking'			=> $r['salestracking'],
-												'role_hpp'          			=> $r['hpp'],
-                                                'role_crossbranch'  			=> $r['crossbranch'],
-                                                'role_creategroup'  			=> $r['creategroup'],
-                                                'setting_interval'  			=> $interval,
-                                                'setting_radius'      			=> $radius,
-                                                'setting_tracking'  			=> $tracking,
-                                                'setting_jamawal'     			=> $jam_awal,
-                                                'setting_jamakhir'  			=> $jam_akhir
+												'role_isdriver'					=> $r['isdriver'],
+												'role_qrcodereader' 			=> $r['qrcodereader'],
+												'role_checkin'					=> $r['checkin'],
                 								)
                	);
             }
         }else{		
-			array_push($data['data'], array( 'query' => $this->error($query) ));
+			array_push($data['data'], array( 'query' => $this->error($query1) ));
 		}  
 	
         if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
-
-    }
-	
-	// --- POST GPS tracking system --- //
-	function gpsTracking_post()
-	{     
-        $data['data'] = array();
-
-        $value = file_get_contents('php://input');
-		$jsonObject = (json_decode($value , true));
-
-        array_push($data['data'], array(
-			'id'				=> $r['id'],
-			'latitude'			=> $r['latitude'],
-			'longitude'			=> $r['longitude'], 
-			)
-		);
-	
-        if ($data){
-            // Set the response and exit
-            $this->response($data['data']); // OK (200) being the HTTP response code
-        }
-
     }
 	
 	function checkUser_post()
@@ -295,44 +238,25 @@ class Login extends REST_Controller {
 
         $hash = (isset($jsonObject["hash"]) ? $jsonObject["hash"]     : "");
 
-        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
-        $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
-		$tracking  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 3 LIMIT 1")->row()->intnilai;
-		$jam_awal  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 6 LIMIT 1")->row()->intnilai;
-		$jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
-		
         $query = "	SELECT 
-						a.nomor AS nomor_android,
-                        a.nomortuser AS nomor,
-                        a.password AS `password`,
-                        a.nomorthsales AS nomor_sales,
-                        d.kode AS kode_sales,
-                        a.userid AS nama,
-                        a.tipeuser AS tipe,
-                        a.nomorrole AS role,
+                        a.nomor AS nomor,
+                        a.sandi AS `password`,
+                        a.nomormhpegawai AS nomor_pegawai,
+                        d.kode AS kode_pegawai,
+                        a.nama AS nama,
+                        a.role_android AS role,
                         a.hash AS `hash`,
-                        IFNULL(a.telp, '') AS telp,
-                        a.nomorcabang AS cabang,
-                        e.cabang AS namacabang,
-                        b.isowner AS isowner,
-                        b.issales AS issales,
-                        b.setting AS setting,
-                        b.settingtarget AS settingtarget,
-                        b.salesorder AS salesorder,
-                        b.stockmonitoring AS stockmonitoring,
-                        b.pricelist AS pricelist,
-                        b.addscheduletask AS addscheduletask,
-                        b.salestracking AS salestracking,
-                        b.hpp AS hpp,
-                        b.crossbranch AS crossbranch,
-                        b.creategroup AS creategroup
-                    FROM whuser_mobile a
-                    JOIN whrole_mobile b ON a.nomorrole = b.nomor
-                    LEFT JOIN tuser c ON a.nomortuser = c.nomor
-                    LEFT JOIN thsales d ON a.nomorthsales = d.nomor
-                    JOIN tcabang e ON a.nomorcabang = e.nomor
+                        a.nomormhcabang AS cabang,
+                        e.nama AS namacabang,
+                        b.isdriver AS isdriver,
+                        b.qrcodereader AS qrcodereader,
+                        b.checkin AS checkin
+                    FROM mhadmin a
+                    JOIN whrole_mobile b ON a.role_android = b.nomor
+                    LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
+                    JOIN mhcabang e ON a.nomormhcabang = e.nomor
                     WHERE a.status_aktif = 1
-						AND hash = '$hash'";
+					AND hash = '$hash'";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0)
@@ -341,35 +265,18 @@ class Login extends REST_Controller {
 			{
 				array_push($data['data'], array(
 													'success'						=> "true",
-													'user_nomor_android'			=> $r['nomor_android'],
-													'user_nomor' 					=> $r['nomor'],
-													'user_nomor_sales'         		=> $r['nomor_sales'],
-													'user_kode_sales'         		=> $r['kode_sales'],  //added by Tonny
-													'user_password'					=> $r['password'],
-													'user_nama' 					=> $r['nama'], 
-													'user_tipe' 					=> $r['tipe'], 
-													'user_role' 					=> $r['role'], 
-													'user_hash' 					=> $r['hash'],
-													'user_telp' 					=> $r['telp'],
-													'user_cabang' 					=> $r['cabang'],
-													'user_nama_cabang' 				=> $r['namacabang'],  //added by Tonny
-													'role_isowner'					=> $r['isowner'],
-													'role_issales'					=> $r['issales'],
-													'role_setting'					=> $r['setting'],
-													'role_settingtarget'			=> $r['settingtarget'],
-													'role_salesorder'				=> $r['salesorder'],
-													'role_stockmonitoring'			=> $r['stockmonitoring'],
-													'role_pricelist'				=> $r['pricelist'],
-													'role_addscheduletask'			=> $r['addscheduletask'],
-													'role_salestracking'			=> $r['salestracking'],
-													'role_hpp'          			=> $r['hpp'],
-                                                    'role_crossbranch'  			=> $r['crossbranch'],
-                                                    'role_creategroup'  			=> $r['creategroup'],
-                                                    'setting_interval'  			=> $interval,
-                                                    'setting_radius'      			=> $radius,
-                                                    'setting_tracking'  			=> $tracking,
-                                                    'setting_jamawal'     			=> $jam_awal,
-                                                    'setting_jamakhir'  			=> $jam_akhir
+													'user_nomor'    	    		=> $r['nomor'],
+                                                    'user_password'					=> $r['password'],
+                                                    'user_nomor_pegawai'         	=> $r['nomor_pegawai'],
+                                                    'user_kode_pegawai'        		=> $r['kode_pegawai'],
+                                                    'user_nama' 					=> $r['nama'],
+                                                    'user_role' 					=> $r['role'],
+                                                    'user_hash' 					=> $r['hash'],
+                                                    'user_cabang' 					=> $r['cabang'],
+                                                    'user_nama_cabang' 				=> $r['namacabang'],
+                                                    'role_isdriver'					=> $r['isdriver'],
+                                                    'role_qrcodereader' 			=> $r['qrcodereader'],
+                                                    'role_checkin'					=> $r['checkin'],
 											)
 				);
 			}
