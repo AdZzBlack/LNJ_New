@@ -109,7 +109,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
         if(id == R.id.btnGetNumber){
 //            TelephonyManager tMgr = (TelephonyManager)getContext().getSystemService(getContext().TELEPHONY_SERVICE);
 //            String mPhoneNumber = tMgr.getDeviceId();
-//            LibInspira.ShowLongToast(getContext(), mPhoneNumber);
+//            LibInspira.showLongToast(getContext(), mPhoneNumber);
             int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE);
 
             if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -117,12 +117,12 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
             } else {
                 TelephonyManager tMgr = (TelephonyManager)getContext().getSystemService(getContext().TELEPHONY_SERVICE);
                 String mPhoneNumber = tMgr.getDeviceId();
-                LibInspira.ShowLongToast(getContext(), mPhoneNumber);
+                LibInspira.showLongToast(getContext(), mPhoneNumber);
             }
         }else if(id == R.id.btnUpdate) {
             String actionUrl = "Settings/setSettings/";
             new updateSettings().execute(actionUrl);
-            LibInspira.ShowShortToast(getContext(), "Saving...");
+            LibInspira.showShortToast(getContext(), "Saving...");
         }
     }
 
@@ -134,9 +134,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
                     if (grantResults.length > 0){
                         boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                         if(cameraAccepted){
-                            LibInspira.ShowLongToast(getContext(), "Permission granted");
+                            LibInspira.showLongToast(getContext(), "Permission granted");
                         }else{
-                            LibInspira.ShowLongToast(getContext(), "Permission Denied");
+                            LibInspira.showLongToast(getContext(), "Permission Denied");
                             if(shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)){
                                 displayAlertMessage("You need to allow access to both permission",
                                         new DialogInterface.OnClickListener() {
@@ -216,18 +216,18 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
 
                     String success = obj.getString("success");
                     if(success.equals("true")){
-                        LibInspira.ShowShortToast(getContext(), "Setting Updated");
+                        LibInspira.showShortToast(getContext(), "Setting Updated");
                         LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
                     }else{
                         Log.d("FAILED: ", success);
-                        LibInspira.ShowShortToast(getContext(), "Update Settings Failed");
+                        LibInspira.showShortToast(getContext(), "Update Settings Failed");
                     }
                 }
                 LibInspira.hideLoading();
             }catch(Exception e)
             {
                 e.printStackTrace();
-                LibInspira.ShowShortToast(getContext(), "Update Settings Failed");
+                LibInspira.showShortToast(getContext(), "Update Settings Failed");
                 LibInspira.hideLoading();
             }
         }

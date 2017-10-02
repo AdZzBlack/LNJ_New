@@ -100,18 +100,18 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
             //cek validasi data
             if (edtOldPassword.getText().toString().equals("") || edtNewPassword.getText().toString().equals("") || edtConfirmation.getText().toString().equals(""))
             {
-                LibInspira.ShowShortToast(getContext(), "Please fill in all fields");
+                LibInspira.showShortToast(getContext(), "Please fill in all fields");
                 return;
             }else if(!sb.toString().equals(currentPassword)){
                 Log.d("current pass", currentPassword);
                 Log.d("old pass", sb.toString());
-                LibInspira.ShowShortToast(getContext(), "The old password is invalid");
+                LibInspira.showShortToast(getContext(), "The old password is invalid");
                 return;
             }else if(edtOldPassword.getText().toString().equals(edtNewPassword.getText().toString())){
-                LibInspira.ShowShortToast(getContext(), "You entered the old password, change password failed");
+                LibInspira.showShortToast(getContext(), "You entered the old password, change password failed");
                 return;
             }else if(!edtNewPassword.getText().toString().equals(edtConfirmation.getText().toString())) {
-                LibInspira.ShowShortToast(getContext(), "Password doesn't match the confirm password");
+                LibInspira.showShortToast(getContext(), "Password doesn't match the confirm password");
                 return;
             }else if(sb.toString().equals(currentPassword)){  //jika semuanya valid
                 String actionUrl = "Profile/changePassword/";
@@ -152,7 +152,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
                     String success = obj.getString("success");
                     String pesan = obj.getString("pesan");
                     if(success.equals("true") && pesan.equals("1")){
-                        LibInspira.ShowLongToast(getContext(), "Password Changed");
+                        LibInspira.showLongToast(getContext(), "Password Changed");
                         LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
                     }
                     else {

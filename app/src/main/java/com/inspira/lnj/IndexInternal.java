@@ -109,7 +109,7 @@ public class IndexInternal extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {  //modified by Tonny @01-Oct-2017  pengecekan jika drawer null
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();

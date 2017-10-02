@@ -333,7 +333,7 @@ public class ChooseKotaFragment extends Fragment implements View.OnClickListener
                         finalHolder.adapterItem.setChoosen(true);
                         finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
                     }
-                    LibInspira.ShowLongToast(context, "coba");
+                    LibInspira.showLongToast(context, "coba");
                 }
             });
 

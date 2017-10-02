@@ -99,7 +99,7 @@ public class LibInspira {
     }
 
     //added by Tonny @15-Jul-2017
-    public static void ShowShortToast(Context _context, String _message){
+    public static void showShortToast(Context _context, String _message){
         Context context = _context;
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, _message, duration);
@@ -107,7 +107,7 @@ public class LibInspira {
     }
 
     //added by Tonny @15-Jul-2017
-    public static void ShowLongToast(Context _context, String _message){
+    public static void showLongToast(Context _context, String _message){
         Context context = _context;
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context, _message, duration);
