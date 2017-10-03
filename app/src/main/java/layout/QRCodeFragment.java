@@ -269,6 +269,9 @@ public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultH
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (saveDoc != null){
+            saveDoc.cancel(true);
+        }
         scannerView.stopCamera();
     }
 }
