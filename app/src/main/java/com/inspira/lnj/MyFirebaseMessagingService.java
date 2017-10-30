@@ -27,7 +27,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationBuilder.setContentTitle("LNJ");
         notificationBuilder.setContentText(massage);
         notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        notificationBuilder.setSmallIcon(R.mipmap.lnj_logo);
         notificationBuilder.setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0,notificationBuilder.build());
