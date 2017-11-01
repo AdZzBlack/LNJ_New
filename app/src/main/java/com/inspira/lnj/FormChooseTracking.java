@@ -21,7 +21,6 @@ public class FormChooseTracking extends Dialog implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.form_choose_tracking);
 
-        findViewById(R.id.btnSchedule).setOnClickListener(this);
         findViewById(R.id.btnStartFumigasi).setOnClickListener(this);
         findViewById(R.id.btnStopFumigasi).setOnClickListener(this);
         findViewById(R.id.btnInDepo).setOnClickListener(this);
@@ -37,9 +36,6 @@ public class FormChooseTracking extends Dialog implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnSchedule:
-                mDialogResult.finish("schedule");
-                break;
             case R.id.btnStartFumigasi:
                 mDialogResult.finish("startfumigasi");
                 break;

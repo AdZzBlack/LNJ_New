@@ -88,6 +88,38 @@
                         android:textAlignment="center" />
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/btnDocument"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnDocument"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/qrcode"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvDocument"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnDocument"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Documents"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>

@@ -74,10 +74,11 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
             }
         });
 
-        if(!LibInspira.getShared(global.userpreferences, global.user.checkin_nomorth, "").equals(""))
-        {
-            LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
-        }
+        //remarked by Tonny @01-Nov-2017  diremark supaya user dapat kembali ke dashboard
+//        if(!LibInspira.getShared(global.userpreferences, global.user.checkin_nomorth, "").equals(""))
+//        {
+//            LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
+//        }
     }
 
     @Override
@@ -97,6 +98,9 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         }
         else if (id == R.id.btnQRCode){
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeFragment());
+        }
+        else if (id == R.id.btnDocument){
+            //LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
         }
     }
 }

@@ -114,6 +114,7 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
 
         getView().findViewById(R.id.btn_checkin).setOnClickListener(this);
         getView().findViewById(R.id.btn_done).setOnClickListener(this);
+        getView().findViewById(R.id.btn_cancel).setOnClickListener(this);
 
         FragmentManager fm = getChildFragmentManager();
         SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.map_container);
@@ -150,6 +151,22 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
             LibInspira.setShared(global.userpreferences, global.user.checkin_nomorth, "");
             LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
             LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
+        }
+        else if(id==R.id.btn_cancel)
+        {
+            LibInspira.alertBoxYesNo("Cancel Check In", "Do you want to cancel check-in?", getActivity(), new Runnable() {
+                @Override
+                public void run() {
+                    LibInspira.setShared(global.userpreferences, global.user.checkin_nomorth, "");
+                    LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
+                    LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new QRCodeCheckinFragment());
+                }
+            }, new Runnable() {
+                @Override
+                public void run() {
+                    //do nothing
+                }
+            });
         }
     }
 

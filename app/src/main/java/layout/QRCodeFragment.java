@@ -38,7 +38,7 @@ import static android.Manifest.permission.CAMERA;
 
 public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultHandler {
     private static final int REQUEST_CAMERA = 1;
-    private ZXingScannerView scannerView;
+    protected ZXingScannerView scannerView;
     private SaveDoc saveDoc;
     private String tipe, nomorDokumen, kodeDokumen, urlDokumen;
 

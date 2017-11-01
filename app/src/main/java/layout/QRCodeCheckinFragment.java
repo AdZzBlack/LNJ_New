@@ -8,6 +8,7 @@ package layout;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,6 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class QRCodeCheckinFragment extends QRCodeFragment implements ZXingScannerView.ResultHandler {
     private static final int REQUEST_CAMERA = 1;
-    private ZXingScannerView scannerView;
     private String tipe, nomorDokumen, kodeDokumen;
 
     public QRCodeCheckinFragment() {
@@ -55,6 +55,10 @@ public class QRCodeCheckinFragment extends QRCodeFragment implements ZXingScanne
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
+        if(!LibInspira.getShared(global.userpreferences, global.user.checkin_nomorth, "").equals(""))
+        {
+            LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
+        }
     }
 
     @Override
@@ -70,6 +74,7 @@ public class QRCodeCheckinFragment extends QRCodeFragment implements ZXingScanne
     @Override
     public void handleResult(Result result) {
         final String scanResult = result.getText();
+        Log.wtf("scan result ", scanResult);
         String parts[] = scanResult.split("\\|");
         if (parts.length > 0){
             if(parts[0].toLowerCase().equals("lnj") && parts[1].toLowerCase().equals("deliverynote")){
