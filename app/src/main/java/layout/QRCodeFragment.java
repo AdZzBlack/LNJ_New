@@ -165,8 +165,8 @@ public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultH
     public void handleResult(Result result) {
         final String scanResult = result.getText();
         String parts[] = scanResult.split("\\|");
-        if (parts.length > 0){
-            if(parts[0].equals("LNJ")){
+        if (parts.length == 5){
+            if(parts[0].toLowerCase().equals("lnj")){
                 tipe = parts[1];
                 nomorDokumen = parts[2];
                 kodeDokumen = parts[3];
@@ -178,6 +178,11 @@ public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultH
                 LibInspira.showLongToast(getContext(), "Invalid QRCode");
                 scannerView.resumeCameraPreview(QRCodeFragment.this);
             }
+        }
+        else
+        {
+            LibInspira.showLongToast(getContext(), "Invalid QRCode");
+            scannerView.resumeCameraPreview(QRCodeFragment.this);
         }
     }
 

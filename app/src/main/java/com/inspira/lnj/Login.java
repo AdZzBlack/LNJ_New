@@ -1,12 +1,16 @@
 package com.inspira.lnj;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +24,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /**
  * Created by Tonny on 7/22/2017.
  */
@@ -28,6 +38,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     EditText edtUsername, edtPassword;
     Button btnSubmit;
     GlobalVar global;
+
+    ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,11 +270,24 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             String version = pInfo.versionName;
                             if(!version.equals(obj.getString("version")))
                             {
-                                showSpinner(version);
+//                                showSpinner(version);
+//
+//                                UpdateApp atualizaApp = new UpdateApp();
+//                                atualizaApp.setContext(getApplicationContext());
+//                                atualizaApp.execute(obj.getString("url"));
 
-                                UpdateApp atualizaApp = new UpdateApp();
+                                showProgress();
+                                Log.d("update", obj.getString("url"));
+                                final UpdateApp atualizaApp = new UpdateApp();
                                 atualizaApp.setContext(getApplicationContext());
                                 atualizaApp.execute(obj.getString("url"));
+
+                                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        atualizaApp.cancel(true);
+                                    }
+                                });
                             }
                             else
                             {
@@ -309,5 +334,104 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         mSpinner.setCancelable(true);
         mSpinner.setCanceledOnTouchOutside(false);
         mSpinner.show();
+    }
+
+    private void showProgress() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage("Downloading new version");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+    }
+
+    private class UpdateApp extends AsyncTask<String, Integer, String> {
+
+        private PowerManager.WakeLock mWakeLock;
+        private Context context;
+
+        public void setContext(Context contextf) {
+            context = contextf;
+        }
+
+        @Override
+        protected String doInBackground(String... arg0) {
+            try {
+                URL url = new URL(arg0[0]);
+                HttpURLConnection c = (HttpURLConnection) url.openConnection();
+                c.setRequestMethod("GET");
+                c.setDoOutput(true);
+                c.connect();
+
+                String PATH = "/mnt/sdcard/Download/";
+                File file = new File(PATH);
+                file.mkdirs();
+                File outputFile = new File(file, "update.apk");
+                if (outputFile.exists()) {
+                    outputFile.delete();
+                }
+                FileOutputStream fos = new FileOutputStream(outputFile);
+
+                int fileLength = c.getContentLength();
+
+                InputStream is = c.getInputStream();
+
+
+                byte[] buffer = new byte[4096];
+                int len1 = 0;
+                long total = 0;
+                while ((len1 = is.read(buffer)) != -1) {
+                    total += len1;
+
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 100 / fileLength));
+
+                    fos.write(buffer, 0, len1);
+                }
+                fos.close();
+                is.close();
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File("/mnt/sdcard/Download/update.apk")), "application/vnd.android.package-archive");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
+                context.startActivity(intent);
+
+
+            } catch (Exception e) {
+                Log.e("UpdateAPP", "Update error! " + e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // take CPU lock to prevent CPU from going off if the user
+            // presses the power button during download
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                    getClass().getName());
+            mWakeLock.acquire();
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            // if we get here, length is known, now set indeterminate to false
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setMax(100);
+            mProgressDialog.setProgress(progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mWakeLock.release();
+            mProgressDialog.dismiss();
+            if (result != null)
+                Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
+        }
     }
 }

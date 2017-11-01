@@ -76,7 +76,7 @@ public class QRCodeCheckinFragment extends QRCodeFragment implements ZXingScanne
         final String scanResult = result.getText();
         Log.wtf("scan result ", scanResult);
         String parts[] = scanResult.split("\\|");
-        if (parts.length > 0){
+        if (parts.length >= 4){
             if(parts[0].toLowerCase().equals("lnj") && parts[1].toLowerCase().equals("deliverynote")){
                 LibInspira.setShared(global.userpreferences, global.user.checkin_nomorth, parts[2]);
                 LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, parts[3]);
@@ -85,6 +85,11 @@ public class QRCodeCheckinFragment extends QRCodeFragment implements ZXingScanne
                 LibInspira.showLongToast(getContext(), "Invalid QRCode");
                 scannerView.resumeCameraPreview(QRCodeCheckinFragment.this);
             }
+        }
+        else
+        {
+            LibInspira.showLongToast(getContext(), "Invalid QRCode");
+            scannerView.resumeCameraPreview(QRCodeCheckinFragment.this);
         }
     }
 }
