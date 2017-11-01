@@ -70,6 +70,14 @@ public class GlobalVar {
             public String selected_nomor_user = "selected_nomor_user";
             public String selected_kode_user = "selected_kode_user";
             public String selected_nama_user = "selected_nama_user";
+
+            //added by Tonny @01-Nov-2017 untuk menampung data thorderjual yg dipilih
+            public String selected_nomor_doc = "selected_nomor_doc";
+            public String selected_kode_doc = "selected_kode_doc";
+            public String selected_nomormhadmin = "selected_nomormhadmin";
+            public String selected_tanggal = "selected_nomormhadmin";
+            public String selected_namamhadmin = "selected_namamhadmin";
+
             public String nomor_doc = "nomor_doc";
             public String kode_doc = "kode_doc";
 
@@ -99,6 +107,7 @@ public class GlobalVar {
         {
             public String user = "user"; // nomor~nama~location~hp
             public String userlist = "userlist"; // nomor~kode~nama
+            public String doclist = "doclist"; //untuk menampung data document(thorderjual) yg diberikan pada user yg login  //nomor~kode~nomormhadmin~tanggal~nama
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

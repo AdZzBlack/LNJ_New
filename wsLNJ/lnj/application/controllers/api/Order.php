@@ -129,7 +129,7 @@ class Order extends REST_Controller {
 
         $this->db->trans_begin();
 		$query = "	UPDATE thorderjual SET
-		                nomormhadmin_docfinal_date = $nomormhadmin, status_serahterima = 1, nomormhadmin_penerima = $nomorpenerima
+		                nomormhadmin_docfinal_date = $nomormhadmin, status_serahterima = 1, nomormhadmin_penerima = $nomorpenerima, docfinal_date = NOW()
 		            WHERE
 		                nomor = $nomordoc
 		            AND kode = '$kodedoc' ";
@@ -137,6 +137,138 @@ class Order extends REST_Controller {
         $this->db->query($query);
 
 		if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to update the data'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- Untuk mendapatkan list semua document yg diberikan untuk user yg login (masih pending) --- //
+    function getDocList_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : ""); //nomor user yg saat ini login / penerima
+        $status = (isset($jsonObject["status"]) ? $this->clean($jsonObject["status"])     : ""); //status serah terima
+        $status_serahterima = 1;  //status pending
+        if($status == 'finish'){
+            $status_serahterima = 2;  //status finish
+        }
+
+        $query = "	SELECT
+                        a.nomor AS nomor,
+                        a.kode AS kode,
+                        a.nomormhadmin_docfinal_date AS nomormhadmin,
+                        a.docfinal_date AS tanggal,
+                        b.nama AS nama
+                    FROM thorderjual a
+                    JOIN mhadmin b ON a.nomormhadmin_docfinal_date = b.nomor
+                    WHERE a.status_aktif = 1
+                    AND a.nomormhadmin_penerima = $nomor
+                    AND a.status_serahterima = $status_serahterima ";
+
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0)
+        {
+            foreach ($result->result_array() as $r)
+            {
+                array_push($data['data'], array(
+                                                    'nomor'    	    		=> $r['nomor'],
+                                                    'kode'                  => $r['kode'],
+                                                    'nomormhadmin'          => $r['nomormhadmin'],
+                                                    'tanggal'               => $r['tanggal'],
+                                                    'nama' 					=> $r['nama']
+                                            )
+                );
+            }
+        }
+        else
+        {
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- accept documents--- //
+    function acceptDoc_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+
+        $this->db->trans_begin();
+        $query = "	UPDATE thorderjual SET
+                        status_serahterima = 2
+                    WHERE
+                        nomor = $nomordoc
+                    AND
+                        nomormhadmin_penerima = $nomormhadmin ";
+
+        $this->db->query($query);
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to update the data'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // ---reject documents--- //
+    function rejectDoc_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+
+        $this->db->trans_begin();
+        $query = "	UPDATE thorderjual SET
+                        status_serahterima = 0
+                    WHERE
+                        nomor = $nomordoc
+                    AND
+                        nomormhadmin_penerima = $nomormhadmin ";
+
+        $this->db->query($query);
+
+        if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
             array_push($data['data'], array( 'query' => $this->error($query),

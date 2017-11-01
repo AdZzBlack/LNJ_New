@@ -116,6 +116,114 @@
                         android:layout_below="@+id/ibtnDocument"
                         android:layout_marginTop="8dp"
                         android:clickable="false"
+                        android:text="New Docs"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:id="@+id/menu_line2"
+                android:layout_below="@id/menu_line1">
+
+                <RelativeLayout
+                    android:id="@+id/btnPendingDocs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnPendingDocs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/pendingtask"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:backgroundTint="@color/colorBackground"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" />
+
+                    <TextView
+                        android:id="@+id/tvMyDocument"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnPendingDocs"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Pending Docs"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnCompletedDocs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnCompletedDocs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/completedtask"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvFinishDocument"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnCompletedDocs"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Completed Docs"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnDocument2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:visibility="invisible"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnDocument2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/salesorder"
+                        android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvDocument2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnDocument2"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
                         android:text="Document Handover"
                         android:textAlignment="center" />
                 </RelativeLayout>
