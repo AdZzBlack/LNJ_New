@@ -20,22 +20,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Schedule"
-                android:id="@+id/btnSchedule"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textColor="@color/colorBlack"/>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Start Fumigasi"
                 android:id="@+id/btnStartFumigasi"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:textColor="@color/colorBlack"
-                android:layout_below="@id/btnSchedule"/>
+                android:textColor="@color/colorBlack"/>
 
             <Button
                 android:layout_width="match_parent"

@@ -8,14 +8,26 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Done"
-        android:id="@+id/btn_done"
-        android:textColor="@color/colorBlack"
-        android:backgroundTint="@color/colorRed"
         android:layout_alignParentBottom="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Cancel"
+        android:backgroundTint="@color/colorRed"
+        android:id="@+id/btn_cancel"
+        android:textColor="@color/colorBlack"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:id="@+id/btn_done"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:backgroundTint="@color/colorMoney"
+        android:text="Done"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorBlack"
+        android:layout_above="@id/btn_cancel"/>
 
     <Button
         android:layout_width="match_parent"

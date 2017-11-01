@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorGMSToolbar">#823b41</color>
+    <color name="colorGMS">#823b41</color>
+    <color name="colorLNJ">#823b41</color>
     <color name="colorPrimary">#823b41</color>
     <color name="colorPrimaryDark">#602B30</color>
     <color name="colorAccent">#FF4081</color>
@@ -18,8 +21,6 @@
     <color name="colorTinder">#F55959</color>
     <color name="colorBeeTalk">#FFC843</color>
     <color name="colorBBCNews">#C02519</color>
-    <color name="colorGMSToolbar">#823b41</color>
-    <color name="colorGMS">#823b41</color>
     <color name="colorButton">#823b41</color>
 
     <color name="colorWhite">#FFFFFF</color>
