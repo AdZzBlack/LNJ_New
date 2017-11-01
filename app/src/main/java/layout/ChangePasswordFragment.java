@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
@@ -29,12 +30,12 @@ import org.json.JSONObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import static com.inspira.lnj.IndexInternal.global;
-import static com.inspira.lnj.IndexInternal.jsonObject;
-
 public class ChangePasswordFragment extends Fragment implements View.OnClickListener{
     private EditText edtOldPassword, edtNewPassword, edtConfirmation;
     private Button btnSave;
+
+    private GlobalVar global;
+    private JSONObject jsonObject;
 
     public ChangePasswordFragment() {
         // Required empty public constructor
@@ -67,6 +68,9 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        global = new GlobalVar(getActivity());
+
         edtOldPassword = (EditText) getView().findViewById(R.id.edtOldPassword);
         edtNewPassword = (EditText) getView().findViewById(R.id.edtPassword);
         edtConfirmation = (EditText) getView().findViewById(R.id.edtConfirmPassword);

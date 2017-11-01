@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
@@ -43,6 +44,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
     Button btnUpdate, btnGetNumber;
     private TimePickerDialog tp;
     private Integer timetype = 0;
+
+    private GlobalVar global;
+    private JSONObject jsonObject;
+
     public SettingFragment() {
         // Required empty public constructor
     }
@@ -63,6 +68,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        global = new GlobalVar(getActivity());
+
         edtInterval = (EditText) getView().findViewById(R.id.edtInterval);
         edtRadius = (EditText) getView().findViewById(R.id.edtRadius);
         tvStartTracking = (TextView) getView().findViewById(R.id.tvStartTracking);

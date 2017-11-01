@@ -8,24 +8,24 @@ package layout;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.inspira.lnj.GlobalVar;
+import com.google.zxing.Result;
+import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
-import org.json.JSONObject;
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 //import android.app.Fragment;
 
-public class SampleFragment extends Fragment implements View.OnClickListener{
+public class QRCodeCheckinFragment extends QRCodeFragment implements ZXingScannerView.ResultHandler {
+    private static final int REQUEST_CAMERA = 1;
+    private ZXingScannerView scannerView;
+    private String tipe, nomorDokumen, kodeDokumen;
 
-    private GlobalVar global;
-    private JSONObject jsonObject;
-
-    public SampleFragment() {
+    public QRCodeCheckinFragment() {
         // Required empty public constructor
     }
 
@@ -38,10 +38,7 @@ public class SampleFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_dashboard_internal, container, false);
-        getActivity().setTitle("Sample");
-        return v;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
 
@@ -58,7 +55,11 @@ public class SampleFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        global = new GlobalVar(getActivity());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -67,7 +68,18 @@ public class SampleFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(View view) {
-
+    public void handleResult(Result result) {
+        final String scanResult = result.getText();
+        String parts[] = scanResult.split("\\|");
+        if (parts.length > 0){
+            if(parts[0].toLowerCase().equals("lnj") && parts[1].toLowerCase().equals("deliverynote")){
+                LibInspira.setShared(global.userpreferences, global.user.checkin_nomorth, parts[2]);
+                LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, parts[3]);
+                LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
+            }else{
+                LibInspira.showLongToast(getContext(), "Invalid QRCode");
+                scannerView.resumeCameraPreview(QRCodeCheckinFragment.this);
+            }
+        }
     }
 }

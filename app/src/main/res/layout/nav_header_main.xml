@@ -28,20 +28,4 @@
         android:text="Username"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-    <TextView
-        android:id="@+id/tvSales"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Sales: " />
-
-    <TextView
-        android:id="@+id/tvTarget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="Target: " />
-
 </LinearLayout>

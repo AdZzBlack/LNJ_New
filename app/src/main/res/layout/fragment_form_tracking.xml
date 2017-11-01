@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:clickable="true">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Done"
+        android:id="@+id/btn_done"
+        android:textColor="@color/colorBlack"
+        android:backgroundTint="@color/colorRed"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Check in"
+        android:id="@+id/btn_checkin"
+        android:textColor="@color/colorBlack"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_above="@id/btn_done"/>
+
+    <RelativeLayout
+        android:layout_above="@id/btn_checkin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map_container"
+        android:layout_marginBottom="10dp"
+        android:background="@color/colorWhite">
+
+    </RelativeLayout>
+
+</RelativeLayout>

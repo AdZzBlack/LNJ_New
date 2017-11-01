@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+        android:scrollbarStyle="insideOverlay">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:scrollbars="vertical"
+            android:scrollbarAlwaysDrawVerticalTrack="true">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Schedule"
+                android:id="@+id/btnSchedule"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Start Fumigasi"
+                android:id="@+id/btnStartFumigasi"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnSchedule"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Stop Fumigasi"
+                android:id="@+id/btnStopFumigasi"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnStartFumigasi"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="In Depo"
+                android:id="@+id/btnInDepo"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnStopFumigasi"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Out Depo"
+                android:id="@+id/btnOutDepo"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnInDepo"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Out Port"
+                android:id="@+id/btnOutPort"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnOutDepo"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Unloading"
+                android:id="@+id/btnUnloading"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnOutPort"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Pickup"
+                android:id="@+id/btnPickup"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnUnloading"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Return"
+                android:id="@+id/btnReturn"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnPickup"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Port Gate In"
+                android:id="@+id/btnPortGateIn"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/colorBlack"
+                android:layout_below="@id/btnReturn"/>
+        </RelativeLayout>
+    </ScrollView>
+
+</FrameLayout>

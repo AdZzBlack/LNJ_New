@@ -329,7 +329,7 @@ public class LibInspira {
     public static String  executePost(Context _context, String _targetURL, JSONObject _jsonObject, int _timeoutMiliSecond){
         GlobalVar global = new GlobalVar(_context);
         String url = getShared(global.sharedpreferences, "server", "");
-        hostUrl = "http://" + url + GlobalVar.webserviceURL;
+        hostUrl = "https://" + url + GlobalVar.webserviceURL;
 
         Log.d("host", hostUrl + _targetURL);
 

@@ -126,12 +126,13 @@ class Scanning extends REST_Controller {
         $tipe = (isset($jsonObject["tipe"]) ? $this->clean($jsonObject["tipe"])     : "");
         $nomordokumen = (isset($jsonObject["nomordokumen"]) ? $this->clean($jsonObject["nomordokumen"])     : "");
 		$kodedokumen = (isset($jsonObject["kodedokumen"]) ? $this->clean($jsonObject["kodedokumen"])     : "");
+		$urldokumen = (isset($jsonObject["urldokumen"]) ? $jsonObject["urldokumen"]     : "");
 
         $this->db->trans_begin();
 		$query = "	INSERT INTO whqrcoderequest_mobile
-		                (nomormhadmin, tipe, nomordokumen, kodedokumen, dibuat_pada)
+		                (nomormhadmin, tipe, nomordokumen, kodedokumen, url_menu, dibuat_pada)
 		            VALUES
-		                ($nomormhadmin, '$tipe', $nomordokumen, '$kodedokumen', NOW()) ";
+		                ($nomormhadmin, '$tipe', $nomordokumen, '$kodedokumen', '$urldokumen', NOW()) ";
 
         $this->db->query($query);
 
@@ -153,67 +154,44 @@ class Scanning extends REST_Controller {
         }
     }
 	
-	function checkUser_post()
-	{     
+	// --- Check in tracking --- //
+    function checkIn_post()
+    {
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
-		$jsonObject = (json_decode($value , true));
+        $jsonObject = (json_decode($value , true));
 
-        $hash = (isset($jsonObject["hash"]) ? $jsonObject["hash"]     : "");
+        $nomorthorderjual = (isset($jsonObject["nomorthorderjual"]) ? $this->clean($jsonObject["nomorthorderjual"])     : "");
+        $kodecontainer = (isset($jsonObject["kodecontainer"]) ? $this->clean($jsonObject["kodecontainer"])     : "");
+        $nomorsopir = (isset($jsonObject["nomorsopir"]) ? $this->clean($jsonObject["nomorsopir"])     : "");
+        $type = (isset($jsonObject["type"]) ? $this->clean($jsonObject["type"])     : "");
+        $lat = (isset($jsonObject["lat"]) ? $jsonObject["lat"]     : "");
+        $lon = (isset($jsonObject["lon"]) ? $jsonObject["lon"]     : "");
 
-        $query = "	SELECT 
-                        a.nomor AS nomor,
-                        a.sandi AS `password`,
-                        a.nomormhpegawai AS nomor_pegawai,
-                        d.kode AS kode_pegawai,
-                        a.nama AS nama,
-                        a.role_android AS role,
-                        a.hash AS `hash`,
-                        a.nomormhcabang AS cabang,
-                        e.nama AS namacabang,
-                        b.isdriver AS isdriver,
-                        b.qrcodereader AS qrcodereader,
-                        b.checkin AS checkin
-                    FROM mhadmin a
-                    JOIN whrole_mobile b ON a.role_android = b.nomor
-                    LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
-                    JOIN mhcabang e ON a.nomormhcabang = e.nomor
-                    WHERE a.status_aktif = 1
-					AND hash = '$hash'";
-        $result = $this->db->query($query);
+        $this->db->trans_begin();
+        $query = "	INSERT INTO whcheckin_mobile
+                        (nomorthorderjual, kodecontainer, typetracking, nomorsopir, lat, lon, dibuat_pada)
+                    VALUES
+                        ($nomorthorderjual, '$kodecontainer', '$type', $nomorsopir, $lat, $lon, NOW()) ";
 
-        if( $result && $result->num_rows() > 0)
-		{
-			foreach ($result->result_array() as $r)
-			{
-				array_push($data['data'], array(
-													'success'						=> "true",
-													'user_nomor'    	    		=> $r['nomor'],
-                                                    'user_password'					=> $r['password'],
-                                                    'user_nomor_pegawai'         	=> $r['nomor_pegawai'],
-                                                    'user_kode_pegawai'        		=> $r['kode_pegawai'],
-                                                    'user_nama' 					=> $r['nama'],
-                                                    'user_role' 					=> $r['role'],
-                                                    'user_hash' 					=> $r['hash'],
-                                                    'user_cabang' 					=> $r['cabang'],
-                                                    'user_nama_cabang' 				=> $r['namacabang'],
-                                                    'role_isdriver'					=> $r['isdriver'],
-                                                    'role_qrcodereader' 			=> $r['qrcodereader'],
-                                                    'role_checkin'					=> $r['checkin'],
-											)
-				);
-			}
+        $this->db->query($query);
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to add the data'));
         }
-		else
-		{		
-			array_push($data['data'], array( 'success' => "false" ));
-		}  
+        else
+        {
+            $this->db->trans_commit();
+            array_push($data['data'], array( 'message' => 'Your data has been successfully added' ));
+        }
 
         if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
-
     }
 }

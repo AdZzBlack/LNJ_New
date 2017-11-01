@@ -37,7 +37,7 @@ public class IndexInternal extends AppCompatActivity
 
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
-    public  static TextView tvUsername, tvSales, tvTarget;  //modified by Tonny @02-Aug-2017
+    public  static TextView tvUsername;
     public static NavigationView navigationView;
     private static Context context;  //added by Tonny @02-Aug-2017
 
@@ -55,15 +55,6 @@ public class IndexInternal extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -97,13 +88,6 @@ public class IndexInternal extends AppCompatActivity
         View navigationHeader = navigationView.getHeaderView(0);
         tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
         tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
-        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
-        //modified by Tonny @03-Aug-2017 function untuk get omzet dan target dijadikan satu
-//        String actionUrl = "Sales/getOmzetTarget/";
-//        new checkOmzetTarget().execute( actionUrl );
-//        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-//        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
     }
 
     @Override

@@ -85,6 +85,9 @@ public class GlobalVar {
             public String role_isdriver = "role_isdriver"; //role untuk mengetahui user termasuk driver atau tidak (0/1)
             public String role_qrcodereader = "role_qrcodereader"; //role untuk mengetahui user dapat melakukan qrcodereader atau tidak (0/1)
             public String role_checkin = "role_checkin"; //role apakah user dapat melakukan checkin atau tidak (0/1)
+
+            public String checkin_nomorth = "checkin_nomorth"; //added by ADI @05-Oct-2017
+            public String checkin_kodecontainer = "checkin_kodecontainer"; //added by ADI @05-Oct-2017
         }
 
         public class Data

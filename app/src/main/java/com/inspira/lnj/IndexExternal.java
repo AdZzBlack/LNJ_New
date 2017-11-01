@@ -29,7 +29,7 @@ public class IndexExternal extends AppCompatActivity
 
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
-    public  static TextView tvUsername, tvSales, tvTarget;  //modified by Tonny @02-Aug-2017
+    public  static TextView tvUsername;
     public static NavigationView navigationView;
     private static Context context;  //added by Tonny @02-Aug-2017
 
@@ -76,10 +76,6 @@ public class IndexExternal extends AppCompatActivity
         View navigationHeader = navigationView.getHeaderView(0);
         tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
         tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
-        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
-        tvSales.setVisibility(View.GONE);
-        tvTarget.setVisibility(View.GONE);
     }
 
     @Override

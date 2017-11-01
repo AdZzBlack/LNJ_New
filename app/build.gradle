@@ -9,6 +9,8 @@ android {
         applicationId "com.inspira.lnj"
         minSdkVersion 17
         targetSdkVersion 24
+        versionCode 1
+        versionName "1.0.0"
         multiDexEnabled true //important
     }
     packagingOptions {

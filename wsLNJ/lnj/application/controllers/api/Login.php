@@ -164,8 +164,8 @@ class Login extends REST_Controller {
         $value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
 
-        $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "adi");
-        $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "admin"));
+        $user = (isset($jsonObject["username"]) ? strtolower($jsonObject["username"])     : "adi");
+        $pass = md5((isset($jsonObject["password"]) ? $jsonObject["password"] : "admin"));
         $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "a");
 
 //        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
@@ -196,7 +196,7 @@ class Login extends REST_Controller {
 					LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
 					JOIN mhcabang e ON a.nomormhcabang = e.nomor
 					WHERE a.status_aktif = 1
-					AND a.kode = '$user'
+					AND LOWER(a.kode) = '$user'
 					AND BINARY a.sandi = '$pass'";
         $result = $this->db->query($query);
 
@@ -291,5 +291,27 @@ class Login extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
 
+    }
+
+    function getVersion_post(){
+
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $version  = $this->db->query("SELECT a.version FROM whversion_mobile a ORDER BY nomor DESC LIMIT 1")->row()->version;
+        $url      = $this->db->query("SELECT a.url FROM whversion_mobile a ORDER BY nomor DESC LIMIT 1")->row()->url;
+
+        array_push($data['data'], array(
+                                        'version' 	=> $version,
+                                        'url'	=> $url
+                                        )
+        );
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
     }
 }

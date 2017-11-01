@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,13 +57,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        getView().findViewById(R.id.btnContact).setOnClickListener(this);
-        getView().findViewById(R.id.btnScheduleTask).setOnClickListener(this);
-        getView().findViewById(R.id.btnPriceList).setOnClickListener(this);
-        getView().findViewById(R.id.btnStockMonitoring).setOnClickListener(this);
-        getView().findViewById(R.id.btnOmzet).setOnClickListener(this);
-        getView().findViewById(R.id.btnSalesOrder).setOnClickListener(this);
-        getView().findViewById(R.id.btnGroup).setOnClickListener(this);
+        getView().findViewById(R.id.btnCheckIn).setOnClickListener(this);
         getView().findViewById(R.id.btnQRCode).setOnClickListener(this);
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
@@ -80,6 +73,11 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
                 }, 3000);
             }
         });
+
+        if(!LibInspira.getShared(global.userpreferences, global.user.checkin_nomorth, "").equals(""))
+        {
+            LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
+        }
     }
 
     @Override
@@ -93,10 +91,11 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
 
         LibInspira.clearShared(global.temppreferences);
 
-        if(id==R.id.btnContact)
+        if(id==R.id.btnCheckIn)
         {
-
-        }else if (id == R.id.btnQRCode){
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeCheckinFragment());
+        }
+        else if (id == R.id.btnQRCode){
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeFragment());
         }
     }

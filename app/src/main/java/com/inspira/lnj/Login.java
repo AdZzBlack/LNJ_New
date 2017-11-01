@@ -1,6 +1,8 @@
 package com.inspira.lnj;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -45,25 +47,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         edtPassword.setVisibility(View.INVISIBLE);
         btnSubmit.setVisibility(View.INVISIBLE);
 
-        if(LibInspira.getShared(global.userpreferences,global.user.hash,"").equals(""))
-        {
-            edtUsername.setVisibility(View.VISIBLE);
-            edtPassword.setVisibility(View.VISIBLE);
-            btnSubmit.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            Log.d("hash", LibInspira.getShared(global.userpreferences,global.user.hash,""));
-            String actionUrl = "Login/checkUser/";
-            new checkUser().execute( actionUrl );
-        }
+        String actionUrl = "Login/getVersion/";
+        new getVersion().execute( actionUrl );
 
-        // made by Shodiq
-        //modified by ADI @01-Sep-2017
-        // Permission for enabling location feature only for SDK Marshmallow | Android 6
-//        if (Build.VERSION.SDK_INT >= 23)
-//            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
-//                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -248,5 +234,80 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             super.onPreExecute();
             LibInspira.showLoading(Login.this, "Login", "Loading");
         }
+    }
+
+    private class getVersion extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            JSONObject jsonObject;
+            jsonObject = new JSONObject();
+            return LibInspira.executePost(Login.this, urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("GETVERSION", result + "1");
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                            String version = pInfo.versionName;
+                            if(!version.equals(obj.getString("version")))
+                            {
+                                showSpinner(version);
+
+                                UpdateApp atualizaApp = new UpdateApp();
+                                atualizaApp.setContext(getApplicationContext());
+                                atualizaApp.execute(obj.getString("url"));
+                            }
+                            else
+                            {
+                                checkDone();
+                            }
+                        }
+                        else
+                        {
+                            checkDone();
+                        }
+                    }
+                }
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+                Toast.makeText(getBaseContext(), "Checking version failed", Toast.LENGTH_LONG).show();
+                checkDone();
+            }
+        }
+    }
+
+    private void checkDone()
+    {
+        if(LibInspira.getShared(global.userpreferences,global.user.hash,"").equals(""))
+        {
+            edtUsername.setVisibility(View.VISIBLE);
+            edtPassword.setVisibility(View.VISIBLE);
+            btnSubmit.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            Log.d("hash", LibInspira.getShared(global.userpreferences,global.user.hash,""));
+            String actionUrl = "Login/checkUser/";
+            new checkUser().execute( actionUrl );
+        }
+    }
+
+
+    private ProgressDialog mSpinner;
+    private void showSpinner(String t) {
+        mSpinner = new ProgressDialog(this);
+        mSpinner.setTitle("Downloading new version");
+        mSpinner.setMessage("Please wait...");
+        mSpinner.setCancelable(true);
+        mSpinner.setCanceledOnTouchOutside(false);
+        mSpinner.show();
     }
 }
