@@ -126,7 +126,8 @@ public class QRCodeDocumentFragment extends QRCodeFragment implements ZXingScann
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
-                jsonObject.put("nomormhadmin", LibInspira.getShared(global.temppreferences, global.temp.selected_nomor_user, ""));
+                jsonObject.put("nomormhadmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                jsonObject.put("nomorpenerima", LibInspira.getShared(global.temppreferences, global.temp.selected_nomor_user, ""));
                 jsonObject.put("nomordoc", LibInspira.getShared(global.temppreferences, global.temp.nomor_doc, ""));
                 Log.wtf("kodedoc ", LibInspira.getShared(global.temppreferences, global.temp.kode_doc, ""));
                 jsonObject.put("kodedoc", LibInspira.getShared(global.temppreferences, global.temp.kode_doc, "").toString().toUpperCase());

@@ -125,10 +125,11 @@ class Order extends REST_Controller {
         $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
         $kodedoc = (isset($jsonObject["kodedoc"]) ? $jsonObject["kodedoc"]     : "");
         $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+        $nomorpenerima = (isset($jsonObject["nomorpenerima"]) ? $this->clean($jsonObject["nomorpenerima"])     : "");
 
         $this->db->trans_begin();
 		$query = "	UPDATE thorderjual SET
-		                nomormhadmin_docfinal_date = $nomormhadmin, status_serahterima = 1
+		                nomormhadmin_docfinal_date = $nomormhadmin, status_serahterima = 1, nomormhadmin_penerima = $nomorpenerima
 		            WHERE
 		                nomor = $nomordoc
 		            AND kode = '$kodedoc' ";
