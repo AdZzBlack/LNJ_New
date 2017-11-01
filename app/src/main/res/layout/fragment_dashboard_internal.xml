@@ -104,7 +104,7 @@
                         android:clickable="false"
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/qrcode"
+                        android:src="@drawable/salesorder"
                         android:backgroundTint="@color/colorBackground"
                         android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
@@ -116,7 +116,7 @@
                         android:layout_below="@+id/ibtnDocument"
                         android:layout_marginTop="8dp"
                         android:clickable="false"
-                        android:text="Documents"
+                        android:text="Document Handover"
                         android:textAlignment="center" />
                 </RelativeLayout>
 

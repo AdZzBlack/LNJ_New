@@ -23,16 +23,19 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.inspira.lnj.IndexInternal.global;
 import static com.inspira.lnj.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
@@ -45,6 +48,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    private GetData getData;
 
     public ChooseUserFragment() {
         // Required empty public constructor
@@ -61,7 +65,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Kota");
+        getActivity().setTitle("Choose User");
         return v;
     }
 
@@ -110,8 +114,17 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         refreshList();
 
-        String actionUrl = "Master/getKota/";
-        new getData().execute( actionUrl );
+        String actionUrl = "Order/getUserList/";
+        getData = new GetData();
+        getData.execute( actionUrl );
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(getData != null){
+            getData.cancel(true);
+        }
     }
 
     @Override
@@ -155,48 +168,50 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         itemadapter.clear();
         list.clear();
 
-//        String data = LibInspira.getShared(global.datapreferences, global.data.kota, "");
-//        String[] pieces = data.trim().split("\\|");
-//        if(pieces.length==1 && pieces[0].equals(""))
-//        {
-//            tvNoData.setVisibility(View.VISIBLE);
-//        }
-//        else
-//        {
-//            tvNoData.setVisibility(View.GONE);
-//            for(int i=0 ; i < pieces.length ; i++){
-//                if(!pieces[i].equals(""))
-//                {
-//                    String[] parts = pieces[i].trim().split("\\~");
-//
-//                    String nomor = parts[0];
-//                    String nama = parts[1];
-//                    String nomorpropinsi = parts[2];
-//                    String kode = parts[3];
-//
-//                    if(nomor.equals("null")) nomor = "";
-//                    if(nama.equals("null")) nama = "";
-//                    if(nomorpropinsi.equals("null")) nomorpropinsi = "";
-//                    if(kode.equals("null")) kode = "";
-//
-//                    ItemAdapter dataItem = new ItemAdapter();
-//                    dataItem.setNomor(nomor);
-//                    dataItem.setNama(nama);
-//                    dataItem.setNomorpropinsi(nomorpropinsi);
-//                    dataItem.setKode(kode);
-//                    list.add(dataItem);
-//
-//                    itemadapter.add(dataItem);
-//                    itemadapter.notifyDataSetChanged();
-//                }
-//            }
-//        }
+        String data = LibInspira.getShared(global.datapreferences, global.data.userlist, "");
+        String[] pieces = data.trim().split("\\|");
+        if(pieces.length==1 && pieces[0].equals(""))
+        {
+            tvNoData.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            tvNoData.setVisibility(View.GONE);
+            for(int i=0 ; i < pieces.length ; i++){
+                if(!pieces[i].equals(""))
+                {
+                    String[] parts = pieces[i].trim().split("\\~");
+
+                    String nomor = parts[0];
+                    String kode = parts[1];
+                    String nama = parts[2];
+
+                    if(nomor.equals("null")) nomor = "";
+                    if(kode.equals("null")) kode = "";
+                    if(nama.equals("null")) nama = "";
+
+                    ItemAdapter dataItem = new ItemAdapter();
+                    dataItem.setNomor(nomor);
+                    dataItem.setKode(kode);
+                    dataItem.setNama(nama);
+                    list.add(dataItem);
+
+                    itemadapter.add(dataItem);
+                    itemadapter.notifyDataSetChanged();
+                }
+            }
+        }
     }
 
-    private class getData extends AsyncTask<String, Void, String> {
+    private class GetData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
+            try {
+                jsonObject.put("nomor", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -212,27 +227,25 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
-                            String nama = (obj.getString("nama"));
-                            String nomorpropinsi = (obj.getString("nomorpropinsi"));
                             String kode = (obj.getString("kode"));
+                            String nama = (obj.getString("nama"));
 
                             if(nomor.equals("")) nomor = "null";
-                            if(nama.equals("")) nama = "null";
-                            if(nomorpropinsi.equals("")) nomorpropinsi = "null";
                             if(kode.equals("")) kode = "null";
+                            if(nama.equals("")) nama = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + nomorpropinsi + "~" + kode + "|";
+                            tempData = tempData + nomor + "~" + kode + "~" + nama + "|";
                         }
                     }
-//                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.kota, "")))
-//                    {
-//                        LibInspira.setShared(
-//                                global.datapreferences,
-//                                global.data.kota,
-//                                tempData
-//                        );
-//                        refreshList();
-//                    }
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.userlist, "")))
+                    {
+                        LibInspira.setShared(
+                                global.datapreferences,
+                                global.data.userlist,
+                                tempData
+                        );
+                        refreshList();
+                    }
                 }
                 tvInformation.animate().translationYBy(-80);
             }
@@ -254,9 +267,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         private String nomor;
         private String nama;
-        private String nomorpropinsi;
         private String kode;
-        private Boolean isChoosen = false;
 
         public ItemAdapter() {}
 
@@ -266,14 +277,8 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
 
-        public String getNomorpropinsi() {return nomorpropinsi;}
-        public void setNomorpropinsi(String _param) {this.nomorpropinsi = _param;}
-
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
-
-        public Boolean getChoosen() {return isChoosen;}
-        public void setChoosen(Boolean _param) {this.isChoosen = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -322,17 +327,10 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(finalHolder.adapterItem.getChoosen())
-                    {
-                        finalHolder.adapterItem.setChoosen(false);
-                        finalRow.setBackgroundColor(getResources().getColor(R.color.colorBackground));
-                    }
-                    else
-                    {
-                        finalHolder.adapterItem.setChoosen(true);
-                        finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
-                    }
-                    LibInspira.showLongToast(context, "coba");
+                    LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
+                    LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, finalHolder.adapterItem.getKode());
+                    LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
+                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeDocumentFragment());
                 }
             });
 
@@ -341,14 +339,6 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         private void setupItem(final Holder holder, final View row) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
-            if(holder.adapterItem.getChoosen())
-            {
-                row.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
-            }
-            else
-            {
-                row.setBackgroundColor(getResources().getColor(R.color.colorBackground));
-            }
         }
     }
 }

@@ -67,6 +67,11 @@ public class GlobalVar {
         //untuk shared preferences yang boleh di clean tiap saat
         public class Temp
         {
+            public String selected_nomor_user = "selected_nomor_user";
+            public String selected_kode_user = "selected_kode_user";
+            public String selected_nama_user = "selected_nama_user";
+            public String nomor_doc = "nomor_doc";
+            public String kode_doc = "kode_doc";
 
         }
 
@@ -93,6 +98,7 @@ public class GlobalVar {
         public class Data
         {
             public String user = "user"; // nomor~nama~location~hp
+            public String userlist = "userlist"; // nomor~kode~nama
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

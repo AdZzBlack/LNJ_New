@@ -59,6 +59,8 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         super.onActivityCreated(bundle);
         getView().findViewById(R.id.btnCheckIn).setOnClickListener(this);
         getView().findViewById(R.id.btnQRCode).setOnClickListener(this);
+        getView().findViewById(R.id.btnDocument).setOnClickListener(this);
+
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
@@ -100,7 +102,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeFragment());
         }
         else if (id == R.id.btnDocument){
-            //LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
         }
     }
 }

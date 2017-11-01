@@ -67,10 +67,18 @@ public class LibInspira {
     public static void GoToActivity(Integer _activityIndex){
 
     }
+
     public static void ReplaceFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment){
         FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
         fragmentTransaction.replace(_fragmentContainerID, _fragment);
         fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    //added by Tonny @01-Nov-2017
+    public static void ReplaceFragmentNoBackStack(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment){
+        FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
+        fragmentTransaction.replace(_fragmentContainerID, _fragment);
         fragmentTransaction.commit();
     }
 
