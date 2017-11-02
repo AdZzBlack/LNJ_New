@@ -153,7 +153,7 @@ public class QRCodeDocumentFragment extends QRCodeFragment implements ZXingScann
                         }
                         else
                         {
-                            LibInspira.showLongToast(getContext(), "Submitting data failed");
+                            LibInspira.showLongToast(getContext(), obj.getString("message"));
                             LibInspira.hideLoading();
                             scannerView.resumeCameraPreview(QRCodeDocumentFragment.this);
                         }

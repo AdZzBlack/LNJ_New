@@ -127,25 +127,33 @@ class Order extends REST_Controller {
         $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
         $nomorpenerima = (isset($jsonObject["nomorpenerima"]) ? $this->clean($jsonObject["nomorpenerima"])     : "");
 
-        $this->db->trans_begin();
-		$query = "	UPDATE thorderjual SET
-		                nomormhadmin_docfinal_date = $nomormhadmin, status_serahterima = 1, nomormhadmin_penerima = $nomorpenerima, docfinal_date = NOW()
-		            WHERE
-		                nomor = $nomordoc
-		            AND kode = '$kodedoc' ";
+        $query = "SELECT nomor FROM thorderjual WHERE nomor = $nomordoc AND (status_serahterima = 0 OR status_serahterima = 1)";  // untuk pengecekan jika document masih belum diaccept oleh user/admin lain
+        $result = $this->db->query($query);
 
-        $this->db->query($query);
+        if($result && $result->num_rows() > 0){  //jika document valid, maka lakukan update atau penyerahan dokumen ke user lain
+            $this->db->trans_begin();
+            $query = "	UPDATE thorderjual SET
+                            nomormhadmin_docfinal_date = $nomormhadmin, status_serahterima = 1, nomormhadmin_penerima = $nomorpenerima, docfinal_date = NOW()
+                        WHERE
+                            nomor = $nomordoc
+                        AND kode = '$kodedoc' ";
 
-		if ($this->db->trans_status() === FALSE)
-        {
-            $this->db->trans_rollback();
-            array_push($data['data'], array( 'query' => $this->error($query),
-                                             'message' => 'Failed to update the data'));
-        }
-        else
-        {
-            $this->db->trans_commit();
-            array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+            $this->db->query($query);
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => 'Failed to update the data'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+            }
+        }else{
+            array_push($data['data'], array('query' => $this->error($query),
+                                            'message' => 'This document has already been accepted by other user'));
         }
 
         if ($data){
