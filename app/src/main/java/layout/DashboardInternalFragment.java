@@ -62,6 +62,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         getView().findViewById(R.id.btnDocument).setOnClickListener(this);
         getView().findViewById(R.id.btnPendingDocs).setOnClickListener(this);
         getView().findViewById(R.id.btnCompletedDocs).setOnClickListener(this);
+        getView().findViewById(R.id.btnNewCheckPoint).setOnClickListener(this);
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
@@ -99,6 +100,9 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         if(id==R.id.btnCheckIn)
         {
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeCheckinFragment());
+        }
+        else if (id == R.id.btnNewCheckPoint){
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetLocationFragment());
         }
         else if (id == R.id.btnQRCode){
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeFragment());

@@ -24,8 +24,6 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="com.inspira.gms.permission.MAPS_RECEIVE" />
 
-    <uses-library android:name="com.google.android.maps" />
-
     <!--
     The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
     Google Maps Android API v2, but you must specify either coarse or fine
@@ -44,9 +42,12 @@
         android:screenOrientation="portrait"
         android:name="android.support.multidex.MultiDexApplication">
 
+        <uses-library android:name="com.google.android.maps" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <!-- The API key for Google Maps-based APIs. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"

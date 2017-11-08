@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:clickable="true">
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:id="@+id/btn_done"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:backgroundTint="@color/colorDarkBlue"
+        android:text="Set as new checkpoint"
+        android:textColor="@color/colorWhite" />
+
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment" />
+
+    <RelativeLayout
+        android:id="@+id/map_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/place_autocomplete_fragment"
+        android:background="@color/colorWhite">
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -196,11 +196,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/btnDocument2"
+                    android:id="@+id/btnNewCheckPoint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="33.3"
-                    android:visibility="invisible"
                     android:clickable="true">
 
                     <ImageButton
@@ -224,7 +223,7 @@
                         android:layout_below="@+id/ibtnDocument2"
                         android:layout_marginTop="8dp"
                         android:clickable="false"
-                        android:text="Document Handover"
+                        android:text="Checkpoint"
                         android:textAlignment="center" />
                 </RelativeLayout>
 
