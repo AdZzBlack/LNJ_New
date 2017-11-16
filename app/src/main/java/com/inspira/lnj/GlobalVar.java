@@ -16,6 +16,7 @@ public class GlobalVar {
     public static SharedPreferences notifpreferences;
     public static SharedPreferences datapreferences;
     public static SharedPreferences settingpreferences;  //added by Tonny @03-Aug-2017
+    public static SharedPreferences mapspreferences;
 
     public static User user;
     public static Sales sales;  //added by Tonny @01-Aug-2017
@@ -23,6 +24,7 @@ public class GlobalVar {
     public static Shared shared;
     public static Settings settings;  //added by Tonny @03-Aug-2017
     public static Temp temp; //added by ADI @20-Aug-2017
+    public static Maps maps;  //added by Tonny @16-Nov-2017
 
     public static AlphaAnimation buttoneffect = new AlphaAnimation(1F, 0.8F);
     public static AlphaAnimation listeffect = new AlphaAnimation(1F, 0.5F);
@@ -41,6 +43,7 @@ public class GlobalVar {
             notifpreferences = context.getSharedPreferences("notif", Context.MODE_PRIVATE);
             datapreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
             settingpreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);  //added by Tonny @03-Aug-2017
+            mapspreferences = context.getSharedPreferences("maps", Context.MODE_PRIVATE);
 
             data = new Data();
             user = new User();
@@ -48,6 +51,7 @@ public class GlobalVar {
             shared = new Shared();
             settings = new Settings();  //added by Tonny @03-Aug-2017
             temp = new Temp(); //added by ADI @20-Aug-2017
+            maps = new Maps();  //added by Tonny @16-Nov-2017
         }
 
         public static void clearDataUser()
@@ -119,5 +123,15 @@ public class GlobalVar {
         public class Settings  //added by Tonny @03-Aug-2017
         {
 
+        }
+
+        public class Maps //added by Tonny @16-Nov-2017
+        {
+            public String event = "event";
+            public String placename = "placename";
+            public String radius = "radius";
+            public String latitude = "latitude";
+            public String longitude = "longitude";
+            public String duration = "duration";
         }
 }

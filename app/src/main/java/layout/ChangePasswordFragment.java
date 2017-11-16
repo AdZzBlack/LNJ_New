@@ -148,6 +148,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+            Log.wtf("result", result);
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 for (int i = jsonarray.length() - 1; i >= 0; i--) {

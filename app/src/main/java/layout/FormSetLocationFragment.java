@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -26,6 +27,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,7 +36,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdate;
@@ -43,11 +44,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.inspira.lnj.FormChooseTracking;
 import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
@@ -72,6 +73,7 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
     private double getLongitude;
 
     private String placeName;
+    private int radius;
 
     private GoogleMap mGoogleMap;
     private GoogleApiClient mGoogleApiClient;
@@ -115,9 +117,12 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
         global = new GlobalVar(getActivity());
-        getView().findViewById(R.id.btn_done).setOnClickListener(this);
         FragmentManager fm = getChildFragmentManager();
         SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.map_container);
+        getView().findViewById(R.id.btn_set);
+        getView().findViewById(R.id.btn_set).setEnabled(false); //di-enable setelah memilih lokasi
+        getView().findViewById(R.id.btn_set).setOnClickListener(this);
+
         if (fragment == null) {
             fragment = SupportMapFragment.newInstance();
             fm.beginTransaction().replace(R.id.map_container, fragment).commit();
@@ -125,11 +130,12 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
         }
 
         //added by Tonny @08-Nov-2017
-        SupportPlaceAutocompleteFragment autocompleteFragment  = (SupportPlaceAutocompleteFragment) fm.findFragmentById(R.id.place_autocomplete_fragment);
+        final SupportPlaceAutocompleteFragment autocompleteFragment  = (SupportPlaceAutocompleteFragment) fm.findFragmentById(R.id.place_autocomplete_fragment);
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onPlaceSelected(Place place) {
+            public void onPlaceSelected(final Place place) {
                 // TODO: Get info about the selected place.
+                mGoogleMap.clear();
                 placeName = place.getName().toString();
                 Log.wtf("Place: ", place.getName().toString());
 
@@ -139,18 +145,56 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                 markerOptions.position(latLng);
                 markerOptions.title(placeName);
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                markerOptions.draggable(true);
                 mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
+                        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
                         return false;
+                    }
+                });
+
+                // ... get a map.
+                // Add a circle on marker
+//                final Circle circle = mGoogleMap.addCircle(new CircleOptions()
+////                        .center(new LatLng(-33.87365, 151.20689))
+//                        .center(latLng)
+//                        .radius(1000) // in meter
+//                        .strokeColor(0x80ffc700)
+//                        .fillColor(0x55ffc700));
+
+                mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                    @Override
+                    public void onMarkerDragStart(Marker marker) {
+                        marker.hideInfoWindow();
+                        autocompleteFragment.setText("");
+                    }
+
+                    @Override
+                    public void onMarkerDrag(Marker marker) {
+//                        circle.setCenter(marker.getPosition());
+                    }
+
+                    @Override
+                    public void onMarkerDragEnd(Marker marker) {
+                        marker.setTitle(marker.getPosition().toString());
+                        marker.showInfoWindow();
                     }
                 });
 
                 //move map camera
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
                 mGoogleMap.animateCamera(cameraUpdate);
+
+                //enable btnSet
+                getView().findViewById(R.id.btn_set).setEnabled(true);
+
+                //set placename, latitude, longitude shared
+                LibInspira.setShared(global.mapspreferences, global.maps.placename, placeName);
+                LibInspira.setShared(global.mapspreferences, global.maps.latitude, String.valueOf(place.getLatLng().latitude));
+                LibInspira.setShared(global.mapspreferences, global.maps.longitude, String.valueOf(place.getLatLng().longitude));
             }
 
             @Override
@@ -160,6 +204,21 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                 Log.wtf("Error: ", "An error occurred: " + status);
             }
         });
+
+        //added by Tonny @16-Nov-2017 jika button "x" pada autocomplete ditekan
+        autocompleteFragment.getView().findViewById(R.id.place_autocomplete_clear_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // example : way to access view from PlaceAutoCompleteFragment
+                        // ((EditText) autocompleteFragment.getView()
+                        // .findViewById(R.id.place_autocomplete_search_input)).setText("");
+                        autocompleteFragment.setText("");
+                        view.setVisibility(View.GONE);
+                        getView().findViewById(R.id.btn_set).setEnabled(false);
+                        LibInspira.setShared(global.mapspreferences, global.maps.placename, "");
+                    }
+                });
 
         //untuk membatasi region autocomplete
         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
@@ -177,10 +236,11 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if(id==R.id.btn_done)
+        if(id==R.id.btn_set)
         {
-            // TODO: Get lat lng and save it to database that contain checkpoint data
-
+            // TODO: Get lat lng and save it to mapspreferences and then go to FormSetDetailLocation
+            LibInspira.setShared(global.mapspreferences, global.maps.placename, placeName);
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
         }
     }
 
