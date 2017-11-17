@@ -9,6 +9,7 @@ package layout;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -90,6 +91,13 @@ public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultH
             }else{
                 requestPermission();
             }
+        }else{ //added by Tonny @17-Nov-2017 untuk android versi M kebawah
+            if(scannerView == null){
+                scannerView = new ZXingScannerView(getContext());
+                getActivity().setContentView(scannerView);
+            }
+            scannerView.setResultHandler(this);
+            scannerView.startCamera();
         }
     }
 
@@ -144,6 +152,13 @@ public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultH
             }else{
                 requestPermission();
             }
+        }else{  //added by Tonny @17-Nov-2017 untuk android versi M kebawah
+            if(scannerView == null){
+                scannerView = new ZXingScannerView(getContext());
+                getActivity().setContentView(scannerView);
+            }
+            scannerView.setResultHandler(this);
+            scannerView.startCamera();
         }
     }
 
