@@ -192,9 +192,9 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                 getView().findViewById(R.id.btn_set).setEnabled(true);
 
                 //set placename, latitude, longitude shared
-                LibInspira.setShared(global.mapspreferences, global.maps.placename, placeName);
-                LibInspira.setShared(global.mapspreferences, global.maps.latitude, String.valueOf(place.getLatLng().latitude));
-                LibInspira.setShared(global.mapspreferences, global.maps.longitude, String.valueOf(place.getLatLng().longitude));
+                LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, placeName);
+                LibInspira.setShared(global.tempmapspreferences, global.tempMaps.latitude, String.valueOf(place.getLatLng().latitude));
+                LibInspira.setShared(global.tempmapspreferences, global.tempMaps.longitude, String.valueOf(place.getLatLng().longitude));
             }
 
             @Override
@@ -216,7 +216,7 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                         autocompleteFragment.setText("");
                         view.setVisibility(View.GONE);
                         getView().findViewById(R.id.btn_set).setEnabled(false);
-                        LibInspira.setShared(global.mapspreferences, global.maps.placename, "");
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, "");
                     }
                 });
 
@@ -238,8 +238,8 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
         int id = view.getId();
         if(id==R.id.btn_set)
         {
-            // TODO: Get lat lng and save it to mapspreferences and then go to FormSetDetailLocation
-            LibInspira.setShared(global.mapspreferences, global.maps.placename, placeName);
+            // TODO: Get lat lng and save it to tempmapspreferences and then go to FormSetDetailLocation
+            LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, placeName);
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
         }
     }

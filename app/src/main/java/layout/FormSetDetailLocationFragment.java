@@ -1,6 +1,6 @@
 /******************************************************************************
-    Author           : ADI
-    Description      : dashboard untuk internal
+    Author           : Tonny
+    Description      : untuk menyimpan data detail checkpoint
     History          :
 
 ******************************************************************************/
@@ -11,11 +11,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -36,6 +39,9 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
     private String[] arraySpinner;
     private Spinner spEvent;
     private EditText etPlace, etLatitude, etLongitude, etRadius, etDuration, etNotes;
+    private Button btnSave;
+    
+    private SaveWaypoint saveWaypoint;
 
     public FormSetDetailLocationFragment() {
         // Required empty public constructor
@@ -78,20 +84,58 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         events.execute(actionUrl);
 
         etPlace = (EditText) getView().findViewById(R.id.etPlace);
-        if(!LibInspira.getShared(global.mapspreferences, global.maps.placename, "").equals("")){
-            etPlace.setText(LibInspira.getShared(global.mapspreferences, global.maps.placename, ""));
+        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.placename, "").equals("")){
+            etPlace.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.placename, ""));
         }
         etLatitude = (EditText) getView().findViewById(R.id.etLatitude);
         etLongitude = (EditText) getView().findViewById(R.id.etLongitude);
-        if(!LibInspira.getShared(global.mapspreferences, global.maps.latitude, "").equals("")){
-            etLatitude.setText(LibInspira.getShared(global.mapspreferences, global.maps.latitude, ""));
+        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, "").equals("")){
+            etLatitude.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, ""));
         }
-        if(!LibInspira.getShared(global.mapspreferences, global.maps.longitude, "").equals("")){
-            etLongitude.setText(LibInspira.getShared(global.mapspreferences, global.maps.longitude, ""));
+        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.longitude, "").equals("")){
+            etLongitude.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.longitude, ""));
         }
         etRadius = (EditText) getView().findViewById(R.id.etRadius);
+        etRadius.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                LibInspira.formatNumberEditText(etRadius, this, true, false);
+                //LibInspira.setShared(global.tempmapspreferences, global.tempMaps.radius, etRadius.getText().toString().replace(",", ""));
+            }
+        });
+
         etDuration = (EditText) getView().findViewById(R.id.etDuration);
+        etDuration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                LibInspira.formatNumberEditText(etDuration, this, true, false);
+//                LibInspira.setShared(global.tempmapspreferences, global.tempMaps.duration, etDuration.getText().toString().replace(",", ""));
+            }
+        });
         etNotes = (EditText) getView().findViewById(R.id.etNotes);
+        btnSave = (Button) getView().findViewById(R.id.btnSave);
+
+        btnSave.setOnClickListener(this);
     }
 
     @Override
@@ -101,12 +145,49 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
 
     @Override
     public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.btnSave)
+        {
+            LibInspira.alertBoxYesNo("Save Waypoint", "Do you want to save this waypoint data?", getActivity(), new Runnable() {
+                @Override
+                public void run() {
+                    // TODO: Save the data to preferences and database, and go back to previous fragment
+                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.event, spEvent.getSelectedItem().toString());
+                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, etPlace.getText().toString());
+                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.latitude, etLatitude.getText().toString());
+                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.longitude, etLongitude.getText().toString());
+                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.radius, etRadius.getText().toString().replace(",", ""));
+                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.duration, etDuration.getText().toString().replace(",", ""));
+                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.notes, etNotes.getText().toString());
 
+                    Log.wtf("events ", spEvent.getSelectedItem().toString());
+                    Log.wtf("placename ", etPlace.getText().toString());
+                    Log.wtf("latitude ", etLatitude.getText().toString());
+                    Log.wtf("longitude ", etLongitude.getText().toString());
+                    Log.wtf("radius ", etRadius.getText().toString());
+
+                    String actionUrl = "Track/saveWaypoint/";
+                    saveWaypoint = new SaveWaypoint();
+                    saveWaypoint.execute(actionUrl);
+                }
+            }, new Runnable() {
+                @Override
+                public void run() {
+                    //do nothing
+                }
+            });
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(events != null){
+            events.cancel(true);
+        }
+        if(saveWaypoint != null){
+            saveWaypoint.cancel(true);
+        }
     }
 
     private class Events extends AsyncTask<String, Void, String> {
@@ -139,8 +220,8 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                             LibInspira.hideLoading();
                         }
                     }
-                    if(!LibInspira.getShared(global.mapspreferences, global.maps.event, "").equals(tempData)){
-                        LibInspira.setShared(global.mapspreferences, global.maps.event, tempData);
+                    if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.event, "").equals(tempData)){
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.event, tempData);
                     }
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.support_simple_spinner_dropdown_item, arraySpinner);
                     spEvent.setAdapter(adapter);
@@ -158,6 +239,61 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(getContext(), "Retrieving data", "Loading");
+        }
+    }
+
+    private class SaveWaypoint extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nama", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.placename,""));
+                jsonObject.put("duration", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.duration,""));
+                jsonObject.put("radius", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.radius,""));
+                jsonObject.put("latitude", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.latitude,""));
+                jsonObject.put("longitude", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.longitude,""));
+                jsonObject.put("keterangan", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.notes,""));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success
+                            LibInspira.showLongToast(getContext(), "Saving Waypoint Success");
+                            LibInspira.clearShared(global.tempmapspreferences); // delete temppreferences
+                        }
+                        else
+                        {
+                            LibInspira.showLongToast(getContext(), "Saving Waypoint Failed");
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getContext(), e.getMessage());
+                LibInspira.hideLoading();
+            }
+            LibInspira.hideLoading();
+            LibInspira.BackFragment(getFragmentManager());
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Saving Waypoint", "Loading");
         }
     }
 }

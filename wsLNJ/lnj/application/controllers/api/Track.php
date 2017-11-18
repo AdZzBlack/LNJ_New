@@ -160,7 +160,7 @@ class Track extends REST_Controller {
         }
     }
 
-    // --- Untuk mendapatkan list semua event yang ada pada tabel mhcheckpoint
+    // --- Untuk mendapatkan list semua event dari tabel mhcheckpoint
     function getEvent_post()
     {
         $data['data'] = array();
@@ -195,37 +195,68 @@ class Track extends REST_Controller {
         }
     }
 
-    // --- accept documents--- //
-    function acceptDoc_post()
+    // --- save waypoints--- //
+    function saveWaypoint_post()
     {
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
-        $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
-        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+        $nama = (isset($jsonObject["nama"]) ? $this->clean($jsonObject["nama"])     : "");
+        $duration = (isset($jsonObject["duration"]) ? $this->clean($jsonObject["duration"])     : "");
+        $radius = (isset($jsonObject["radius"]) ? $this->clean($jsonObject["radius"])     : "");
+        $latitude = (isset($jsonObject["latitude"]) ? $jsonObject["latitude"]     : "");
+        $longitude = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
+        $keterangan = (isset($jsonObject["keterangan"]) ? $this->clean($jsonObject["keterangan"])     : "");
 
-        $this->db->trans_begin();
-        $query = "	UPDATE thorderjual SET
-                        status_serahterima = 2
-                    WHERE
-                        nomor = $nomordoc
-                    AND
-                        nomormhadmin_penerima = $nomormhadmin ";
+        $query = "SELECT MAX(substr(kode, 3) + 1) AS maxkode FROM mhwaypoint";  //untuk mendapatkan no urut baru pada tabel mhwaypoint
+        $result = $this->db->query($query);
+        $nourut = 0;
 
-        $this->db->query($query);
+        if($result && $result->num_rows() > 0){
+            $row = $result->row();
+            $nourut = $row->maxkode;
+//            array_push($data['data'], array('nourut' => $nourut));
+//
+//            if ($data){
+//                // Set the response and exit
+//                $this->response($data['data']); // OK (200) being the HTTP response code
+//            }
+//            die();
+            $formattedurutan = "null";
+            if($nourut < 10){
+                $formattedurutan = "0000".$nourut;
+            }else if($nourut < 100){
+                $formattedurutan = "000".$nourut;
+            }else if($nourut < 1000){
+                $formattedurutan = "00".$nourut;
+            }else if($nourut < 10000){
+                $formattedurutan = "0".$nourut;
+            }else{
+                $formattedurutan = $nourut;
+            }
+            $newkode = "WP".$formattedurutan;
 
-        if ($this->db->trans_status() === FALSE)
-        {
-            $this->db->trans_rollback();
+            $this->db->trans_begin();
+            $query = "	INSERT INTO mhwaypoint (kode, nama, durasi, radius, latitude, longitude, keterangan) VALUES ('$newkode', '$nama', $duration, $radius, $latitude, $longitude, '$keterangan') ";
+
+            $this->db->query($query);
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => 'Failed to save the data'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                array_push($data['data'], array( 'message' => 'Your data has been successfully saved' ));
+            }
+        }else{
             array_push($data['data'], array( 'query' => $this->error($query),
-                                             'message' => 'Failed to update the data'));
-        }
-        else
-        {
-            $this->db->trans_commit();
-            array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+                                             'message' => 'Failed to save the data'));
         }
 
         if ($data){
