@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -24,10 +25,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -44,7 +48,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -57,7 +60,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//import android.app.Fragment;
+import java.security.Key;
+import java.util.HashMap;
 
 public class FormSetLocationFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, android.location.LocationListener, View.OnClickListener{
 
@@ -79,9 +83,12 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private Marker mCurrLocationMarker;
+    HashMap<String,Marker> hashMapMarker;
 
     private GlobalVar global;
     private JSONObject jsonObject;
+
+    private GetWaypoints getWaypoints;
 
     public FormSetLocationFragment() {
         // Required empty public constructor
@@ -135,7 +142,9 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
             @Override
             public void onPlaceSelected(final Place place) {
                 // TODO: Get info about the selected place.
-                mGoogleMap.clear();
+//                mGoogleMap.clear();
+                removeCurrentLocationMarker();
+
                 placeName = place.getName().toString();
                 Log.wtf("Place: ", place.getName().toString());
 
@@ -146,6 +155,7 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                 markerOptions.title(placeName);
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                 markerOptions.draggable(true);
+                HashMap<String, Marker> hashMapMarker = new HashMap<>();
                 mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -155,15 +165,6 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                         return false;
                     }
                 });
-
-                // ... get a map.
-                // Add a circle on marker
-//                final Circle circle = mGoogleMap.addCircle(new CircleOptions()
-////                        .center(new LatLng(-33.87365, 151.20689))
-//                        .center(latLng)
-//                        .radius(1000) // in meter
-//                        .strokeColor(0x80ffc700)
-//                        .fillColor(0x55ffc700));
 
                 mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
                     @Override
@@ -214,6 +215,7 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                         // ((EditText) autocompleteFragment.getView()
                         // .findViewById(R.id.place_autocomplete_search_input)).setText("");
                         autocompleteFragment.setText("");
+                        removeCurrentLocationMarker();
                         view.setVisibility(View.GONE);
                         getView().findViewById(R.id.btn_set).setEnabled(false);
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, "");
@@ -249,8 +251,12 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        manager.removeUpdates(this);
-        managerGPS.removeUpdates(this);
+        if(manager != null){
+            manager.removeUpdates(this);
+        }
+        if(managerGPS != null){
+            managerGPS.removeUpdates(this);
+        }
         super.onStop();
     }
 
@@ -346,25 +352,16 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                     getLongitude = 0.0;
                 }
 
-                Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
-
-                //Place current location marker
-//                LatLng latLng = new LatLng(getLatitude, getLongitude);
-//                MarkerOptions markerOptions = new MarkerOptions();
-//                markerOptions.position(latLng);
-//                markerOptions.title("Your Location");
-//                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-//                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+//                Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
 
                 LatLng latlng = new LatLng(getLatitude, getLongitude);
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
                 mGoogleMap.animateCamera(cameraUpdate);
             }
-
         }
         else
         {
-            Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
 
             LatLng latLng = new LatLng(getLatitude, getLongitude);
             MarkerOptions markerOptions = new MarkerOptions();
@@ -414,6 +411,11 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
 
             }
         });
+
+        //added by Tonny @22-Nov-2017
+        String actionUrl = "Track/getWayPoints/";
+        getWaypoints = new GetWaypoints();
+        getWaypoints.execute(actionUrl);
     }
     @Override
     public void onConnectionSuspended(int i) {
@@ -503,34 +505,17 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
         }
     }
 
-    private class CheckIn extends AsyncTask<String, Void, String> {
-        String type;
-
-        private CheckIn(String _type)
-        {
-            type = _type;
-        }
-
+    private class GetWaypoints extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            try {
-                jsonObject = new JSONObject();
-                jsonObject.put("nomorthorderjual", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorth,""));
-                jsonObject.put("kodecontainer", LibInspira.getShared(global.userpreferences,global.user.checkin_kodecontainer,""));
-                jsonObject.put("nomorsopir", LibInspira.getShared(global.userpreferences,global.user.nomor,""));
-                jsonObject.put("type", type);
-                jsonObject.put("lat", String.valueOf(getLatitude));
-                jsonObject.put("lon", String.valueOf(getLongitude));
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            jsonObject = new JSONObject();
+//                jsonObject.put("nomorthorderjual", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorth,""));
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.d("tes", result);
+            Log.d("getting waypoints", result);
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
@@ -538,11 +523,73 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                         JSONObject obj = jsonarray.getJSONObject(i);
                         LibInspira.hideLoading();
                         if(!obj.has("query")){  //jika success
-                            LibInspira.showLongToast(getContext(), "Check In Success");
+//                            LibInspira.showLongToast(getContext(), "Check In Success");
+                            if(!obj.getString("latitude").equals("") && !obj.getString("longitude").equals("")){
+                                String marker_desc = "lat: " + obj.getString("latitude") + "\n" +
+                                        "lng: " + obj.getString("longitude") + "\n" +
+                                        "radius: " + obj.getString("radius") + "m \n\n" +
+                                        obj.getString("keterangan");
+                                String marker_title = "(" + obj.getString("kode") + ") " + obj.getString("nama");
+                                LatLng latLng = new LatLng(Double.parseDouble(obj.getString("latitude")), Double.parseDouble(obj.getString("longitude")));
+                                MarkerOptions markerOptions = new MarkerOptions();
+                                markerOptions.position(latLng);
+                                markerOptions.title(marker_title);
+                                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                markerOptions.snippet(marker_desc);
+                                markerOptions.draggable(false);
+                                Marker marker = mGoogleMap.addMarker(markerOptions);
+
+                                mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                    @Override
+                                    public boolean onMarkerClick(Marker marker) {
+                                        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+                                        return false;
+                                    }
+                                });
+
+                                // ... get a map.
+                                // Add a circle on marker
+                                mGoogleMap.addCircle(new CircleOptions()
+                                        .center(latLng)
+                                        .radius(Double.parseDouble(obj.getString("radius")))
+                //                        .strokeColor(Color.RED)
+                                        .fillColor(0x70fffda3));
+
+                                //untuk override info window pada marker
+                                mGoogleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                                    @Override
+                                    public View getInfoWindow(Marker arg0) {
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public View getInfoContents(Marker marker) {
+
+                                        LinearLayout info = new LinearLayout(getContext());
+                                        info.setOrientation(LinearLayout.VERTICAL);
+
+                                        TextView title = new TextView(getContext());
+                                        title.setTextColor(Color.BLACK);
+                                        title.setGravity(Gravity.CENTER);
+                                        title.setTypeface(null, Typeface.BOLD);
+                                        title.setText(marker.getTitle());
+
+                                        TextView snippet = new TextView(getContext());
+                                        snippet.setTextColor(Color.GRAY);
+                                        snippet.setText(marker.getSnippet());
+
+                                        info.addView(title);
+                                        info.addView(snippet);
+
+                                        return info;
+                                    }
+                                });
+                            }
                         }
                         else
                         {
-                            LibInspira.showLongToast(getContext(), "Check In Failed");
+                            LibInspira.showLongToast(getContext(), "Fetching the data failed");
                         }
                     }
                 }
@@ -553,13 +600,12 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                 LibInspira.showLongToast(getContext(), e.getMessage());
                 LibInspira.hideLoading();
             }
-            LibInspira.BackFragment(getFragmentManager());
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            LibInspira.showLoading(getContext(), "Checking In", "Loading");
+            LibInspira.showLoading(getContext(), "Loading Waypoints", "Loading");
         }
     }
 
@@ -568,8 +614,21 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        manager.removeUpdates(this);
-        managerGPS.removeUpdates(this);
+        if(manager != null){
+            manager.removeUpdates(this);
+        }
+        if(managerGPS != null){
+            managerGPS.removeUpdates(this);
+        }
         super.onDestroy();
+        if (getWaypoints != null){
+            getWaypoints.cancel(true);
+        }
+    }
+
+    private void removeCurrentLocationMarker(){
+        if(mCurrLocationMarker != null){
+            mCurrLocationMarker.remove();
+        }
     }
 }

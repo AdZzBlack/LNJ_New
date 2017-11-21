@@ -115,24 +115,24 @@ class Track extends REST_Controller {
     }
 
 	// --- Get all waypoints data --- //
-	function getWaypoint_post()
+	function getWaypoints_post()
 	{     
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
 
-        $query = "SELECT nomor, kode, nama, radius, latitude, longitude, catatan ".
+        $query = "SELECT nomor, kode, nama, radius, latitude, longitude, keterangan ".
                  "FROM ".
                  "  mhwaypoint ".
                  "WHERE ".
                  "  status_aktif = 1 ".
                  "  AND ".
-                 "  radius <> null ".
+                 "  radius is not null ".
                  "  AND ".
-                 "  latitude <> null ".
+                 "  latitude is not null ".
                  "  AND ".
-                 "  longitude <> null ";  // untuk pengecekan jika document masih belum diaccept oleh user/admin lain
+                 "  longitude is not null ";  // untuk pengecekan jika document masih belum diaccept oleh user/admin lain
         $result = $this->db->query($query);
 
         if($result && $result->num_rows() > 0){  //jika document valid, maka lakukan update atau penyerahan dokumen ke user lain
@@ -145,7 +145,7 @@ class Track extends REST_Controller {
                                                 'radius'                => $r['radius'],
                                                 'latitude'              => $r['latitude'],
                                                 'longitude'             => $r['longitude'],
-                                                'catatan' 				=> $r['catatan']
+                                                'keterangan' 			=> $r['keterangan']
                                         )
                 );
             }
