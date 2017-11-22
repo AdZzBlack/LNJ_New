@@ -190,7 +190,8 @@ class Login extends REST_Controller {
 						e.nama AS namacabang,
 						b.isdriver AS isdriver,
 						b.qrcodereader AS qrcodereader,
-						b.checkin AS checkin
+						b.checkin AS checkin,
+						b.cantracked AS cantracked
 					FROM mhadmin a
 					JOIN whrole_mobile b ON a.role_android = b.nomor
 					LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
@@ -216,6 +217,7 @@ class Login extends REST_Controller {
 												'role_isdriver'					=> $r['isdriver'],
 												'role_qrcodereader' 			=> $r['qrcodereader'],
 												'role_checkin'					=> $r['checkin'],
+												'role_cantracked'				=> $r['cantracked'],
                 								)
                	);
             }
@@ -237,6 +239,13 @@ class Login extends REST_Controller {
 		$jsonObject = (json_decode($value , true));
 
         $hash = (isset($jsonObject["hash"]) ? $jsonObject["hash"]     : "");
+        $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "a");
+
+        $query1 = "	UPDATE mhadmin a
+					SET gcm_id = '$token'
+					WHERE a.status_aktif = 1
+					AND hash = '$hash'";
+        $this->db->query($query1);
 
         $query = "	SELECT 
                         a.nomor AS nomor,
@@ -250,7 +259,8 @@ class Login extends REST_Controller {
                         e.nama AS namacabang,
                         b.isdriver AS isdriver,
                         b.qrcodereader AS qrcodereader,
-                        b.checkin AS checkin
+                        b.checkin AS checkin,
+                        b.cantracked AS cantracked
                     FROM mhadmin a
                     JOIN whrole_mobile b ON a.role_android = b.nomor
                     LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
@@ -277,6 +287,7 @@ class Login extends REST_Controller {
                                                     'role_isdriver'					=> $r['isdriver'],
                                                     'role_qrcodereader' 			=> $r['qrcodereader'],
                                                     'role_checkin'					=> $r['checkin'],
+                                                    'role_cantracked'				=> $r['cantracked'],
 											)
 				);
 			}

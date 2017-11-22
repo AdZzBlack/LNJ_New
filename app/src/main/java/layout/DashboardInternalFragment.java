@@ -108,6 +108,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeFragment());
         }
         else if (id == R.id.btnDocument){
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "document");
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
         }
         else if (id == R.id.btnPendingDocs){

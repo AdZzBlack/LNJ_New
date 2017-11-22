@@ -8,9 +8,9 @@
             android:icon="@drawable/dashboard"
             android:title="Dashboard" />
         <item
-            android:id="@+id/nav_qrcode"
-            android:icon="@drawable/qrcode"
-            android:title="QR Code" />
+            android:id="@+id/nav_tracking"
+            android:icon="@drawable/salestracking"
+            android:title="Live Tracking" />
     </group>
 
     <item android:title="Manage">

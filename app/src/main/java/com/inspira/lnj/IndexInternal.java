@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
+import layout.ChooseUserFragment;
 import layout.DashboardInternalFragment;
 import layout.SettingFragment;
 
@@ -76,6 +77,11 @@ public class IndexInternal extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= 23)
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED)
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, 1600);
+
+        if(LibInspira.getShared(global.userpreferences, global.user.role_cantracked, "").equals("1"))
+        {
+            startService(new Intent(this, LocationService.class));
+        }
     }
 
     @Override
@@ -141,8 +147,11 @@ public class IndexInternal extends AppCompatActivity
         LibInspira.clearShared(global.temppreferences);
 
         if (id == R.id.nav_dashboard) {
-            // Handle the camera action
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
+        }
+        else if (id == R.id.nav_tracking) {
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "tracking");
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -10,6 +10,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="google_server_key">AIzaSyA8tLQw3T5sH3D_5OWZPKveTyJRstVqSHw</string>
+
     <string-array name="list_jenisjadwal">
         <item>Custom Note</item>
         <item>Customer</item>

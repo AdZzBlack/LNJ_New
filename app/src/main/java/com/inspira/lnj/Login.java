@@ -11,8 +11,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +29,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static android.provider.MediaStore.AUTHORITY;
 
 /**
  * Created by Tonny on 7/22/2017.
@@ -45,6 +50,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        startService(new Intent(this, FCMInstanceIDRegistrationService.class));
 
         global = new GlobalVar(this);
         LibInspira.setShared(global.sharedpreferences, global.shared.server, "sub.pt-lnj.com");
@@ -64,7 +71,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 3);
             }
@@ -96,6 +103,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.role_isdriver, obj.getString("role_isdriver"));
             LibInspira.setShared(global.userpreferences, global.user.role_qrcodereader, obj.getString("role_qrcodereader"));
             LibInspira.setShared(global.userpreferences, global.user.role_checkin, obj.getString("role_checkin"));
+            LibInspira.setShared(global.userpreferences, global.user.role_cantracked, obj.getString("role_cantracked"));
         }
         catch(Exception e)
         {
@@ -183,6 +191,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             try {
                 jsonObject = new JSONObject();
                 jsonObject.put("hash", LibInspira.getShared(global.userpreferences,global.user.hash,""));
+                jsonObject.put("token", LibInspira.getShared(global.userpreferences,global.user.token, ""));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -270,12 +279,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             String version = pInfo.versionName;
                             if(!version.equals(obj.getString("version")))
                             {
-//                                showSpinner(version);
-//
-//                                UpdateApp atualizaApp = new UpdateApp();
-//                                atualizaApp.setContext(getApplicationContext());
-//                                atualizaApp.execute(obj.getString("url"));
-
                                 showProgress();
                                 Log.d("update", obj.getString("url"));
                                 final UpdateApp atualizaApp = new UpdateApp();
@@ -377,7 +380,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 InputStream is = c.getInputStream();
 
 
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[2048];
                 int len1 = 0;
                 long total = 0;
                 while ((len1 = is.read(buffer)) != -1) {
@@ -390,6 +393,15 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 }
                 fos.close();
                 is.close();
+
+                if(Build.VERSION.SDK_INT>=24){
+                    try{
+                        Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                        m.invoke(null);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(new File("/mnt/sdcard/Download/update.apk")), "application/vnd.android.package-archive");

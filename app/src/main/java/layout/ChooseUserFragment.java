@@ -114,7 +114,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         refreshList();
 
-        String actionUrl = "Order/getUserList/";
+        String actionUrl = "Master/getUser/";
         getData = new GetData();
         getData.execute( actionUrl );
     }
@@ -196,8 +196,20 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                     dataItem.setNama(nama);
                     list.add(dataItem);
 
-                    itemadapter.add(dataItem);
-                    itemadapter.notifyDataSetChanged();
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking")
+                            || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("document"))
+                    {
+                        if(!nomor.equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                        {
+                            itemadapter.add(dataItem);
+                            itemadapter.notifyDataSetChanged();
+                        }
+                    }
+                    else
+                    {
+                        itemadapter.add(dataItem);
+                        itemadapter.notifyDataSetChanged();
+                    }
                 }
             }
         }
@@ -223,7 +235,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                    for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
@@ -327,10 +339,20 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
-                    LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, finalHolder.adapterItem.getKode());
-                    LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
-                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeDocumentFragment());
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("document"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, finalHolder.adapterItem.getKode());
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
+                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeDocumentFragment());
+                    }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, finalHolder.adapterItem.getKode());
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
+                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new LiveTrackingFragment());
+                    }
                 }
             });
 
