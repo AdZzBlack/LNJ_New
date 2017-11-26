@@ -128,6 +128,7 @@ public class GlobalVar {
 
         public class TempMaps //added by Tonny @16-Nov-2017
         {
+            public String nomor = "nomor";
             public String event = "event";
             public String placename = "placename";
             public String radius = "radius";
@@ -135,5 +136,6 @@ public class GlobalVar {
             public String longitude = "longitude";
             public String duration = "duration";
             public String notes = "notes";
+            public String mode = "mode";
         }
 }

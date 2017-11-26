@@ -31,7 +31,6 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -102,7 +101,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeCheckinFragment());
         }
         else if (id == R.id.btnNewCheckPoint){
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetLocationFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new WaypointFragment());
         }
         else if (id == R.id.btnQRCode){
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new QRCodeFragment());

@@ -122,7 +122,7 @@ class Track extends REST_Controller {
         $value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
 
-        $query = "SELECT nomor, kode, nama, radius, latitude, longitude, keterangan ".
+        $query = "SELECT nomor, kode, nama, durasi, radius, latitude, longitude, keterangan ".
                  "FROM ".
                  "  mhwaypoint ".
                  "WHERE ".
@@ -142,6 +142,7 @@ class Track extends REST_Controller {
                                                 'nomor'    	    		=> $r['nomor'],
                                                 'kode'                  => $r['kode'],
                                                 'nama'                  => $r['nama'],
+                                                'durasi'                => $r['durasi'],
                                                 'radius'                => $r['radius'],
                                                 'latitude'              => $r['latitude'],
                                                 'longitude'             => $r['longitude'],
@@ -195,8 +196,8 @@ class Track extends REST_Controller {
         }
     }
 
-    // --- save waypoints--- //
-    function saveWaypoint_post()
+    // --- insert waypoints--- //
+    function insertWaypoint_post()
     {
         $data['data'] = array();
 
@@ -209,6 +210,8 @@ class Track extends REST_Controller {
         $latitude = (isset($jsonObject["latitude"]) ? $jsonObject["latitude"]     : "");
         $longitude = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
         $keterangan = (isset($jsonObject["keterangan"]) ? $this->clean($jsonObject["keterangan"])     : "");
+
+        $nomorcheckpoint = (isset($jsonObject["nomorcheckpoint"]) ? $this->clean($jsonObject["nomorcheckpoint"])     : "");
 
         $query = "SELECT MAX(substr(kode, 3) + 1) AS maxkode FROM mhwaypoint";  //untuk mendapatkan no urut baru pada tabel mhwaypoint
         $result = $this->db->query($query);
@@ -240,9 +243,7 @@ class Track extends REST_Controller {
 
             $this->db->trans_begin();
             $query = "	INSERT INTO mhwaypoint (kode, nama, durasi, radius, latitude, longitude, keterangan) VALUES ('$newkode', '$nama', $duration, $radius, $latitude, $longitude, '$keterangan') ";
-
             $this->db->query($query);
-
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -251,8 +252,19 @@ class Track extends REST_Controller {
             }
             else
             {
-                $this->db->trans_commit();
-                array_push($data['data'], array( 'message' => 'Your data has been successfully saved' ));
+                $query = " INSERT INTO mdwaypoint (nomormhwaypoint, nomormhcheckpoint) VALUES (LAST_INSERT_ID(), $nomorcheckpoint) ";
+                $this->db->query($query);
+                if ($this->db->trans_status() === FALSE)
+                {
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'Failed to save the data'));
+                }
+                else
+                {
+                    $this->db->trans_commit();
+                    array_push($data['data'], array( 'message' => 'Your data has been successfully saved' ));
+                }
             }
         }else{
             array_push($data['data'], array( 'query' => $this->error($query),
@@ -265,24 +277,24 @@ class Track extends REST_Controller {
         }
     }
 
-    // ---reject documents--- //
-    function rejectDoc_post()
+    // --- update waypoints--- //
+    function updateWaypoint_post()
     {
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
-        $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
-        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");
+        $nama = (isset($jsonObject["nama"]) ? $this->clean($jsonObject["nama"])     : "");
+        $duration = (isset($jsonObject["duration"]) ? $this->clean($jsonObject["duration"])     : "");
+        $radius = (isset($jsonObject["radius"]) ? $this->clean($jsonObject["radius"])     : "");
+        $latitude = (isset($jsonObject["latitude"]) ? $jsonObject["latitude"]     : "");
+        $longitude = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
+        $keterangan = (isset($jsonObject["keterangan"]) ? $this->clean($jsonObject["keterangan"])     : "");
 
         $this->db->trans_begin();
-        $query = "	UPDATE thorderjual SET
-                        status_serahterima = 0
-                    WHERE
-                        nomor = $nomordoc
-                    AND
-                        nomormhadmin_penerima = $nomormhadmin ";
+        $query = " UPDATE mhwaypoint SET nama = '$nama', durasi = $duration, radius = $radius, latitude = $latitude, longitude = $longitude, keterangan = '$keterangan' WHERE nomor = $nomor ";
 
         $this->db->query($query);
 
@@ -303,65 +315,32 @@ class Track extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
-	
-	// --- Untuk mendapatkan list semua user untuk diserahi document --- //
-    function getUserList_post()
+
+    // --- delete waypoints--- //
+    function deleteWaypoint_post()
     {
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
-        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : ""); //nomor user yg saat ini login
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");
 
-        $query = "	SELECT
-                        a.nomor AS nomor,
-                        a.kode AS kode,
-                        a.sandi AS `password`,
-                        a.nomormhpegawai AS nomor_pegawai,
-                        d.kode AS kode_pegawai,
-                        a.nama AS nama,
-                        a.role_android AS role,
-                        a.hash AS `hash`,
-                        a.nomormhcabang AS cabang,
-                        e.nama AS namacabang,
-                        b.isdriver AS isdriver,
-                        b.qrcodereader AS qrcodereader,
-                        b.checkin AS checkin
-                    FROM mhadmin a
-                    JOIN whrole_mobile b ON a.role_android = b.nomor
-                    LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
-                    JOIN mhcabang e ON a.nomormhcabang = e.nomor
-                    WHERE a.status_aktif = 1
-                    AND a.nomor <> $nomor ";
-        $result = $this->db->query($query);
+        $this->db->trans_begin();
+        $query = "DELETE FROM mhwaypoint WHERE nomor = $nomor ";
 
-        if( $result && $result->num_rows() > 0)
+        $this->db->query($query);
+
+        if ($this->db->trans_status() === FALSE)
         {
-            foreach ($result->result_array() as $r)
-            {
-                array_push($data['data'], array(
-                                                    'success'				=> "true",
-                                                    'nomor'    	    		=> $r['nomor'],
-                                                    'kode'                  => $r['kode'],
-                                                    'password'				=> $r['password'],
-                                                    'nomor_pegawai'         => $r['nomor_pegawai'],
-                                                    'kode_pegawai'        	=> $r['kode_pegawai'],
-                                                    'nama' 					=> $r['nama'],
-                                                    'role' 					=> $r['role'],
-                                                    'hash' 					=> $r['hash'],
-                                                    'cabang' 				=> $r['cabang'],
-                                                    'nama_cabang' 			=> $r['namacabang'],
-                                                    'isdriver'				=> $r['isdriver'],
-                                                    'qrcodereader' 			=> $r['qrcodereader'],
-                                                    'checkin'				=> $r['checkin']
-                                            )
-                );
-            }
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to delete the data'));
         }
         else
         {
-            array_push($data['data'], array( 'success' => "false" ));
+            $this->db->trans_commit();
+            array_push($data['data'], array( 'message' => 'Your data has been successfully deleted' ));
         }
 
         if ($data){

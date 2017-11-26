@@ -48,6 +48,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -57,13 +58,11 @@ import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.Key;
 import java.util.HashMap;
 
-public class FormSetLocationFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, android.location.LocationListener, View.OnClickListener{
+public class WaypointFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, android.location.LocationListener, View.OnClickListener{
 
     private static boolean isGPSEnabled;
     private static boolean isNetworkEnabled;
@@ -82,7 +81,8 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
     private GoogleMap mGoogleMap;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
-    private Marker mCurrLocationMarker;
+    private Marker mCurrLocationMarker, wpMarker;
+    private Circle wpCircle;
     HashMap<String,Marker> hashMapMarker;
 
     private GlobalVar global;
@@ -90,7 +90,7 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
 
     private GetWaypoints getWaypoints;
 
-    public FormSetLocationFragment() {
+    public WaypointFragment() {
         // Required empty public constructor
     }
 
@@ -134,6 +134,19 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
             fragment = SupportMapFragment.newInstance();
             fm.beginTransaction().replace(R.id.map_container, fragment).commit();
             fragment.getMapAsync(this);
+        }else{
+            //added by Tonny @23-Nov-2017  untuk refresh waypoints
+            if(wpMarker != null){
+                wpMarker.remove();
+            }
+
+            if(wpCircle != null){
+                wpCircle.remove();
+            }
+
+            String actionUrl = "Track/getWayPoints/";
+            getWaypoints = new GetWaypoints();
+            getWaypoints.execute(actionUrl);
         }
 
         //added by Tonny @08-Nov-2017
@@ -155,7 +168,6 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                 markerOptions.title(placeName);
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                 markerOptions.draggable(true);
-                HashMap<String, Marker> hashMapMarker = new HashMap<>();
                 mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -192,10 +204,7 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                 //enable btnSet
                 getView().findViewById(R.id.btn_set).setEnabled(true);
 
-                //set placename, latitude, longitude shared
-                LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, placeName);
-                LibInspira.setShared(global.tempmapspreferences, global.tempMaps.latitude, String.valueOf(place.getLatLng().latitude));
-                LibInspira.setShared(global.tempmapspreferences, global.tempMaps.longitude, String.valueOf(place.getLatLng().longitude));
+                fillMapsTempData("", placeName, 0, place.getLatLng().latitude, place.getLatLng().longitude, 10, "");
             }
 
             @Override
@@ -218,6 +227,7 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                         removeCurrentLocationMarker();
                         view.setVisibility(View.GONE);
                         getView().findViewById(R.id.btn_set).setEnabled(false);
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.mode, "update");
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, "");
                     }
                 });
@@ -228,6 +238,23 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                 .build();
 
         autocompleteFragment.setFilter(typeFilter);
+    }
+
+    //added by Tonny @23-Nov-2017
+    public void fillMapsTempData(String _nomor, String _placeName, double _duration, double _latitude, double _longitude, double _radius, String _notes){
+        //set nomor, placename, latitude, longitude shared
+        if(_nomor.isEmpty()){
+            LibInspira.setShared(global.tempmapspreferences, global.tempMaps.mode, "insert");
+        }else{
+            LibInspira.setShared(global.tempmapspreferences, global.tempMaps.mode, "update");
+        }
+        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.nomor, _nomor);  //isi value dengan "" jika mode insert
+        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, _placeName);
+        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.latitude, String.valueOf(_latitude));
+        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.longitude, String.valueOf(_longitude));
+        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.duration, String.valueOf(_duration));
+        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.radius, String.valueOf(_radius));
+        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.notes, _notes);
     }
 
     @Override
@@ -241,8 +268,8 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
         if(id==R.id.btn_set)
         {
             // TODO: Get lat lng and save it to tempmapspreferences and then go to FormSetDetailLocation
-            LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, placeName);
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
+//            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new WaypointDetailFragment());
         }
     }
 
@@ -525,19 +552,27 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                         if(!obj.has("query")){  //jika success
 //                            LibInspira.showLongToast(getContext(), "Check In Success");
                             if(!obj.getString("latitude").equals("") && !obj.getString("longitude").equals("")){
-                                String marker_desc = "lat: " + obj.getString("latitude") + "\n" +
-                                        "lng: " + obj.getString("longitude") + "\n" +
-                                        "radius: " + obj.getString("radius") + "m \n\n" +
-                                        obj.getString("keterangan");
-                                String marker_title = "(" + obj.getString("kode") + ") " + obj.getString("nama");
-                                LatLng latLng = new LatLng(Double.parseDouble(obj.getString("latitude")), Double.parseDouble(obj.getString("longitude")));
+                                final String objNomor = obj.getString("nomor");
+                                final String objKode = obj.getString("kode");
+                                final String objNama = obj.getString("nama");
+                                final String objDuration = obj.getString("durasi");
+                                final String objLat = obj.getString("latitude");
+                                final String objLng = obj.getString("longitude");
+                                final String objRadius = obj.getString("radius");
+                                final String objKeterangan = obj.getString("keterangan");
+                                String marker_desc = "lat: " + objLat + "\n" +
+                                        "lng: " + objLng + "\n" +
+                                        "radius: " + objRadius + "m \n\n" +
+                                        objKeterangan;
+                                String marker_title = "(" + objKode + ") " + objNama;
+                                LatLng latLng = new LatLng(Double.parseDouble(objLat), Double.parseDouble(objLng));
                                 MarkerOptions markerOptions = new MarkerOptions();
                                 markerOptions.position(latLng);
                                 markerOptions.title(marker_title);
                                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                                 markerOptions.snippet(marker_desc);
                                 markerOptions.draggable(false);
-                                Marker marker = mGoogleMap.addMarker(markerOptions);
+                                wpMarker = mGoogleMap.addMarker(markerOptions);
 
                                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                     @Override
@@ -549,7 +584,7 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
 
                                 // ... get a map.
                                 // Add a circle on marker
-                                mGoogleMap.addCircle(new CircleOptions()
+                                wpCircle = mGoogleMap.addCircle(new CircleOptions()
                                         .center(latLng)
                                         .radius(Double.parseDouble(obj.getString("radius")))
                 //                        .strokeColor(Color.RED)
@@ -583,6 +618,16 @@ public class FormSetLocationFragment extends Fragment implements OnMapReadyCallb
                                         info.addView(snippet);
 
                                         return info;
+                                    }
+                                });
+
+                                mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                                    @Override
+                                    public void onInfoWindowClick(Marker marker) {
+                                        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("insert")){
+                                            fillMapsTempData(objNomor, objNama, Double.parseDouble(objDuration), Double.parseDouble(objLat), Double.parseDouble(objLng), Double.parseDouble(objRadius), objKeterangan);
+                                            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
+                                        }
                                     }
                                 });
                             }

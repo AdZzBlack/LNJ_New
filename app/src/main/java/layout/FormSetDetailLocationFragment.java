@@ -39,9 +39,10 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
     private String[] arraySpinner;
     private Spinner spEvent;
     private EditText etPlace, etLatitude, etLongitude, etRadius, etDuration, etNotes;
-    private Button btnSave;
+    private Button btnSave, btnDelete;
     
     private SaveWaypoint saveWaypoint;
+    private DeleteWaypoint deleteWaypoint;  //added by Tonny @23-Nov-2017
 
     public FormSetDetailLocationFragment() {
         // Required empty public constructor
@@ -79,14 +80,20 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         global = new GlobalVar(getActivity());
         spEvent = (Spinner) getView().findViewById(R.id.spEvent);
 
-        String actionUrl = "Track/getEvent/";
-        events = new Events();
-        events.execute(actionUrl);
+//        String actionUrl = "Track/getEvent/";
+//        events = new Events();
+//        events.execute(actionUrl);
 
         etPlace = (EditText) getView().findViewById(R.id.etPlace);
         if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.placename, "").equals("")){
             etPlace.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.placename, ""));
         }
+
+        etDuration = (EditText) getView().findViewById(R.id.etDuration);
+        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.duration, "").equals("")){
+            etDuration.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.duration, ""));
+        }
+
         etLatitude = (EditText) getView().findViewById(R.id.etLatitude);
         etLongitude = (EditText) getView().findViewById(R.id.etLongitude);
         if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, "").equals("")){
@@ -133,8 +140,21 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
             }
         });
         etNotes = (EditText) getView().findViewById(R.id.etNotes);
-        btnSave = (Button) getView().findViewById(R.id.btnSave);
+        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.notes, "").equals("")){
+            etNotes.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.notes, ""));
+        }
 
+        btnDelete = (Button) getView().findViewById(R.id.btnDelete);
+        if(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("update")) {
+            btnDelete.setVisibility(View.VISIBLE);
+            btnDelete.setOnClickListener(this);
+            //get data from tempmapsshared
+        }else{
+            btnDelete.setVisibility(View.GONE);
+            btnDelete.setOnClickListener(null);
+        }
+
+        btnSave = (Button) getView().findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
     }
 
@@ -166,9 +186,28 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                     Log.wtf("longitude ", etLongitude.getText().toString());
                     Log.wtf("radius ", etRadius.getText().toString());
 
-                    String actionUrl = "Track/saveWaypoint/";
+                    String actionUrl = "Track/insertWaypoint/";
+
+                    //added by Tonny @23-Nov-2017 pengecekan jika dalam mode edit/update
+                    if(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("update")){
+                        actionUrl = "Track/updateWaypoint/";
+                    }
                     saveWaypoint = new SaveWaypoint();
                     saveWaypoint.execute(actionUrl);
+                }
+            }, new Runnable() {
+                @Override
+                public void run() {
+                    //do nothing
+                }
+            });
+        }else if(id==R.id.btnDelete){  //added by Tonny @23-Nov-2017
+            LibInspira.alertBoxYesNo("Delete Waypoint", "Do you want to delete this waypoint?", getActivity(), new Runnable() {
+                @Override
+                public void run() {
+                    String actionUrl = "Track/deleteWaypoint/";
+                    deleteWaypoint = new DeleteWaypoint();
+                    deleteWaypoint.execute(actionUrl);
                 }
             }, new Runnable() {
                 @Override
@@ -247,6 +286,7 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
+                jsonObject.put("nomor", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.nomor,""));
                 jsonObject.put("nama", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.placename,""));
                 jsonObject.put("duration", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.duration,""));
                 jsonObject.put("radius", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.radius,""));
@@ -263,6 +303,7 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         @Override
         protected void onPostExecute(String result) {
             Log.d("tes", result);
+            Log.wtf("result ", result);
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
@@ -294,6 +335,55 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(getContext(), "Saving Waypoint", "Loading");
+        }
+    }
+
+    private class DeleteWaypoint extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomor", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.nomor,""));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success
+                            LibInspira.clearShared(global.tempmapspreferences); // delete temppreferences
+                        }
+                        else
+                        {
+                            LibInspira.showLongToast(getContext(), "Deleting Waypoint Failed");
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getContext(), e.getMessage());
+                LibInspira.hideLoading();
+            }
+            LibInspira.hideLoading();
+            LibInspira.BackFragment(getFragmentManager());
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Deleting Waypoint", "Loading");
         }
     }
 }
