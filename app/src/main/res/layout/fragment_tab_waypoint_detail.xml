@@ -14,29 +14,71 @@
                 android:layout_width="match_parent"
                 android:layout_height="?android:actionBarSize"
                 android:layout_alignParentBottom="true">
-                    <Button
-                        android:id="@+id/btnApprove"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/btnstyle1"
-                        android:text="Approve"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="12dp"
-                        android:visibility="gone"/>
 
-                    <Button
-                        android:id="@+id/btnDisapprove"
-                        style="?android:attr/buttonStyleSmall"
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/btnstyle1"
-                        android:text="Disapprove"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="12dp"
-                        android:visibility="gone"/>
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnSave"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="0dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btnstyle1"
+                            android:text="Save"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="12dp" />
+
+                        <Button
+                            android:id="@+id/btnBack"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="0dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btnstyle1"
+                            android:text="Back"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="12dp"
+                            android:visibility="gone" />
+
+                        <Button
+                            android:id="@+id/btnEdit"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="0dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btnstyle1"
+                            android:text="Edit"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="12dp"
+                            android:visibility="gone" />
+
+                        <Button
+                            android:id="@+id/btnDelete"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="0dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btnstyle1"
+                            android:text="Delete"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="12dp"
+                            android:visibility="gone" />
+
+                    </TableRow>
+                </TableLayout>
 
             </RelativeLayout>
 

@@ -172,7 +172,7 @@ class Track extends REST_Controller {
                  "FROM ".
                  "  mhcheckpoint ".
                  "WHERE ".
-                 "  status_aktif = 1 ";  // untuk pengecekan jika document masih belum diaccept oleh user/admin lain
+                 "  status_aktif = 1 ";
         $result = $this->db->query($query);
 
         if($result && $result->num_rows() > 0){  //jika document valid, maka lakukan update atau penyerahan dokumen ke user lain
@@ -182,6 +182,42 @@ class Track extends REST_Controller {
                                                 'nomor'    	    		=> $r['nomor'],
                                                 'kode'                  => $r['kode'],
                                                 'nama'                  => $r['nama']
+                                        )
+                );
+            }
+        }else{
+            array_push($data['data'], array('query' => $this->error($query),
+                                            'message' => 'No Event data'));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- Untuk mendapatkan list semua event yang telah dipilih (untuk tampilan checked)
+    function getEventDetail_post()
+    {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomormhwaypoint = (isset($jsonObject["nomormhwaypoint"]) ? $this->clean($jsonObject["nomormhwaypoint"])     : "");
+
+        $query = "SELECT nomormhcheckpoint ".
+                 "FROM ".
+                 "  mdwaypoint ".
+                 "WHERE ".
+                 "  nomormhwaypoint = $nomormhwaypoint ".
+                 "  AND status_aktif = 1 ";
+        $result = $this->db->query($query);
+
+        if($result && $result->num_rows() > 0){  //jika document valid, maka lakukan update atau penyerahan dokumen ke user lain
+            foreach ($result->result_array() as $r)
+            {
+                array_push($data['data'], array(
+                                                'nomormhcheckpoint' 	   => $r['nomormhcheckpoint']
                                         )
                 );
             }
@@ -211,7 +247,7 @@ class Track extends REST_Controller {
         $longitude = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
         $keterangan = (isset($jsonObject["keterangan"]) ? $this->clean($jsonObject["keterangan"])     : "");
 
-        $nomorcheckpoint = (isset($jsonObject["nomorcheckpoint"]) ? $this->clean($jsonObject["nomorcheckpoint"])     : "");
+        $arrnomorcheckpoint = (isset($jsonObject["arrnomorcheckpoint"]) ? $jsonObject["arrnomorcheckpoint"]     : "");
 
         $query = "SELECT MAX(substr(kode, 3) + 1) AS maxkode FROM mhwaypoint";  //untuk mendapatkan no urut baru pada tabel mhwaypoint
         $result = $this->db->query($query);
@@ -252,13 +288,52 @@ class Track extends REST_Controller {
             }
             else
             {
-                $query = " INSERT INTO mdwaypoint (nomormhwaypoint, nomormhcheckpoint) VALUES (LAST_INSERT_ID(), $nomorcheckpoint) ";
-                $this->db->query($query);
+                $lastid = 0;
+                //get last insert id on header
+                $query = "	SELECT LAST_INSERT_ID() AS lastid";
+                $result = $this->db->query($query);
+                if($result && $result->num_rows() > 0){
+                    $row = $result->row();
+                    $lastid = $row->lastid;
+                }else{
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'Failed to save the data'));
+                    if ($data){
+                        // Set the response and exit
+                        $this->response($data['data']); // OK (200) being the HTTP response code
+                    }
+                    die();
+                }
+                ///////////////////////////////
+                //insert mdwaypoint
+                $pieces = explode("~", $arrnomorcheckpoint);
+                for ($i = 0; $i < count($pieces) - 1; $i++) {
+                    $query = " INSERT INTO mdwaypoint (nomormhwaypoint, nomormhcheckpoint) VALUES ($lastid, $pieces[$i]) ";
+                    $this->db->query($query);
+                    if ($this->db->trans_status() === FALSE)
+                    {
+                        $this->db->trans_rollback();
+                        array_push($data['data'], array( 'query' => $this->error($query),
+                                                         'message' => 'Failed to save the data'));
+                        if ($data){
+                            // Set the response and exit
+                            $this->response($data['data']); // OK (200) being the HTTP response code
+                        }
+                        die();
+                    }
+                }
+                ////
                 if ($this->db->trans_status() === FALSE)
                 {
                     $this->db->trans_rollback();
                     array_push($data['data'], array( 'query' => $this->error($query),
                                                      'message' => 'Failed to save the data'));
+                    if ($data){
+                        // Set the response and exit
+                        $this->response($data['data']); // OK (200) being the HTTP response code
+                    }
+                    die();
                 }
                 else
                 {
@@ -277,7 +352,7 @@ class Track extends REST_Controller {
         }
     }
 
-    // --- update waypoints--- //
+    // --- update waypoint--- //
     function updateWaypoint_post()
     {
         $data['data'] = array();
@@ -292,6 +367,7 @@ class Track extends REST_Controller {
         $latitude = (isset($jsonObject["latitude"]) ? $jsonObject["latitude"]     : "");
         $longitude = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
         $keterangan = (isset($jsonObject["keterangan"]) ? $this->clean($jsonObject["keterangan"])     : "");
+        $arrnomorcheckpoint = (isset($jsonObject["arrnomorcheckpoint"]) ? $jsonObject["arrnomorcheckpoint"]     : "");
 
         $this->db->trans_begin();
         $query = " UPDATE mhwaypoint SET nama = '$nama', durasi = $duration, radius = $radius, latitude = $latitude, longitude = $longitude, keterangan = '$keterangan' WHERE nomor = $nomor ";
@@ -306,8 +382,40 @@ class Track extends REST_Controller {
         }
         else
         {
-            $this->db->trans_commit();
-            array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+            $query = " DELETE FROM mdwaypoint WHERE nomormhwaypoint = $nomor ";
+            $this->db->query($query);
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => 'Failed to update the data'));
+            }else{
+                $pieces = explode("~", $arrnomorcheckpoint);
+                for ($i = 0; $i < count($pieces) - 1; $i++) {
+                    $query = " INSERT INTO mdwaypoint (nomormhwaypoint, nomormhcheckpoint) VALUES ($nomor, $pieces[$i]) ";
+                    $this->db->query($query);
+                    if ($this->db->trans_status() === FALSE)
+                    {
+                        $this->db->trans_rollback();
+                        array_push($data['data'], array( 'query' => $this->error($query),
+                                                         'message' => 'Failed to save the data'));
+                        if ($data){
+                            // Set the response and exit
+                            $this->response($data['data']); // OK (200) being the HTTP response code
+                        }
+                        die();
+                    }
+                }
+                if ($this->db->trans_status() === FALSE)
+                {
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'Failed to update the data'));
+                }else{
+                    $this->db->trans_commit();
+                    array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+                }
+            }
         }
 
         if ($data){

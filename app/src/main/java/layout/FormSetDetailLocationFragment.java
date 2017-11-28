@@ -9,7 +9,6 @@ package layout;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,10 +16,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
@@ -30,19 +31,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class FormSetDetailLocationFragment extends Fragment implements View.OnClickListener{
 
     private GlobalVar global;
     private JSONObject jsonObject;
     private Events events;
 
-    private String[] arraySpinner;
-    private Spinner spEvent;
     private EditText etPlace, etLatitude, etLongitude, etRadius, etDuration, etNotes;
     private Button btnSave, btnDelete;
     
     private SaveWaypoint saveWaypoint;
     private DeleteWaypoint deleteWaypoint;  //added by Tonny @23-Nov-2017
+    private CheckIsChecked checkIsChecked;  //added by Tonny @28-Nov-2017
+
+    private TableLayout tlEvent;  //added by Tonny @27-Nov-2017
+    private CheckBox cbEvent;
+    private ArrayList arrNomorCheckPoint;
+    private ArrayList<CheckBox> arrCbEvent;
 
     public FormSetDetailLocationFragment() {
         // Required empty public constructor
@@ -78,11 +85,6 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
         global = new GlobalVar(getActivity());
-        spEvent = (Spinner) getView().findViewById(R.id.spEvent);
-
-//        String actionUrl = "Track/getEvent/";
-//        events = new Events();
-//        events.execute(actionUrl);
 
         etPlace = (EditText) getView().findViewById(R.id.etPlace);
         if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.placename, "").equals("")){
@@ -156,6 +158,12 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
 
         btnSave = (Button) getView().findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
+
+        tlEvent = (TableLayout) getView().findViewById(R.id.tlEvent);
+        arrNomorCheckPoint = new ArrayList();
+        String actionUrl = "Track/getEvent/";
+        events = new Events();
+        events.execute(actionUrl);
     }
 
     @Override
@@ -168,39 +176,47 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         int id = view.getId();
         if(id==R.id.btnSave)
         {
-            LibInspira.alertBoxYesNo("Save Waypoint", "Do you want to save this waypoint data?", getActivity(), new Runnable() {
-                @Override
-                public void run() {
-                    // TODO: Save the data to preferences and database, and go back to previous fragment
-                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.event, spEvent.getSelectedItem().toString());
-                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, etPlace.getText().toString());
-                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.latitude, etLatitude.getText().toString());
-                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.longitude, etLongitude.getText().toString());
-                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.radius, etRadius.getText().toString().replace(",", ""));
-                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.duration, etDuration.getText().toString().replace(",", ""));
-                    LibInspira.setShared(global.tempmapspreferences, global.tempMaps.notes, etNotes.getText().toString());
+            if(!arrNomorCheckPoint.isEmpty()){
+                LibInspira.alertBoxYesNo("Save Waypoint", "Do you want to save this waypoint data?", getActivity(), new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO: Saving selected events into a var
+                        String strEvent = "";
+                        for (Object value: arrNomorCheckPoint){
+                            strEvent = strEvent + value + "~";
+                        }
+                        // TODO: Save the data to preferences and database, and go back to previous fragment
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.event, strEvent);
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, etPlace.getText().toString());
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.latitude, etLatitude.getText().toString());
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.longitude, etLongitude.getText().toString());
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.radius, etRadius.getText().toString().replace(",", ""));
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.duration, etDuration.getText().toString().replace(",", ""));
+                        LibInspira.setShared(global.tempmapspreferences, global.tempMaps.notes, etNotes.getText().toString());
 
-                    Log.wtf("events ", spEvent.getSelectedItem().toString());
-                    Log.wtf("placename ", etPlace.getText().toString());
-                    Log.wtf("latitude ", etLatitude.getText().toString());
-                    Log.wtf("longitude ", etLongitude.getText().toString());
-                    Log.wtf("radius ", etRadius.getText().toString());
+                        Log.wtf("placename ", etPlace.getText().toString());
+                        Log.wtf("latitude ", etLatitude.getText().toString());
+                        Log.wtf("longitude ", etLongitude.getText().toString());
+                        Log.wtf("radius ", etRadius.getText().toString());
 
-                    String actionUrl = "Track/insertWaypoint/";
+                        String actionUrl = "Track/insertWaypoint/";
 
-                    //added by Tonny @23-Nov-2017 pengecekan jika dalam mode edit/update
-                    if(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("update")){
-                        actionUrl = "Track/updateWaypoint/";
+                        //added by Tonny @23-Nov-2017 pengecekan jika dalam mode edit/update
+                        if(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("update")){
+                            actionUrl = "Track/updateWaypoint/";
+                        }
+                        saveWaypoint = new SaveWaypoint();
+                        saveWaypoint.execute(actionUrl);
                     }
-                    saveWaypoint = new SaveWaypoint();
-                    saveWaypoint.execute(actionUrl);
-                }
-            }, new Runnable() {
-                @Override
-                public void run() {
-                    //do nothing
-                }
-            });
+                }, new Runnable() {
+                    @Override
+                    public void run() {
+                        //do nothing
+                    }
+                });
+            }else{
+                LibInspira.showLongToast(getContext(), "You must select at least one event to proceed");
+            }
         }else if(id==R.id.btnDelete){  //added by Tonny @23-Nov-2017
             LibInspira.alertBoxYesNo("Delete Waypoint", "Do you want to delete this waypoint?", getActivity(), new Runnable() {
                 @Override
@@ -227,6 +243,9 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         if(saveWaypoint != null){
             saveWaypoint.cancel(true);
         }
+        if(checkIsChecked != null){
+            checkIsChecked.cancel(true);
+        }
     }
 
     private class Events extends AsyncTask<String, Void, String> {
@@ -243,14 +262,21 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
-                    arraySpinner = new String[jsonarray.length()];
                     String tempData = "";
+                    arrCbEvent = new ArrayList();
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         LibInspira.hideLoading();
-                        if(!obj.has("query")){  //jika success
+                        if(!obj.has("query") && tlEvent != null){  //jika success
                             tempData = obj.getString("nomor") + "~" + obj.getString("kode") + "~" + obj.getString("nama") + "|" ;
-                            arraySpinner[i] = obj.getString("nama");
+                            TableRow tr = new TableRow(getContext());
+                            cbEvent = new CheckBox(getContext());
+                            cbEvent.setId(Integer.parseInt(obj.getString("nomor")));
+                            cbEvent.setText(obj.getString("nama"));
+                            cbEvent.setChecked(false);
+                            arrCbEvent.add(cbEvent);
+                            tr.addView(cbEvent);
+                            tlEvent.addView(tr);
                         }
                         else
                         {
@@ -259,11 +285,39 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                             LibInspira.hideLoading();
                         }
                     }
+
                     if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.event, "").equals(tempData)){
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.event, tempData);
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.support_simple_spinner_dropdown_item, arraySpinner);
-                    spEvent.setAdapter(adapter);
+
+                    for (Object value: arrCbEvent){
+                        final CheckBox cb = (CheckBox) value;
+                        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+                        {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                if(arrNomorCheckPoint == null){
+                                    arrNomorCheckPoint = new ArrayList();
+                                }
+                                if (isChecked){
+                                    arrNomorCheckPoint.add(String.valueOf(cb.getId()));
+                                }else{
+                                    arrNomorCheckPoint.remove(String.valueOf(cb.getId()));
+                                }
+                                if(!arrNomorCheckPoint.isEmpty()){
+                                    for (Object value: arrNomorCheckPoint){
+                                        Log.wtf("value ", value.toString());
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    if(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("update")){
+                        String actionUrl = "Track/getEventDetail/";
+                        checkIsChecked = new CheckIsChecked();
+                        checkIsChecked.execute(actionUrl);
+                    }
                 }
             }
             catch(Exception e)
@@ -286,6 +340,8 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
+                Log.wtf("arrnomorcheckpoint", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.event,""));
+                jsonObject.put("arrnomorcheckpoint", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.event,""));  //added by Tonny @28-Nov-2017  nomor checkpoint = event
                 jsonObject.put("nomor", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.nomor,""));
                 jsonObject.put("nama", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.placename,""));
                 jsonObject.put("duration", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.duration,""));
@@ -384,6 +440,53 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(getContext(), "Deleting Waypoint", "Loading");
+        }
+    }
+
+    //untuk mendapatkan event apa saja yg terpilih (untuk tampilan checkbox yg tercentang pada saat mode update)
+    private class CheckIsChecked extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomormhwaypoint", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.nomor,""));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.wtf("result ", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success
+                            for (Object value: arrCbEvent){
+                                final CheckBox cb = (CheckBox) value;
+                                if (cb.getId() == Integer.parseInt(obj.getString("nomormhcheckpoint"))){
+                                    cb.setChecked(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getContext(), e.getMessage());
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
     }
 }

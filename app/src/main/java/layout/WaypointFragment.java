@@ -60,9 +60,10 @@ import com.inspira.lnj.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class WaypointFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, android.location.LocationListener, View.OnClickListener{
+public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, android.location.LocationListener, View.OnClickListener{
 
     private static boolean isGPSEnabled;
     private static boolean isNetworkEnabled;
@@ -83,12 +84,16 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
     private Location mLastLocation;
     private Marker mCurrLocationMarker, wpMarker;
     private Circle wpCircle;
-    HashMap<String,Marker> hashMapMarker;
+
+    private HashMap<String, String> hashMap;
+    private HashMap<String, HashMap<String, String>> extraMarkerInfo;
 
     private GlobalVar global;
     private JSONObject jsonObject;
 
     private GetWaypoints getWaypoints;
+//    private ArrayList<Marker> arrListMarker;
+//    private ArrayList<GoogleMap> arrListMap;
 
     public WaypointFragment() {
         // Required empty public constructor
@@ -134,19 +139,6 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
             fragment = SupportMapFragment.newInstance();
             fm.beginTransaction().replace(R.id.map_container, fragment).commit();
             fragment.getMapAsync(this);
-        }else{
-            //added by Tonny @23-Nov-2017  untuk refresh waypoints
-            if(wpMarker != null){
-                wpMarker.remove();
-            }
-
-            if(wpCircle != null){
-                wpCircle.remove();
-            }
-
-            String actionUrl = "Track/getWayPoints/";
-            getWaypoints = new GetWaypoints();
-            getWaypoints.execute(actionUrl);
         }
 
         //added by Tonny @08-Nov-2017
@@ -268,8 +260,7 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
         if(id==R.id.btn_set)
         {
             // TODO: Get lat lng and save it to tempmapspreferences and then go to FormSetDetailLocation
-//            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new WaypointDetailFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
         }
     }
 
@@ -439,6 +430,8 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
             }
         });
 
+        mGoogleMap.setOnInfoWindowClickListener(this);
+
         //added by Tonny @22-Nov-2017
         String actionUrl = "Track/getWayPoints/";
         getWaypoints = new GetWaypoints();
@@ -532,6 +525,19 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
         }
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("insert")){
+            //fillMapsTempData(objNomor, objNama, Double.parseDouble(objDuration), Double.parseDouble(objLat), Double.parseDouble(objLng), Double.parseDouble(objRadius), objKeterangan);
+            // Get extra data with marker ID
+            Log.wtf("marker clicked ", marker.getId());
+            HashMap<String, String> markerData = extraMarkerInfo.get(marker.getId());
+            fillMapsTempData(markerData.get("nomor"), markerData.get("nama"), Double.parseDouble(markerData.get("duration")), Double.parseDouble(markerData.get("lat")), Double.parseDouble(markerData.get("lng")),
+                    Double.parseDouble(markerData.get("radius")), markerData.get("keterangan"));
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
+        }
+    }
+
     private class GetWaypoints extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
@@ -546,11 +552,11 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
+                    extraMarkerInfo = new HashMap<>();
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         LibInspira.hideLoading();
                         if(!obj.has("query")){  //jika success
-//                            LibInspira.showLongToast(getContext(), "Check In Success");
                             if(!obj.getString("latitude").equals("") && !obj.getString("longitude").equals("")){
                                 final String objNomor = obj.getString("nomor");
                                 final String objKode = obj.getString("kode");
@@ -562,9 +568,22 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
                                 final String objKeterangan = obj.getString("keterangan");
                                 String marker_desc = "lat: " + objLat + "\n" +
                                         "lng: " + objLng + "\n" +
+                                        "durasi: " + objDuration + "sec \n" +
                                         "radius: " + objRadius + "m \n\n" +
                                         objKeterangan;
                                 String marker_title = "(" + objKode + ") " + objNama;
+
+                                // Just save the entire json hashmap into the external variable
+                                hashMap = new HashMap<>();
+                                hashMap.put("nomor", obj.getString("nomor"));
+                                hashMap.put("kode", obj.getString("kode"));
+                                hashMap.put("nama", obj.getString("nama"));
+                                hashMap.put("duration", obj.getString("durasi"));
+                                hashMap.put("lat", obj.getString("latitude"));
+                                hashMap.put("lng", obj.getString("longitude"));
+                                hashMap.put("radius", obj.getString("radius"));
+                                hashMap.put("keterangan", obj.getString("keterangan"));
+
                                 LatLng latLng = new LatLng(Double.parseDouble(objLat), Double.parseDouble(objLng));
                                 MarkerOptions markerOptions = new MarkerOptions();
                                 markerOptions.position(latLng);
@@ -573,6 +592,9 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
                                 markerOptions.snippet(marker_desc);
                                 markerOptions.draggable(false);
                                 wpMarker = mGoogleMap.addMarker(markerOptions);
+                                Log.wtf("Marker ID ", wpMarker.getId());
+
+                                extraMarkerInfo.put(wpMarker.getId(), hashMap);
 
                                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                     @Override
@@ -621,15 +643,19 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
                                     }
                                 });
 
-                                mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                                    @Override
-                                    public void onInfoWindowClick(Marker marker) {
-                                        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("insert")){
-                                            fillMapsTempData(objNomor, objNama, Double.parseDouble(objDuration), Double.parseDouble(objLat), Double.parseDouble(objLng), Double.parseDouble(objRadius), objKeterangan);
-                                            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
-                                        }
-                                    }
-                                });
+//                                mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+//                                    @Override
+//                                    public void onInfoWindowClick(Marker marker) {
+//                                        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.mode, "").equals("insert")){
+//                                            //fillMapsTempData(objNomor, objNama, Double.parseDouble(objDuration), Double.parseDouble(objLat), Double.parseDouble(objLng), Double.parseDouble(objRadius), objKeterangan);
+//                                            // Get extra data with marker ID
+//                                            HashMap<String, String> markerData = extraMarkerInfo.get(marker.getId());
+//                                            fillMapsTempData(markerData.get("nomor"), markerData.get("nama"), Double.parseDouble(markerData.get("duration")), Double.parseDouble(markerData.get("lat")), Double.parseDouble(markerData.get("lng")),
+//                                                    Double.parseDouble(markerData.get("radius")), markerData.get("keterangan"));
+//                                            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
+//                                        }
+//                                    }
+//                                });
                             }
                         }
                         else
@@ -637,6 +663,11 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback, Go
                             LibInspira.showLongToast(getContext(), "Fetching the data failed");
                         }
                     }
+//                    int index = 0;
+//                    for (Object value: arrListMarker){
+//                        final Marker marker = (Marker) value;
+//
+//                    }
                 }
             }
             catch(Exception e)
