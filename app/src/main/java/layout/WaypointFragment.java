@@ -135,11 +135,20 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
         getView().findViewById(R.id.btn_set).setEnabled(false); //di-enable setelah memilih lokasi
         getView().findViewById(R.id.btn_set).setOnClickListener(this);
 
-        if (fragment == null) {
-            fragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().replace(R.id.map_container, fragment).commit();
-            fragment.getMapAsync(this);
-        }
+//        if (fragment == null) {
+//            fragment = SupportMapFragment.newInstance();
+//            fm.beginTransaction().replace(R.id.map_container, fragment).commit();
+//            fragment.getMapAsync(this);
+//        }else{
+//            String actionUrl = "Track/getWayPoints/";
+//            getWaypoints = new GetWaypoints();
+//            getWaypoints.execute(actionUrl);
+//        }
+
+        //modified by Tonny @28-Nov-2017  akan diload terus untuk membersihkan semua
+        fragment = SupportMapFragment.newInstance();
+        fm.beginTransaction().replace(R.id.map_container, fragment).commit();
+        fragment.getMapAsync(this);
 
         //added by Tonny @08-Nov-2017
         final SupportPlaceAutocompleteFragment autocompleteFragment  = (SupportPlaceAutocompleteFragment) fm.findFragmentById(R.id.place_autocomplete_fragment);
@@ -372,9 +381,20 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
 
 //                Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
 
-                LatLng latlng = new LatLng(getLatitude, getLongitude);
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
-                mGoogleMap.animateCamera(cameraUpdate);
+                //added by Tonny @28-Nov-2017  diarahkan ke waypoint yang dibuat terakhir
+                if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, "").equals("") && !LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, "").equals("")){
+                    LatLng latlng = new LatLng(Double.parseDouble(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, "")),
+                            Double.parseDouble(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.longitude, "")));
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
+                    mGoogleMap.animateCamera(cameraUpdate);
+                    LibInspira.clearShared(global.tempmapspreferences);
+                }else{
+                    LatLng latlng = new LatLng(getLatitude, getLongitude);
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
+                    mGoogleMap.animateCamera(cameraUpdate);
+                }
+
+
             }
         }
         else
@@ -388,9 +408,18 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
             mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
-            LatLng latlng = new LatLng(getLatitude, getLongitude);
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
-            mGoogleMap.animateCamera(cameraUpdate);
+            //added by Tonny @28-Nov-2017  diarahkan ke waypoint yang dibuat terakhir
+            if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, "").equals("") && !LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, "").equals("")){
+                LatLng latlng = new LatLng(Double.parseDouble(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.latitude, "")),
+                        Double.parseDouble(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.longitude, "")));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
+                mGoogleMap.animateCamera(cameraUpdate);
+                LibInspira.clearShared(global.tempmapspreferences);
+            }else{
+                LatLng latlng = new LatLng(getLatitude, getLongitude);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
+                mGoogleMap.animateCamera(cameraUpdate);
+            }
         }
     }
 
@@ -552,7 +581,14 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
+                    //added by Tonny @23-Nov-2017  untuk refresh waypoints
+                    if(wpMarker != null) wpMarker.remove();
+                    if(wpCircle != null) wpCircle.remove();
+
+                    removeCurrentLocationMarker();
+
                     extraMarkerInfo = new HashMap<>();
+                    if (wpMarker != null) wpMarker.remove();
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         LibInspira.hideLoading();

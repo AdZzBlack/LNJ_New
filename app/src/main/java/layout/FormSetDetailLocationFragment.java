@@ -358,7 +358,6 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.d("tes", result);
             Log.wtf("result ", result);
             try {
                 JSONArray jsonarray = new JSONArray(result);
@@ -368,7 +367,8 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                         LibInspira.hideLoading();
                         if(!obj.has("query")){  //jika success
                             LibInspira.showLongToast(getContext(), "Saving Waypoint Success");
-                            LibInspira.clearShared(global.tempmapspreferences); // delete temppreferences
+                            //remarked by Tonny @28-Nov-2017  diclear pada WaypointFragment, karena digunakan untuk cache marker terakhir
+//                            LibInspira.clearShared(global.tempmapspreferences); // delete temppreferences
                         }
                         else
                         {
