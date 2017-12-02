@@ -1,6 +1,6 @@
 /******************************************************************************
-    Author           : ADI
-    Description      : dashboard untuk internal
+    Author           : Tonny
+    Description      : QRCode untuk checkin
     History          :
 
 ******************************************************************************/

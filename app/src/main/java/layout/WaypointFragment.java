@@ -110,7 +110,7 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_form_set_location, container, false);
-        getActivity().setTitle("Checkpoints");
+        getActivity().setTitle("View Waypoints");
         return v;
     }
 
@@ -130,7 +130,7 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
         super.onActivityCreated(bundle);
         global = new GlobalVar(getActivity());
         FragmentManager fm = getChildFragmentManager();
-        SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.map_container);
+//        SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.map_container);
         getView().findViewById(R.id.btn_set);
         getView().findViewById(R.id.btn_set).setEnabled(false); //di-enable setelah memilih lokasi
         getView().findViewById(R.id.btn_set).setOnClickListener(this);
@@ -146,7 +146,7 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
 //        }
 
         //modified by Tonny @28-Nov-2017  akan diload terus untuk membersihkan semua
-        fragment = SupportMapFragment.newInstance();
+        SupportMapFragment fragment = SupportMapFragment.newInstance();
         fm.beginTransaction().replace(R.id.map_container, fragment).commit();
         fragment.getMapAsync(this);
 
@@ -393,8 +393,6 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
                     mGoogleMap.animateCamera(cameraUpdate);
                 }
-
-
             }
         }
         else

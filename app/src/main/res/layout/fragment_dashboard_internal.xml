@@ -196,7 +196,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/btnNewCheckPoint"
+                    android:id="@+id/btnNewWayPoint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="33.3"
@@ -211,7 +211,7 @@
                         android:clickable="false"
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/salesorder"
+                        android:src="@drawable/places"
                         android:backgroundTint="@color/colorBackground"
                         android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
@@ -223,7 +223,7 @@
                         android:layout_below="@+id/ibtnDocument2"
                         android:layout_marginTop="8dp"
                         android:clickable="false"
-                        android:text="Checkpoint"
+                        android:text="Waypoint"
                         android:textAlignment="center" />
                 </RelativeLayout>
 

@@ -564,4 +564,33 @@ public class LibInspira {
         return strDate;
     }
 
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private static double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+    //added by Tonny @28-Nov-2017  untuk cek jika jarak melebihi radius
+    public static boolean isDistanceOverRadius(double oldLatitude, double oldLongitude, double newLatitude, double newLongitude, double radiusInMetre) {
+        double theta = oldLongitude - newLongitude;
+        double dist = Math.sin(deg2rad(oldLatitude))
+                * Math.sin(deg2rad(newLatitude))
+                + Math.cos(deg2rad(oldLatitude))
+                * Math.cos(deg2rad(newLatitude))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515; // distance in Kilometers
+        dist = dist * 1000; // distance in meters
+        Log.i("Distance value: ", String.valueOf(dist));
+//        LibInspira.ShowLongToast(getApplicationContext(), "old location: " + oldLatitude + " - " + oldLongitude);
+//        LibInspira.ShowLongToast(getApplicationContext(), "new location: " + newLatitude + " - " + newLongitude);
+//        LibInspira.ShowLongToast(getApplicationContext(), "location distance: " + dist);
+//        LibInspira.ShowLongToast(getApplicationContext(), "location radius: " + radiusInMetre);
+
+        return dist > radiusInMetre;
+    }
+
 }
