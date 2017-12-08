@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import com.google.zxing.Result;
 import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
+import com.itextpdf.text.pdf.qrcode.QRCode;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +39,7 @@ import static android.Manifest.permission.CAMERA;
 //import android.app.Fragment;
 
 public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultHandler {
+    public String StrTitle = "QRCode Scan";
     private static final int REQUEST_CAMERA = 1;
     protected ZXingScannerView scannerView;
     private SaveDoc saveDoc;
@@ -61,7 +63,7 @@ public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultH
         scannerView = new ZXingScannerView(getContext());
         // Inflate the layout for this fragment
         //View v = inflater.inflate(R.layout.fragment_qrcode, container, false);
-        getActivity().setTitle("QRCode");
+        getActivity().setTitle(StrTitle);
         return scannerView;
     }
 

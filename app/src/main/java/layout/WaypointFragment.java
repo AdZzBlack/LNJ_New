@@ -1,6 +1,6 @@
 /******************************************************************************
     Author           : Tonny
-    Description      : untuk mengatur atau menambahkan lokasi baru untuk checkin document
+    Description      : untuk mengatur atau menambahkan waypoint baru
     History          :
 
 ******************************************************************************/
@@ -29,7 +29,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,8 +58,6 @@ import com.inspira.lnj.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, android.location.LocationListener, View.OnClickListener{
@@ -174,6 +171,7 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
+                        //untuk hide button direction dan show googlemaps
                         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
                         return false;
                     }
@@ -569,7 +567,7 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
-//                jsonObject.put("nomorthorderjual", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorth,""));
+//                jsonObject.put("nomorthorderjual", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.

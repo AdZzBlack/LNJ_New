@@ -55,7 +55,7 @@ public class QRCodeCheckinFragment extends QRCodeFragment implements ZXingScanne
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        if(!LibInspira.getShared(global.userpreferences, global.user.checkin_nomorth, "").equals(""))
+        if(!LibInspira.getShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "").equals(""))
         {
             LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
         }
@@ -78,7 +78,7 @@ public class QRCodeCheckinFragment extends QRCodeFragment implements ZXingScanne
         String parts[] = scanResult.split("\\|");
         if (parts.length >= 4){
             if(parts[0].toLowerCase().equals("lnj") && parts[1].toLowerCase().equals("deliverynote")){
-                LibInspira.setShared(global.userpreferences, global.user.checkin_nomorth, parts[2]);
+                LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, parts[2]);
                 LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, parts[3]);
                 LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
             }else{

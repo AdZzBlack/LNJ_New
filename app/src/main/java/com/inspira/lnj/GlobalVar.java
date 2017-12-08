@@ -84,7 +84,6 @@ public class GlobalVar {
 
             public String nomor_doc = "nomor_doc";
             public String kode_doc = "kode_doc";
-
         }
 
         public class User
@@ -104,7 +103,8 @@ public class GlobalVar {
             public String role_checkin = "role_checkin"; //role apakah user dapat melakukan checkin atau tidak (0/1)
             public String role_cantracked = "role_cantracked"; //role apakah user dapat ditrack atau tidak (0/1)
 
-            public String checkin_nomorth = "checkin_nomorth"; //added by ADI @05-Oct-2017
+            public String checkin_nomorthsuratjalan = "checkin_nomorthsuratjalan"; //added by ADI @05-Oct-2017
+            public String checkin_nomortdsuratjalan = "checkin_nomortdsuratjalan"; //added by Tonny @04-Dec-2017
             public String checkin_kodecontainer = "checkin_kodecontainer"; //added by ADI @05-Oct-2017
         }
 
@@ -113,6 +113,7 @@ public class GlobalVar {
             public String user = "user"; // nomor~nama~location~hp
             public String userlist = "userlist"; // nomor~kode~nama
             public String doclist = "doclist"; //untuk menampung data document(thorderjual) yg diberikan pada user yg login  //nomor~kode~nomormhadmin~tanggal~nama
+            public String checkpointlist = "checkpointlist"; //nomor~nama //untuk menampung data checkpoint untuk ditampilkan pada FormTrackingFragment
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

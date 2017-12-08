@@ -6,18 +6,6 @@
     android:clickable="true">
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Cancel"
-        android:backgroundTint="@color/colorRed"
-        android:id="@+id/btn_cancel"
-        android:textColor="@color/colorBlack"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
-
-    <Button
         android:id="@+id/btn_done"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -26,8 +14,19 @@
         android:backgroundTint="@color/colorMoney"
         android:text="Done"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorBlack"
-        android:layout_above="@id/btn_cancel"/>
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/colorBlack" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="Rescan"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_above="@id/btn_done"
+        android:textColor="@color/colorBlack" />
 
     <Button
         android:layout_width="match_parent"
@@ -38,7 +37,7 @@
         android:textColor="@color/colorBlack"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_above="@id/btn_done"/>
+        android:layout_above="@id/btn_cancel"/>
 
     <RelativeLayout
         android:layout_above="@id/btn_checkin"

@@ -153,7 +153,136 @@ class Scanning extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
-	
+
+    // --- check finished document --- //
+    function checkDocument_post()
+    {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");
+        $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
+        $doctype = (isset($jsonObject["doctype"]) ? $this->clean($jsonObject["doctype"])     : "");
+        $query = "  SELECT status_selesai FROM thsuratjalan WHERE nomor = $nomorthsuratjalan ";
+        if($doctype == "tdsuratjalan")
+            $query = "  SELECT status_selesai FROM tdsuratjalan WHERE nomor = $nomortdsuratjalan ";
+        $result = $this->db->query($query);
+        if($result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r)
+            {
+                array_push($data['data'], array(
+                                                'status_selesai'    	    => $r['status_selesai']
+                                        )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to add the data'));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+	// --- get checkpoint dari skenario --- //
+	function getCheckpointList_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $doctype = (isset($jsonObject["doctype"]) ? $this->clean($jsonObject["doctype"])     : "");
+        $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");
+        $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
+        $query = "  SELECT nomormhskenario_manual FROM tdsuratjalan WHERE nomor = $nomortdsuratjalan";
+        if($doctype == "tdsuratjalan"){
+            $query = "  SELECT nomormhskenario_manual FROM tdsuratjalan WHERE nomor = $nomortdsuratjalan ";
+        }
+//        }else{
+//            $query = "  SELECT nomormhskenario_manual FROM thsuratjalan WHERE nomor = $nomorthsuratjalan ";
+//        }
+        $result = $this->db->query($query);
+        if($result && $result->num_rows() > 0){
+            $row = $result->row();
+            $nomorskenario = $row->nomormhskenario_manual;
+            if($nomorskenario > 0){
+                $query = "  SELECT a.nomor, a.nama FROM mhcheckpoint a " .
+                         "  JOIN mdskenario b " .
+                         "    ON b.nomormhcheckpoint = a.nomor" .
+                         "  JOIN tdsuratjalan c " .
+                         "    ON c.nomormhskenario_manual = b.nomormhskenario " .
+                         "  WHERE b.nomormhskenario = $nomorskenario ";
+                $result = $this->db->query($query);
+                if($result && $result->num_rows() > 0){
+                    foreach ($result->result_array() as $r)
+                    {
+                        array_push($data['data'], array(
+                                                        'nomor'    	    => $r['nomor'],
+                                                        'nama'    	    => $r['nama']
+                                                )
+                        );
+                    }
+                }else{
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'Failed to add the data'));
+                }
+            }else{
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                                     'message' => 'There is no scenario for this document'));
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to retrieve the data'));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- get checkpoint dari skenario --- //
+    function getCheckInHistory_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");
+        $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
+        $nomoruser = (isset($jsonObject["nomoruser"]) ? $this->clean($jsonObject["nomoruser"])     : "");
+        $query = "  SELECT kodecontainer, typetracking, nomorsopir, lat, lon, dibuat_pada AS tanggal FROM whcheckin_mobile WHERE nomortdsuratjalan = $nomortdsuratjalan AND nomorsopir = $nomoruser";
+        $result = $this->db->query($query);
+        if($result){
+            if($result->num_rows() > 0){
+                foreach ($result->result_array() as $r)
+                {
+                    array_push($data['data'], array(
+                                                    'kodecontainer'    	    => $r['kodecontainer'],
+                                                    'typetracking'    	    => $r['typetracking'],
+                                                    'lat'            	    => $r['lat'],
+                                                    'lon'    	            => $r['lon'],
+                                                    'tanggal'    	        => $r['tanggal']
+                                            )
+                    );
+                }
+            }else{
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => 'No history data for this document'));
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to retrieve the data'));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
 	// --- Check in tracking --- //
     function checkIn_post()
     {
@@ -162,33 +291,44 @@ class Scanning extends REST_Controller {
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
-        $nomorthorderjual = (isset($jsonObject["nomorthorderjual"]) ? $this->clean($jsonObject["nomorthorderjual"])     : "");
-        $kodecontainer = (isset($jsonObject["kodecontainer"]) ? $this->clean($jsonObject["kodecontainer"])     : "");
+        $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");
+        $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
+        //$kodecontainer = (isset($jsonObject["kodecontainer"]) ? $this->clean($jsonObject["kodecontainer"])     : "");
         $nomorsopir = (isset($jsonObject["nomorsopir"]) ? $this->clean($jsonObject["nomorsopir"])     : "");
         $type = (isset($jsonObject["type"]) ? $this->clean($jsonObject["type"])     : "");
         $lat = (isset($jsonObject["lat"]) ? $jsonObject["lat"]     : "");
         $lon = (isset($jsonObject["lon"]) ? $jsonObject["lon"]     : "");
 
-        $this->db->trans_begin();
-        $query = "	INSERT INTO whcheckin_mobile
-                        (nomorthorderjual, kodecontainer, typetracking, nomorsopir, lat, lon, dibuat_pada)
-                    VALUES
-                        ($nomorthorderjual, '$kodecontainer', '$type', $nomorsopir, $lat, $lon, NOW()) ";
+        $query = "  SELECT kodecontainer FROM tdsuratjalan WHERE nomor = $nomortdsuratjalan ";
+        $result = $this->db->query($query);
 
-        $this->db->query($query);
+        if($result && $result->num_rows() > 0){
+            $row = $result->row();
+//            $nomorcontainer = $row->nomormhcontainer;
+            $kodecontainer = $row->kodecontainer;
+            $this->db->trans_begin();
+            $query = "	INSERT INTO whcheckin_mobile
+                            (nomortdsuratjalan, kodecontainer, typetracking, nomorsopir, lat, lon, dibuat_pada)
+                        VALUES
+                            ($nomortdsuratjalan, '$kodecontainer', '$type', $nomorsopir, $lat, $lon, NOW()) ";
 
-        if ($this->db->trans_status() === FALSE)
-        {
-            $this->db->trans_rollback();
+            $this->db->query($query);
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => 'Failed to add the data'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                array_push($data['data'], array( 'message' => 'Your data has been successfully added' ));
+            }
+        }else{
             array_push($data['data'], array( 'query' => $this->error($query),
-                                             'message' => 'Failed to add the data'));
+                                                         'message' => 'Failed to add the data'));
         }
-        else
-        {
-            $this->db->trans_commit();
-            array_push($data['data'], array( 'message' => 'Your data has been successfully added' ));
-        }
-
         if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code

@@ -1,6 +1,6 @@
 /******************************************************************************
-    Author           : ADI
-    Description      : dashboard untuk internal
+    Author           : Tonny
+    Description      : form untuk menampilkan maps pada saat checkin
     History          :
 
 ******************************************************************************/
@@ -10,6 +10,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -23,9 +25,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -40,18 +45,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.inspira.lnj.FormChooseTracking;
 import com.inspira.lnj.GlobalVar;
-import com.inspira.lnj.IndexInternal;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import static com.inspira.lnj.IndexInternal.global;
-import static com.inspira.lnj.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
@@ -75,6 +75,9 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
 
     private GlobalVar global;
     private JSONObject jsonObject;
+
+    private Checkpoint checkpoint;
+    private CheckInHistory checkInHistory;
 
     public FormTrackingFragment() {
         // Required empty public constructor
@@ -123,6 +126,7 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
             fm.beginTransaction().replace(R.id.map_container, fragment).commit();
             fragment.getMapAsync(this);
         }
+        if(mCurrLocationMarker != null) mCurrLocationMarker.remove();
     }
 
     @Override
@@ -136,37 +140,44 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
 
         if(id==R.id.btn_checkin)
         {
-            FormChooseTracking cdd = new FormChooseTracking(getContext());
-            cdd.setDialogResult(new FormChooseTracking.OnMyDialogResult() {
+            FormChooseCheckIn chooseCheckIn = new FormChooseCheckIn(getContext());
+            chooseCheckIn.setDialogResult(new FormChooseCheckIn.OnMyDialogResult() {
                 @Override
                 public void finish(String jenis) {
                     String actionUrl = "Scanning/checkIn/";
                     new CheckIn(jenis).execute(actionUrl);
                 }
             });
-            cdd.show();
+            chooseCheckIn.show();
         }
         else if(id==R.id.btn_done)
         {
-            LibInspira.setShared(global.userpreferences, global.user.checkin_nomorth, "");
+            LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "");
+            LibInspira.setShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, "");
             LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
             LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
         }
         else if(id==R.id.btn_cancel)
         {
-            LibInspira.alertBoxYesNo("Cancel Check In", "Do you want to cancel check-in?", getActivity(), new Runnable() {
-                @Override
-                public void run() {
-                    LibInspira.setShared(global.userpreferences, global.user.checkin_nomorth, "");
-                    LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
-                    LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new QRCodeCheckinFragment());
-                }
-            }, new Runnable() {
-                @Override
-                public void run() {
-                    //do nothing
-                }
-            });
+//            LibInspira.alertBoxYesNo("Cancel Check In", "Do you want to cancel check-in?", getActivity(), new Runnable() {
+//                @Override
+//                public void run() {
+//                    LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "");
+//                    LibInspira.setShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, "");
+//                    LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
+//                    LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new BarCodeCheckinFragment());
+//                }
+//            }, new Runnable() {
+//                @Override
+//                public void run() {
+//                    //do nothing
+//                }
+//            });
+            //modified by Tonny @09-Dec-2017 rescan tidak perlu alert
+            LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "");
+            LibInspira.setShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, "");
+            LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
+            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new BarCodeCheckinFragment());
         }
     }
 
@@ -185,6 +196,8 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        if(checkpoint != null) checkpoint.cancel(true);
+        if(checkInHistory != null) checkInHistory.cancel(true);
         manager.removeUpdates(this);
         managerGPS.removeUpdates(this);
         super.onDestroy();
@@ -192,27 +205,27 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
-
-        Log.d("map", "onLocationChanged: ");
-
-        getLatitude = location.getLatitude();
-        getLongitude = location.getLongitude();
-
-        //Place current location marker
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Your Location");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-
-//        move map camera
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
-        mGoogleMap.animateCamera(cameraUpdate);
+//        mLastLocation = location;
+//        if (mCurrLocationMarker != null) {
+//            mCurrLocationMarker.remove();
+//        }
+//
+//        Log.d("map", "onLocationChanged: ");
+//
+//        getLatitude = location.getLatitude();
+//        getLongitude = location.getLongitude();
+//
+//        //Place current location marker
+//        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("Your Location");
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+//        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+//
+////        move map camera
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+//        mGoogleMap.animateCamera(cameraUpdate);
     }
 
     @Override
@@ -283,15 +296,8 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
                     getLongitude = 0.0;
                 }
 
-                Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
-
-                LatLng latLng = new LatLng(getLatitude, getLongitude);
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title("Your Location");
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-
+                //remarked by Tonny @09-Dec-2017
+//                Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
                 LatLng latlng = new LatLng(getLatitude, getLongitude);
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, 16);
                 mGoogleMap.animateCamera(cameraUpdate);
@@ -300,7 +306,8 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
         }
         else
         {
-            Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
+            //remarked by Tonny @09-Dec-2017
+//            Toast.makeText(getActivity(), getLatitude + ", " + getLongitude, Toast.LENGTH_LONG).show();
 
             LatLng latLng = new LatLng(getLatitude, getLongitude);
             MarkerOptions markerOptions = new MarkerOptions();
@@ -344,6 +351,13 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
+
+//        checkpoint = new Checkpoint("tdsuratjalan");
+//        String actionUrl = "Scanning/getCheckpoint/";
+//        checkpoint.execute(actionUrl);
+        checkInHistory = new CheckInHistory();
+        String actionUrl = "Scanning/getCheckInHistory/";
+        checkInHistory.execute(actionUrl);
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -436,7 +450,8 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
-                jsonObject.put("nomorthorderjual", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorth,""));
+                jsonObject.put("nomorthsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
+                jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
                 jsonObject.put("kodecontainer", LibInspira.getShared(global.userpreferences,global.user.checkin_kodecontainer,""));
                 jsonObject.put("nomorsopir", LibInspira.getShared(global.userpreferences,global.user.nomor,""));
                 jsonObject.put("type", type);
@@ -481,6 +496,164 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(getContext(), "Checking In", "Loading");
+        }
+    }
+
+    //added by Tonny @04-Dec-2017  get scenario untuk dynamic option
+    private class Checkpoint extends AsyncTask<String, Void, String> {
+        private String docType;
+        private Checkpoint(String _type)
+        {
+            docType = _type;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                String nomorthsuratjalan = LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,"");
+                String nomortdsuratjalan = LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,"");
+                jsonObject.put("nomorthsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
+                jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
+                jsonObject.put("doctype", docType);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success
+                            LibInspira.showLongToast(getContext(), "Checkpoint Retrieved");
+                        }
+                        else
+                        {
+                            LibInspira.showLongToast(getContext(), "Checkpoint Failed");
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getContext(), e.getMessage());
+                LibInspira.hideLoading();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Retrieving data", "Loading");
+        }
+    }
+
+    //added by Tonny @08-Dec-2017 get checkin history dan menampilkan dalam bentuk marker hijau pada map
+    private class CheckInHistory extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomoruser", LibInspira.getShared(global.userpreferences,global.user.nomor,""));
+                jsonObject.put("nomorthsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
+                jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success
+//                            LibInspira.showLongToast(getContext(), "Checkpoint Retrieved");
+                            //Place current location marker
+                            String snippet = obj.getString("tanggal") + "\n" +
+                                    "lat: " + obj.getString("lat") + "\n" + "lng: " + obj.getString("lon");
+                            LatLng latLng = new LatLng(Double.parseDouble(obj.getString("lat")), Double.parseDouble(obj.getString("lon")));
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng);
+                            markerOptions.title(obj.getString("typetracking"));
+                            markerOptions.snippet(snippet);
+                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                            mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+
+                            mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                @Override
+                                public boolean onMarkerClick(Marker marker) {
+                                    //untuk hide button direction dan button show googlemaps
+                                    mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+                                    return false;
+                                }
+                            });
+
+                            //untuk override info window pada marker
+                            mGoogleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                                @Override
+                                public View getInfoWindow(Marker arg0) {
+                                    return null;
+                                }
+
+                                @Override
+                                public View getInfoContents(Marker marker) {
+
+                                    LinearLayout info = new LinearLayout(getContext());
+                                    info.setOrientation(LinearLayout.VERTICAL);
+
+                                    TextView title = new TextView(getContext());
+                                    title.setTextColor(Color.BLACK);
+                                    title.setGravity(Gravity.CENTER);
+                                    title.setTypeface(null, Typeface.BOLD);
+                                    title.setText(marker.getTitle());
+
+                                    TextView snippet = new TextView(getContext());
+                                    snippet.setTextColor(Color.GRAY);
+                                    snippet.setText(marker.getSnippet());
+
+                                    info.addView(title);
+                                    info.addView(snippet);
+
+                                    return info;
+                                }
+                            });
+                        }
+                        else
+                        {
+                            LibInspira.showLongToast(getContext(), obj.getString("message"));
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getContext(), e.getMessage());
+                LibInspira.hideLoading();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Retrieving data", "Loading");
         }
     }
 }

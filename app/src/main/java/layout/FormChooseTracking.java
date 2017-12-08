@@ -1,4 +1,4 @@
-package com.inspira.lnj;
+package layout;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
+
+import com.inspira.lnj.R;
 
 public class FormChooseTracking extends Dialog implements View.OnClickListener {
     OnMyDialogResult mDialogResult;
