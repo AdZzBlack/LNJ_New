@@ -56,8 +56,6 @@ import com.inspira.lnj.R;
 
 import java.util.ArrayList;
 
-import static com.inspira.lnj.IndexInternal.global;
-
 public class LiveTrackingFragment extends Fragment implements OnMapReadyCallback,
         LocationListener,
         View.OnClickListener,
@@ -83,6 +81,14 @@ public class LiveTrackingFragment extends Fragment implements OnMapReadyCallback
 
     public static GlobalVar global;
 
+    public static LiveTrackingFragment newInstance(String _name) {
+        LiveTrackingFragment newFragment = new LiveTrackingFragment();
+        Bundle args = new Bundle();
+        args.putString("name", _name);
+        newFragment.setArguments(args);
+        return newFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +98,7 @@ public class LiveTrackingFragment extends Fragment implements OnMapReadyCallback
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_salestracking, container, false);
-        getActivity().setTitle("Live Tracking");
+        getActivity().setTitle("Live Tracking - " + getArguments().getString("name"));
 
         global = new GlobalVar(getContext());
         mChildRef = mLocationRef.child(LibInspira.getShared(global.temppreferences, global.temp.selected_nomor_user, ""));

@@ -26,7 +26,7 @@ public class FCMInstanceIDRegistrationService extends IntentService {
     public void onHandleIntent(Intent intent) {
         String recent_token = FirebaseInstanceId.getInstance().getToken();
 
-        Log.d("REG_TOKEN3", recent_token);
+//        Log.d("REG_TOKEN3", recent_token);
         GlobalVar global= new GlobalVar(this);
         LibInspira.setShared(global.userpreferences, global.user.token,recent_token);
     }

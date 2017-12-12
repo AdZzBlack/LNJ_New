@@ -114,6 +114,46 @@ class Track extends REST_Controller {
         $this->gcm->send();
     }
 
+    // --- Insert History Driver--- //
+    function InsertHistory_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $user_nomor = (isset($jsonObject["user_nomor"]) ? $this->clean($jsonObject["user_nomor"])     : "");
+        $job_nomor = (isset($jsonObject["job_nomor"]) ? $this->clean($jsonObject["job_nomor"])     : "");
+        $latitude = (isset($jsonObject["latitude"]) ? $this->clean($jsonObject["latitude"])     : "");
+        $longitude = (isset($jsonObject["longitude"]) ? $this->clean($jsonObject["longitude"])     : "");
+
+        $this->db->trans_begin();
+        $query = " INSERT INTO whhistory_mobile
+                    (nomorjob, nomoruser, lat, lon)
+                    VALUES
+                    ($job_nomor, $user_nomor, $latitude, $longitude) ";
+        $this->db->query($query);
+
+        $this->db->query($query);
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to insert history'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            array_push($data['data'], array( 'message' => 'Your data has been successfully inserted' ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
 	// --- Get all waypoints data --- //
 	function getWaypoints_post()
 	{     

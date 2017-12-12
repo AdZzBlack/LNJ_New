@@ -66,6 +66,8 @@ public class LocationService extends Service implements LocationListener,
 
     private double getLatitude;
     private double getLongitude;
+    private double oldLatitude = 0.0;
+    private double oldLongitude = 0.0;
 
     private boolean isMock;
     private boolean isNewLocation;
@@ -175,6 +177,16 @@ public class LocationService extends Service implements LocationListener,
                 mChildRef.child("lat").setValue(String.valueOf(getLatitude));
                 mChildRef.child("lon").setValue(String.valueOf(getLongitude));
 
+                if(LibInspira.getShared(global.userpreferences, global.user.role_isdriver, "").equals("1"))
+                {
+                    double radius = getRadius(oldLatitude, oldLongitude, getLatitude, getLongitude);
+                    if(radius>=5.0 && !LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,"").equals(""))
+                    {
+                        String actionUrl = "Track/InsertHistory/";
+                        new updateLocation().execute(actionUrl);
+                    }
+                }
+
 //                checkingHours();
 //                if (!isMock && canSave) {
 //                    Log.d("ok", getLatitude + ", " + getLongitude);
@@ -252,8 +264,24 @@ public class LocationService extends Service implements LocationListener,
         mGoogleApiClient.connect();
     }
 
+    public static double getRadius(double lat1, double lng1, double lat2, double lng2) {
+//        double earthRadius = 3958.75; // miles (or 6371.0 kilometers)
+        double earthRadius = 6371.0;
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = earthRadius * c;
+
+        return dist;
+    }
+
     private class updateLocation extends AsyncTask<String, Void, String> {
         String user_nomor = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
+        String job_nomor = LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,"");
         String latitude = String.valueOf(getLatitude);
         String longitude = String.valueOf(getLongitude);
 
@@ -262,6 +290,7 @@ public class LocationService extends Service implements LocationListener,
             try {
                 jsonObject = new JSONObject();
                 jsonObject.put("user_nomor", user_nomor);
+                jsonObject.put("job_nomor", job_nomor);
                 jsonObject.put("latitude", latitude);
                 jsonObject.put("longitude", longitude);
             } catch (JSONException e) {
@@ -275,6 +304,8 @@ public class LocationService extends Service implements LocationListener,
         @Override
         protected void onPostExecute(String result) {
             canSave = true;
+            oldLatitude = getLatitude;
+            oldLongitude = getLongitude;
         }
 
         @Override

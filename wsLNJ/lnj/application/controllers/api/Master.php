@@ -125,10 +125,12 @@ class Master extends REST_Controller {
 		$query = "	SELECT 
 						a.nomor AS `nomor`,
 						a.nama AS `nama`,
-						a.kode AS kode
+						a.kode AS kode,
+						b.cantracked AS cantracked
 					FROM mhadmin a
+					JOIN whrole_mobile b ON b.nomor = a.role_android
 					WHERE a.status_aktif = 1
-					AND role_android >= 0
+					AND a.role_android >= 0
 					ORDER BY a.nama;";
         $result = $this->db->query($query);
 
@@ -138,7 +140,8 @@ class Master extends REST_Controller {
                 array_push($data['data'], array(
                 								'nomor'					=> $r['nomor'],
                 								'nama' 					=> $r['nama'],
-                								'kode'                  => $r['kode']
+                								'kode'                  => $r['kode'],
+                								'cantracked'            => $r['cantracked'],
                 								)
                	);
             }

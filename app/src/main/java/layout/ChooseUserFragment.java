@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
@@ -182,33 +183,39 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomor = parts[0];
-                    String kode = parts[1];
-                    String nama = parts[2];
-
-                    if(nomor.equals("null")) nomor = "";
-                    if(kode.equals("null")) kode = "";
-                    if(nama.equals("null")) nama = "";
-
-                    ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomor);
-                    dataItem.setKode(kode);
-                    dataItem.setNama(nama);
-                    list.add(dataItem);
-
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking")
-                            || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("document"))
+                    if(parts.length==4)
                     {
-                        if(!nomor.equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                        String nomor = parts[0];
+                        String kode = parts[1];
+                        String nama = parts[2];
+                        String cantracked = parts[3];
+
+                        if(nomor.equals("null")) nomor = "";
+                        if(kode.equals("null")) kode = "";
+                        if(nama.equals("null")) nama = "";
+                        if(cantracked.equals("null")) cantracked = "";
+
+                        ItemAdapter dataItem = new ItemAdapter();
+                        dataItem.setNomor(nomor);
+                        dataItem.setKode(kode);
+                        dataItem.setNama(nama);
+                        dataItem.setCantracked(cantracked);
+                        list.add(dataItem);
+
+                        if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking")
+                                || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("document"))
+                        {
+                            if(!nomor.equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                            {
+                                itemadapter.add(dataItem);
+                                itemadapter.notifyDataSetChanged();
+                            }
+                        }
+                        else
                         {
                             itemadapter.add(dataItem);
                             itemadapter.notifyDataSetChanged();
                         }
-                    }
-                    else
-                    {
-                        itemadapter.add(dataItem);
-                        itemadapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -241,12 +248,14 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                             String nomor = (obj.getString("nomor"));
                             String kode = (obj.getString("kode"));
                             String nama = (obj.getString("nama"));
+                            String cantracked = (obj.getString("cantracked"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(kode.equals("")) kode = "null";
                             if(nama.equals("")) nama = "null";
+                            if(cantracked.equals("")) cantracked = "null";
 
-                            tempData = tempData + nomor + "~" + kode + "~" + nama + "|";
+                            tempData = tempData + nomor + "~" + kode + "~" + nama + "~" + cantracked + "|";
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.userlist, "")))
@@ -280,6 +289,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         private String nomor;
         private String nama;
         private String kode;
+        private String cantracked;
 
         public ItemAdapter() {}
 
@@ -291,6 +301,9 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
+
+        public String getCantracked() {return cantracked;}
+        public void setCantracked(String _param) {this.cantracked = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -348,10 +361,17 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                     }
                     else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking"))
                     {
-                        LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, finalHolder.adapterItem.getKode());
-                        LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
-                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new LiveTrackingFragment());
+                        if(finalHolder.adapterItem.getCantracked().equals("1"))
+                        {
+                            LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
+                            LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, finalHolder.adapterItem.getKode());
+                            LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
+                            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new LiveTrackingFragment().newInstance(finalHolder.adapterItem.getNama()));
+                        }
+                        else
+                        {
+                            LibInspira.showLongToast(getContext(), "This user can't be tracked");
+                        }
                     }
                 }
             });

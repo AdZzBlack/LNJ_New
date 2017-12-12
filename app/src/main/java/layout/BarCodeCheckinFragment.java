@@ -70,7 +70,7 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
     @Override
     public void onResume() {
         super.onResume();
-        scannerView.resumeCameraPreview(BarCodeCheckinFragment.this);;
+        scannerView.resumeCameraPreview(BarCodeCheckinFragment.this);
     }
 
     @Override

@@ -104,6 +104,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.role_qrcodereader, obj.getString("role_qrcodereader"));
             LibInspira.setShared(global.userpreferences, global.user.role_checkin, obj.getString("role_checkin"));
             LibInspira.setShared(global.userpreferences, global.user.role_cantracked, obj.getString("role_cantracked"));
+            LibInspira.setShared(global.userpreferences, global.user.role_cantracking, obj.getString("role_cantracking"));
         }
         catch(Exception e)
         {

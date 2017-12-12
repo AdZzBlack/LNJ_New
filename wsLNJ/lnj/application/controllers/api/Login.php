@@ -191,7 +191,8 @@ class Login extends REST_Controller {
 						b.isdriver AS isdriver,
 						b.qrcodereader AS qrcodereader,
 						b.checkin AS checkin,
-						b.cantracked AS cantracked
+						b.cantracked AS cantracked,
+						b.cantracking AS cantracking
 					FROM mhadmin a
 					JOIN whrole_mobile b ON a.role_android = b.nomor
 					LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
@@ -218,6 +219,7 @@ class Login extends REST_Controller {
 												'role_qrcodereader' 			=> $r['qrcodereader'],
 												'role_checkin'					=> $r['checkin'],
 												'role_cantracked'				=> $r['cantracked'],
+												'role_cantracking'				=> $r['cantracking'],
                 								)
                	);
             }
@@ -260,7 +262,8 @@ class Login extends REST_Controller {
                         b.isdriver AS isdriver,
                         b.qrcodereader AS qrcodereader,
                         b.checkin AS checkin,
-                        b.cantracked AS cantracked
+                        b.cantracked AS cantracked,
+                        b.cantracking AS cantracking
                     FROM mhadmin a
                     JOIN whrole_mobile b ON a.role_android = b.nomor
                     LEFT JOIN mhpegawai d ON a.nomormhpegawai = d.nomor
@@ -288,6 +291,7 @@ class Login extends REST_Controller {
                                                     'role_qrcodereader' 			=> $r['qrcodereader'],
                                                     'role_checkin'					=> $r['checkin'],
                                                     'role_cantracked'				=> $r['cantracked'],
+                                                    'role_cantracking'				=> $r['cantracking'],
 											)
 				);
 			}

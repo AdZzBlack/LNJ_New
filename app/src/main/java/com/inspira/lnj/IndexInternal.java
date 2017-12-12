@@ -75,7 +75,7 @@ public class IndexInternal extends AppCompatActivity
         //added by Shodiq @01-Aug-2017
         // Permission for enabling location feature only for SDK Marshmallow | Android 6
         if (Build.VERSION.SDK_INT >= 23)
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED)
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED)
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, 1600);
 
         if(LibInspira.getShared(global.userpreferences, global.user.role_cantracked, "").equals("1"))
