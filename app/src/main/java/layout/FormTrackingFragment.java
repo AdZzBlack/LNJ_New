@@ -563,6 +563,7 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
+                String kode = LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,"");
                 jsonObject.put("nomoruser", LibInspira.getShared(global.userpreferences,global.user.nomor,""));
                 jsonObject.put("nomorthsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
                 jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));

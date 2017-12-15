@@ -46,6 +46,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -593,4 +594,16 @@ public class LibInspira {
         return dist > radiusInMetre;
     }
 
+    //added by Tonny @14-Dec-2017  // untuk pengecekan data (input) kembar dalam sebuah datapreferences
+    public static boolean isAlreadyOnList(String _data, String _newdata, String _splitter){
+        boolean result = false;
+        List<String> dataList = new ArrayList<String>(Arrays.asList(_data.split(_splitter)));
+        for (String value :
+                dataList) {
+            if (value.equals(_newdata)) {
+                result = true;
+            }
+        }
+        return result;
+    }
 }

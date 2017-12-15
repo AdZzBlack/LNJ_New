@@ -106,6 +106,7 @@ public class GlobalVar {
 
             public String checkin_nomorthsuratjalan = "checkin_nomorthsuratjalan"; //added by ADI @05-Oct-2017
             public String checkin_nomortdsuratjalan = "checkin_nomortdsuratjalan"; //added by Tonny @04-Dec-2017
+            public String checkin_kodesuratjalan = "checkin_kodesuratjalan"; //added by Tonny @16-Dec-2017
             public String checkin_kodecontainer = "checkin_kodecontainer"; //added by ADI @05-Oct-2017
         }
 
@@ -114,7 +115,7 @@ public class GlobalVar {
             public String user = "user"; // nomor~nama~location~hp
             public String userlist = "userlist"; // nomor~kode~nama~cantracked
             public String doclist = "doclist"; //untuk menampung data document(thorderjual) yg diberikan pada user yg login  //nomor~kode~nomormhadmin~tanggal~nama
-            public String checkpointlist = "checkpointlist"; //nomor~nama //untuk menampung data checkpoint untuk ditampilkan pada FormTrackingFragment
+            public String deliveryorderlist = "deliveryorderlist"; //nomor1|nomor2 //untuk menampung list data surat jalan yang telah discan untuk ditampilkan di ChooseSuratJalan
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

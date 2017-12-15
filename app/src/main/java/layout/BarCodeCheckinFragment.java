@@ -27,6 +27,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScannerView.ResultHandler {
     private static final int REQUEST_CAMERA = 1;
     private DocumentCheck documentCheck;
+    private String strScanResult;
 
     public BarCodeCheckinFragment() {
         // Required empty public constructor
@@ -60,11 +61,12 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        if(!LibInspira.getShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "").equals("") ||
-                !LibInspira.getShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, "").equals(""))
-        {
-            LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
-        }
+        //remarked by Tonny @16-Dec-2017 tidak perlu pengecekan karena ditampilkan jika perlu
+//        if(!LibInspira.getShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "").equals("") ||
+//                !LibInspira.getShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, "").equals(""))
+//        {
+//            LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
+//        }
     }
 
     @Override
@@ -97,6 +99,7 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
                 LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, scanResult.substring(1));
             }else{
                 documentCheck = new DocumentCheck("tdsuratjalan");
+                strScanResult = scanResult;
                 LibInspira.setShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, scanResult.substring(1));
             }
             if(documentCheck != null){
@@ -142,19 +145,26 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
                         LibInspira.hideLoading();
                         if(!obj.has("query")){  //jika success
                             if(obj.getString("status_selesai").equals("0")){
-                                //jika dokumen belum selesai, maka dapatkan skenario
-                                LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
+                                //jika dokumen belum sampai DAN belum ada dalam deliveryorderlist, maka simpan ke dalam deliveryorderlist
+                                if(LibInspira.isAlreadyOnList(LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, ""), strScanResult, "\\|")){
+                                    LibInspira.showShortToast(getContext(), "This document is already scanned");
+                                }else{
+                                    LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "") +
+                                            strScanResult + "|");
+                                    LibInspira.showShortToast(getContext(), "Document has been successfully added to the list");
+                                }
                             }else{
                                 //jika dokumen sudah selesai, tampilkan pesan bahwa job sudah selesai dan lanjutkan scan untuk dokumen lainnya
                                 LibInspira.showLongToast(getContext(), "This document is already delivered, please scan another document");
-                                scannerView.resumeCameraPreview(BarCodeCheckinFragment.this);
                             }
+                            scannerView.resumeCameraPreview(BarCodeCheckinFragment.this);
                         }
                         else
                         {
-                            LibInspira.showLongToast(getContext(), "Document not found");
+                            LibInspira.showLongToast(getContext(), "Document not found. Please try again with a valid document");
                             Log.wtf("error ", obj.getString("query"));
-                            LibInspira.BackFragment(getFragmentManager());
+                            //remarked by Tonny @16-Dec-2017
+//                            LibInspira.BackFragment(getFragmentManager());
                         }
                     }
                 }
@@ -164,8 +174,6 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
                 e.printStackTrace();
                 LibInspira.showLongToast(getContext(), e.getMessage());
             }
-//            LibInspira.hideLoading();
-//            LibInspira.BackFragment(getFragmentManager());
         }
 
         @Override

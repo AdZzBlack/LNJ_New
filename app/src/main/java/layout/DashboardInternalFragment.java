@@ -98,7 +98,8 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
 
         if(id==R.id.btnCheckIn)
         {
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new BarCodeCheckinFragment());
+            //LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new BarCodeCheckinFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSuratJalanFragment());
         }
         else if (id == R.id.btnNewWayPoint){
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new WaypointFragment());
