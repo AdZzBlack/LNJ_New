@@ -279,8 +279,8 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
                         finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
                     }
 //                    LibInspira.showLongToast(context, finalHolder.adapterItem.getKode());
-                    String kode = finalHolder.adapterItem.getKode();
                     LibInspira.setShared(global.userpreferences,global.user.checkin_nomortdsuratjalan, finalHolder.adapterItem.getKode().substring(1));
+                    LibInspira.setShared(global.userpreferences,global.user.checkin_kodesuratjalan, finalHolder.adapterItem.getKode());  //added by Tonny @16-Dec-2017
                     LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormTrackingFragment());
                 }
             });

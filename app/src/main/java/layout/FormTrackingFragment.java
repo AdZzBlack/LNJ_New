@@ -94,7 +94,7 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_form_tracking, container, false);
-        getActivity().setTitle("Tracking");
+        getActivity().setTitle("Tracking " + LibInspira.getShared(global.userpreferences,global.user.checkin_kodesuratjalan,""));
         return v;
     }
 
