@@ -174,38 +174,38 @@ public class LibInspira {
 
     //function digunakan pada addtextchangedlistener untuk melakukan format angka ketika menulis
     //added by ADI @26-Aug-2017
-    public static void formatNumberEditText(EditText tv, TextWatcher tw, Boolean allowZero, Boolean withCommas)
+    public static void formatNumberEditText(EditText _tv, TextWatcher _tw, Boolean _allowZero, Boolean _withCommas)
     {
-        String value = tv.getText().toString();
+        String value = _tv.getText().toString();
         try
         {
-            tv.removeTextChangedListener(tw);
+            _tv.removeTextChangedListener(_tw);
 
             if (value != null && !value.equals(""))
             {
 
                 if(value.startsWith(",")){
-                    tv.setText("0,");
+                    _tv.setText("0,");
                 }
-                if(!allowZero)
+                if(!_allowZero)
                 {
                     if(value.startsWith("0") && !value.startsWith("0,")){
-                        tv.setText("");
+                        _tv.setText("");
                     }
                 }
 
 
-                String str = tv.getText().toString();
+                String str = _tv.getText().toString();
                 if (!value.equals(""))
-                    tv.setText(delimeter(str.replace(",", ""), withCommas));
-                tv.setSelection(tv.getText().toString().length());
+                    _tv.setText(delimeter(str.replace(",", ""), _withCommas));
+                _tv.setSelection(_tv.getText().toString().length());
             }
-            tv.addTextChangedListener(tw);
+            _tv.addTextChangedListener(_tw);
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
-            tv.addTextChangedListener(tw);
+            _tv.addTextChangedListener(_tw);
         }
     }
 

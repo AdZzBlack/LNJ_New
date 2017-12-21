@@ -91,6 +91,11 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
             etPlace.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.placename, ""));
         }
 
+        etRadius = (EditText) getView().findViewById(R.id.etRadius);
+        if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.radius, "").equals("")){
+            etRadius.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.radius, ""));
+        }
+
         etDuration = (EditText) getView().findViewById(R.id.etDuration);
         if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.duration, "").equals("")){
             etDuration.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.duration, ""));
@@ -104,7 +109,6 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
         if(!LibInspira.getShared(global.tempmapspreferences, global.tempMaps.longitude, "").equals("")){
             etLongitude.setText(LibInspira.getShared(global.tempmapspreferences, global.tempMaps.longitude, ""));
         }
-        etRadius = (EditText) getView().findViewById(R.id.etRadius);
         etRadius.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -118,7 +122,7 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
 
             @Override
             public void afterTextChanged(Editable s) {
-                LibInspira.formatNumberEditText(etRadius, this, true, false);
+                LibInspira.formatNumberEditText(etRadius, this, true, true);
                 //LibInspira.setShared(global.tempmapspreferences, global.tempMaps.radius, etRadius.getText().toString().replace(",", ""));
             }
         });
@@ -137,7 +141,7 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
 
             @Override
             public void afterTextChanged(Editable s) {
-                LibInspira.formatNumberEditText(etDuration, this, true, false);
+                LibInspira.formatNumberEditText(etDuration, this, true, true);
 //                LibInspira.setShared(global.tempmapspreferences, global.tempMaps.duration, etDuration.getText().toString().replace(",", ""));
             }
         });
@@ -190,6 +194,8 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, etPlace.getText().toString());
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.latitude, etLatitude.getText().toString());
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.longitude, etLongitude.getText().toString());
+                        String strRadius = etRadius.getText().toString().replace(",", "");
+                        String strDuration = etDuration.getText().toString().replace(",", "");
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.radius, etRadius.getText().toString().replace(",", ""));
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.duration, etDuration.getText().toString().replace(",", ""));
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.notes, etNotes.getText().toString());
@@ -344,6 +350,8 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                 jsonObject.put("arrnomorcheckpoint", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.event,""));  //added by Tonny @28-Nov-2017  nomor checkpoint = event
                 jsonObject.put("nomor", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.nomor,""));
                 jsonObject.put("nama", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.placename,""));
+                String strRadius = LibInspira.getShared(global.tempmapspreferences,global.tempMaps.radius,"");
+                String strDuration = LibInspira.getShared(global.tempmapspreferences,global.tempMaps.duration,"");
                 jsonObject.put("duration", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.duration,""));
                 jsonObject.put("radius", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.radius,""));
                 jsonObject.put("latitude", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.latitude,""));

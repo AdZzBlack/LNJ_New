@@ -281,8 +281,8 @@ class Track extends REST_Controller {
         $jsonObject = (json_decode($value , true));
 
         $nama = (isset($jsonObject["nama"]) ? $this->clean($jsonObject["nama"])     : "");
-        $duration = (isset($jsonObject["duration"]) ? $this->clean($jsonObject["duration"])     : "");
-        $radius = (isset($jsonObject["radius"]) ? $this->clean($jsonObject["radius"])     : "");
+        $duration = (isset($jsonObject["duration"]) ? $jsonObject["duration"]     : "");
+        $radius = (isset($jsonObject["radius"]) ? $jsonObject["radius"]     : "");
         $latitude = (isset($jsonObject["latitude"]) ? $jsonObject["latitude"]     : "");
         $longitude = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
         $keterangan = (isset($jsonObject["keterangan"]) ? $this->clean($jsonObject["keterangan"])     : "");
@@ -402,8 +402,8 @@ class Track extends REST_Controller {
 
         $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");
         $nama = (isset($jsonObject["nama"]) ? $this->clean($jsonObject["nama"])     : "");
-        $duration = (isset($jsonObject["duration"]) ? $this->clean($jsonObject["duration"])     : "");
-        $radius = (isset($jsonObject["radius"]) ? $this->clean($jsonObject["radius"])     : "");
+        $duration = (isset($jsonObject["duration"]) ? $jsonObject["duration"]     : "");
+        $radius = (isset($jsonObject["radius"]) ? $jsonObject["radius"]     : "");
         $latitude = (isset($jsonObject["latitude"]) ? $jsonObject["latitude"]     : "");
         $longitude = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
         $keterangan = (isset($jsonObject["keterangan"]) ? $this->clean($jsonObject["keterangan"])     : "");
