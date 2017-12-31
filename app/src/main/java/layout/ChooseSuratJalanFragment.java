@@ -29,6 +29,7 @@ import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -42,12 +43,18 @@ import static com.inspira.lnj.IndexInternal.jsonObject;
 public class ChooseSuratJalanFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
-
     private TextView tvInformation, tvNoData;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
     private FloatingActionButton fab;
+
+    private DeliveryOrderList deliveryOrderList;
+    private DeleteDO deleteDO;
+
+    private String selectedDO;
+    private String reason;
+//    private String strData;
 
     public ChooseSuratJalanFragment() {
         // Required empty public constructor
@@ -114,12 +121,24 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
 
         fab.setOnClickListener(this);
         fab.setVisibility(View.VISIBLE);
-        refreshList();
+        String ActionUrl = "Scanning/getDeliveryOrderList/ ";
+        deliveryOrderList = new DeliveryOrderList();
+        deliveryOrderList.execute(ActionUrl);
+//        refreshList();
+//        getStrData();
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (deliveryOrderList != null) deliveryOrderList.cancel(true);
+        if (deleteDO != null) deleteDO.cancel(true);
     }
 
     @Override
@@ -242,6 +261,7 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
+            ImageButton ibtnDelete;
         }
 
         @Override
@@ -257,8 +277,9 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
 
             holder = new Holder();
             holder.adapterItem = items.get(position);
-
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.ibtnDelete = (ImageButton) row.findViewById(R.id.ibtnDelete);
+            holder.ibtnDelete.setVisibility(View.VISIBLE);
 
             row.setTag(holder);
             setupItem(holder, row);
@@ -285,6 +306,32 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
                 }
             });
 
+            holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    deleteSelectedItem(finalHolder.adapterItem.getNomor());
+                    LibInspira.showInputDialog("Delete " + finalHolder.adapterItem.getNama(), "Reason: ", getActivity(), getContext(),
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    reason = LibInspira.getDialogValue(false);
+                                    if(!reason.equals("")){
+                                        selectedDO = finalHolder.adapterItem.getKode().substring(1);
+                                        Log.wtf("selected DO ", selectedDO);
+                                        deleteDO = new DeleteDO();
+                                        String actionUrl = "Scanning/deleteDeliveryOrder/ ";
+                                        deleteDO.execute(actionUrl);
+                                    }
+                                }
+                            }, new Runnable() {
+                                @Override
+                                public void run() {
+                                    //do nothing
+                                }
+                            });
+                }
+            });
+
             return row;
         }
 
@@ -300,4 +347,134 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
             }
         }
     }
+
+    //added by Tonny @05-Dec-2017 untuk cek suatu dokumen sudah selesai atau belum
+    private class DeliveryOrderList extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomormhadmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                Log.wtf("nomormhadmin ", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                String tempData = "";
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success mendapatkan data
+                            String nomor = obj.getString("nomor");
+                            if(!nomor.equals("")) {
+                                String strNomor = "D" + nomor;
+                                tempData = tempData + strNomor + "|";
+                                LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "") +
+                                        strNomor + "|");
+                            }
+                            if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "")))
+                            {
+                                LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, tempData);
+                            }
+//                            refreshList();
+                        }
+                        else
+                        {
+                            LibInspira.showLongToast(getContext(), obj.getString("message"));
+                            Log.wtf("error ", obj.getString("query"));
+                        }
+                    }
+                    refreshList();
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getContext(), e.getMessage());
+            }
+            LibInspira.hideLoading();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Checking Document", "Loading");
+        }
+    }
+
+    //added by Tonny @27-Dec-2017 dijalankan jika user menghapus data pada list
+    private class DeleteDO extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomortdsuratjalan", selectedDO); //isi dengan var suratjalan(String) yg dipilih
+                jsonObject.put("nomormhadmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                jsonObject.put("keterangan_batal", reason); //isi dengan var keterangan(String) hapus/cancel
+                Log.wtf("nomortdsuratjalan ", selectedDO);
+                Log.wtf("nomormhadmin ", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                Log.wtf("keterangan_batal ", reason);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success menghapus data
+                            LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, "");
+                            LibInspira.showLongToast(getContext(), "Delete success");
+                        }
+                        else
+                        {
+                            LibInspira.showLongToast(getContext(), obj.getString("message"));
+                            Log.wtf("error ", obj.getString("query"));
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getContext(), e.getMessage());
+            }
+            refreshList();
+            LibInspira.hideLoading();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Checking Document", "Loading");
+        }
+    }
+//    protected void setStrData(String _newdata){
+//        LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, _newdata);
+//        strData = _newdata;
+//    }
+//
+//    protected void getStrData(){
+//        strData = LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "");
+//        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
+//        String ActionUrl = "Scanning/getDeliveryOrderList/ ";
+//        deliveryOrderList = new DeliveryOrderList();
+//        deliveryOrderList.execute(ActionUrl);
+//    }
 }

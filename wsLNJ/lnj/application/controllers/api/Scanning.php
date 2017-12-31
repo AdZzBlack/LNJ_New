@@ -114,7 +114,7 @@ class Scanning extends REST_Controller {
         $this->gcm->send();
     }
 
-	// --- Save document melalui qrcode --- //
+	// --- Save document melalui qrcode ke tabel whqrcoderequest_mobile --- //
 	function saveDoc_post()
 	{     
         $data['data'] = array();
@@ -154,31 +154,114 @@ class Scanning extends REST_Controller {
         }
     }
 
-    // --- check finished document --- //
-    function checkDocument_post()
+    // --- check valid Delivery Order and then assign (update) it to a driver --- //
+    function saveDeliveryOrder_post()
     {
         $data['data'] = array();
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
         $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");
         $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
         $doctype = (isset($jsonObject["doctype"]) ? $this->clean($jsonObject["doctype"])     : "");
         $query = "  SELECT status_selesai FROM thsuratjalan WHERE nomor = $nomorthsuratjalan ";
         if($doctype == "tdsuratjalan")
-            $query = "  SELECT status_selesai FROM tdsuratjalan WHERE nomor = $nomortdsuratjalan ";
+            $query = "  SELECT status_selesai, nomormhadmin_driver FROM tdsuratjalan WHERE nomor = $nomortdsuratjalan ";
+        $result = $this->db->query($query);
+        if($result && $result->num_rows() > 0){
+//            foreach ($result->result_array() as $r)
+//            {
+//                array_push($data['data'], array(
+//                                                'status_selesai'    	    => $r['status_selesai'],
+//                                                'nomormhadmin_driver'    	=> $r['nomormhadmin_driver']
+//                                        )
+//                );
+//            }
+            $row = $result->row();
+            $status_selesai = $row->status_selesai;
+            $nomormhadmin_driver = $row->nomormhadmin_driver;
+            if($status_selesai == 0 && $nomormhadmin_driver == 0){
+                $this->db->trans_begin();
+                $query = "  UPDATE tdsuratjalan SET nomormhadmin_driver = $nomormhadmin WHERE nomor = $nomortdsuratjalan ";
+                $result = $this->db->query($query);
+                if($result){
+                    $this->db->trans_commit();
+                    array_push($data['data'], array( 'message' => 'Document has been successfully added to the list' ));
+                }else{
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'Failed to add the data'));
+                }
+            }else if($nomormhadmin_driver > 0){
+                if($nomormhadmin_driver != $nomormhadmin){
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'This document is already given to another driver'));
+                }else{
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'This document is already scanned'));
+                }
+            }else{
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => 'This document is already delivered, please scan another document'));
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Document not found. Please try again with a valid document'));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- get list suratjalan yang dibawa oleh driver dari tabel tdsuratjalan --- //
+    function getDeliveryOrderList_post()
+    {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+        $query = "  SELECT nomor FROM tdsuratjalan WHERE status_selesai = 0 AND nomormhadmin_driver = ? AND keterangan_batal IS NULL OR keterangan_batal = '' ";
         $result = $this->db->query($query);
         if($result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r)
             {
                 array_push($data['data'], array(
-                                                'status_selesai'    	    => $r['status_selesai']
+                                                'nomor'    	    => $r['nomor']
                                         )
                 );
             }
         }else{
             array_push($data['data'], array( 'query' => $this->error($query),
-                                             'message' => 'Failed to add the data'));
+                                             'message' => 'Failed to retrieve the data'));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- menghapus/membatalkan suratjalan yang dibawa oleh driver dari tabel tdsuratjalan dengan MENGUPDATE keterangan_batal --- //
+    function deleteDeliveryOrder_post()
+    {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+        $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
+        $keterangan_batal = (isset($jsonObject["keterangan_batal"]) ? $this->clean($jsonObject["keterangan_batal"])     : "");
+        $query = "  UPDATE tdsuratjalan SET keterangan_batal = '$keterangan_batal', status_selesai = 0 WHERE nomormhadmin_driver = $nomormhadmin ";
+        $this->db->trans_begin();
+        $result = $this->db->query($query);
+        if(!$result){
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Delete data failed'));
+        }else{
+            $this->db->trans_commit();
+            array_push($data['data'], array( 'message' => 'Success'));
         }
         if ($data){
             // Set the response and exit

@@ -24,6 +24,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -60,6 +61,7 @@ public class LibInspira {
     private static String hostUrl;
     private static String inspiraDateTimeFormat = "yyyy-MM-dd hh:mm:ss";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
     private static String inspiraDateFormat = "yyyy-MM-dd";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
+    private static String dialogValue;
 
 
     public static void GoToActivity(String _activityName){
@@ -592,6 +594,60 @@ public class LibInspira {
 //        LibInspira.ShowLongToast(getApplicationContext(), "location radius: " + radiusInMetre);
 
         return dist > radiusInMetre;
+    }
+
+    public static String getDialogValue(boolean _isNumeric) {
+        if(_isNumeric && dialogValue.equals("")){
+            dialogValue = "0";
+        }
+        return dialogValue;
+    }
+
+    public static void setDialogValue(String _dialogValue) {
+        dialogValue = _dialogValue;
+    }
+    //added by Tonny @09-Oct-2017
+    //untuk menampilkan dialog untuk input numeric
+    public static void showNumericInputDialog(String _title, String _message, final Activity _activity, final Context _context, final Runnable _commandOK, final Runnable _commandCancel) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
+        final EditText editText = new EditText(_context);
+        editText.setKeyListener(DigitsKeyListener.getInstance());
+        alertDialog.setTitle(_title);
+        alertDialog.setMessage(_message);
+        alertDialog.setView(editText);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (_commandOK != null)
+                    setDialogValue(editText.getText().toString());
+                _commandOK.run();
+            } });
+        if (_commandCancel != null){
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    _commandCancel.run();
+                } });}
+        alertDialog.show();
+    }
+
+    //added by Tonny @27-Dec-2017
+    public static void showInputDialog(String _title, String _message, final Activity _activity, final Context _context, final Runnable _commandOK, final Runnable _commandCancel) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
+        final EditText editText = new EditText(_context);
+        alertDialog.setTitle(_title);
+        alertDialog.setMessage(_message);
+        alertDialog.setView(editText);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (_commandOK != null)
+                    setDialogValue(editText.getText().toString());
+                _commandOK.run();
+            } });
+        if (_commandCancel != null){
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    _commandCancel.run();
+                } });}
+        alertDialog.show();
     }
 
     //added by Tonny @14-Dec-2017  // untuk pengecekan data (input) kembar dalam sebuah datapreferences

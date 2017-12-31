@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.google.zxing.Result;
 import com.inspira.lnj.LibInspira;
-import com.inspira.lnj.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +25,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScannerView.ResultHandler {
     private static final int REQUEST_CAMERA = 1;
-    private DocumentCheck documentCheck;
+    private DocumentSave documentSave;
     private String strScanResult;
 
     public BarCodeCheckinFragment() {
@@ -83,7 +82,7 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(documentCheck != null) documentCheck.cancel(true);
+        if(documentSave != null) documentSave.cancel(true);
     }
 
     @Override
@@ -95,16 +94,16 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
         String prefixDoc = scanResult.substring(0,1);
         if(prefixDoc.toLowerCase().equals("h") || prefixDoc.toLowerCase().equals("d")){
             if(prefixDoc.toLowerCase().equals("h")){
-                documentCheck = new DocumentCheck("thsuratjalan");
+                documentSave = new DocumentSave("thsuratjalan");
                 LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, scanResult.substring(1));
             }else{
-                documentCheck = new DocumentCheck("tdsuratjalan");
+                documentSave = new DocumentSave("tdsuratjalan");
                 strScanResult = scanResult;
                 LibInspira.setShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, scanResult.substring(1));
             }
-            if(documentCheck != null){
-                String actionUrl = "Scanning/checkDocument/";
-                documentCheck.execute(actionUrl);
+            if(documentSave != null){
+                String actionUrl = "Scanning/saveDeliveryOrder/";
+                documentSave.execute(actionUrl);
             }
         }else{
             LibInspira.showLongToast(getContext(), "Invalid BarCode");
@@ -113,10 +112,10 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
     }
 
     //added by Tonny @05-Dec-2017 untuk cek suatu dokumen sudah selesai atau belum
-    private class DocumentCheck extends AsyncTask<String, Void, String> {
+    private class DocumentSave extends AsyncTask<String, Void, String> {
         private String docType;
 
-        private DocumentCheck(String _type)
+        private DocumentSave(String _type)
         {
             docType = _type;
         }
@@ -124,6 +123,7 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
+                jsonObject.put("nomormhadmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
                 jsonObject.put("nomorthsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
                 jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
                 jsonObject.put("doctype", docType);
@@ -143,26 +143,36 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         LibInspira.hideLoading();
-                        if(!obj.has("query")){  //jika success
-                            if(obj.getString("status_selesai").equals("0")){
-                                //jika dokumen belum sampai DAN belum ada dalam deliveryorderlist, maka simpan ke dalam deliveryorderlist
-                                if(LibInspira.isAlreadyOnList(LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, ""), strScanResult, "\\|")){
-                                    LibInspira.showShortToast(getContext(), "This document is already scanned");
-                                }else{
-                                    LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "") +
-                                            strScanResult + "|");
-                                    LibInspira.showShortToast(getContext(), "Document has been successfully added to the list");
-                                }
-                            }else{
-                                //jika dokumen sudah selesai, tampilkan pesan bahwa job sudah selesai dan lanjutkan scan untuk dokumen lainnya
-                                LibInspira.showLongToast(getContext(), "This document is already delivered, please scan another document");
-                            }
+                        if(!obj.has("query")){  //jika success menyimpan data baru
+                            //remarked by Tonny @27-Dec-2017 perubahan metode pengecekan
+//                            if(obj.getString("status_selesai").equals("0") &&
+//                                    obj.getString("nomormhadmin_driver").equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))){
+//                                //jika dokumen belum sampai DAN belum ada dalam deliveryorderlist, maka simpan ke dalam deliveryorderlist
+//                                if(LibInspira.isAlreadyOnList(LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, ""), strScanResult, "\\|")){
+//                                    LibInspira.showShortToast(getContext(), "This document is already scanned");
+//                                }else{
+////                                    LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "") +
+////                                            strScanResult + "|");
+//                                    LibInspira.showShortToast(getContext(), "Document has been successfully added to the list");
+//                                }
+//                            }else if(!obj.getString("nomormhadmin_driver").equals("0") ||
+//                                    !obj.getString("nomormhadmin_driver").equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))){
+//                                //tampilkan pesan jika document sudah diambil driver lain
+//                                LibInspira.showLongToast(getContext(), "This document is already given to another driver");
+//                            }else{
+//                                //jika dokumen sudah selesai, tampilkan pesan bahwa job sudah selesai dan lanjutkan scan untuk dokumen lainnya
+//                                LibInspira.showLongToast(getContext(), "This document is already delivered, please scan another document");
+//                            }
+//                            LibInspira.showShortToast(getContext(), "Document has been successfully added to the list");
+                            LibInspira.showLongToast(getContext(), obj.getString("message"));
                             scannerView.resumeCameraPreview(BarCodeCheckinFragment.this);
                         }
                         else
                         {
-                            LibInspira.showLongToast(getContext(), "Document not found. Please try again with a valid document");
+//                            LibInspira.showLongToast(getContext(), "Document not found. Please try again with a valid document");
+                            LibInspira.showLongToast(getContext(), obj.getString("message"));
                             Log.wtf("error ", obj.getString("query"));
+                            scannerView.resumeCameraPreview(BarCodeCheckinFragment.this);
                             //remarked by Tonny @16-Dec-2017
 //                            LibInspira.BackFragment(getFragmentManager());
                         }

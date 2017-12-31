@@ -177,7 +177,7 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
             LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "");
             LibInspira.setShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, "");
             LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
-            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new BarCodeCheckinFragment());
+            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new ChooseSuratJalanFragment());
         }
     }
 

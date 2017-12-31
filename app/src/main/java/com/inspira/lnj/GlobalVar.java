@@ -115,7 +115,7 @@ public class GlobalVar {
             public String user = "user"; // nomor~nama~location~hp
             public String userlist = "userlist"; // nomor~kode~nama~cantracked
             public String doclist = "doclist"; //untuk menampung data document(thorderjual) yg diberikan pada user yg login  //nomor~kode~nomormhadmin~tanggal~nama
-            public String deliveryorderlist = "deliveryorderlist"; //nomor1|nomor2 //untuk menampung list data surat jalan yang telah discan untuk ditampilkan di ChooseSuratJalan
+            public String deliveryorderlist = "deliveryorderlist"; //nomor1|nomor2 //untuk menampung list nomor surat jalan yang telah discan untuk ditampilkan di ChooseSuratJalan
         }
 
         public class Sales  //added by Tonny @01-Aug-2017
