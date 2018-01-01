@@ -49,7 +49,7 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
     private ArrayList<ItemAdapter> list;
     private FloatingActionButton fab;
 
-    private DeliveryOrderList deliveryOrderList;
+    private DeliveryOrder deliveryOrder;
     private DeleteDO deleteDO;
 
     private String selectedDO;
@@ -121,9 +121,9 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
 
         fab.setOnClickListener(this);
         fab.setVisibility(View.VISIBLE);
-        String ActionUrl = "Scanning/getDeliveryOrderList/ ";
-        deliveryOrderList = new DeliveryOrderList();
-        deliveryOrderList.execute(ActionUrl);
+        String ActionUrl = "Scanning/getDeliveryOrderList/";
+        deliveryOrder = new DeliveryOrder();
+        deliveryOrder.execute(ActionUrl);
 //        refreshList();
 //        getStrData();
 
@@ -137,7 +137,7 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (deliveryOrderList != null) deliveryOrderList.cancel(true);
+        if (deliveryOrder != null) deliveryOrder.cancel(true);
         if (deleteDO != null) deleteDO.cancel(true);
     }
 
@@ -317,10 +317,11 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
                                     reason = LibInspira.getDialogValue(false);
                                     if(!reason.equals("")){
                                         selectedDO = finalHolder.adapterItem.getKode().substring(1);
-                                        Log.wtf("selected DO ", selectedDO);
                                         deleteDO = new DeleteDO();
-                                        String actionUrl = "Scanning/deleteDeliveryOrder/ ";
+                                        String actionUrl = "Scanning/deleteDeliveryOrder/";
                                         deleteDO.execute(actionUrl);
+                                    }else{
+                                        LibInspira.showLongToast(getContext(), "Please fill the reason for deletion.");
                                     }
                                 }
                             }, new Runnable() {
@@ -349,7 +350,7 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
     }
 
     //added by Tonny @05-Dec-2017 untuk cek suatu dokumen sudah selesai atau belum
-    private class DeliveryOrderList extends AsyncTask<String, Void, String> {
+    private class DeliveryOrder extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -385,7 +386,6 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
                             {
                                 LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, tempData);
                             }
-//                            refreshList();
                         }
                         else
                         {
@@ -393,7 +393,6 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
                             Log.wtf("error ", obj.getString("query"));
                         }
                     }
-                    refreshList();
                 }
             }
             catch(Exception e)
@@ -401,6 +400,8 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
                 e.printStackTrace();
                 LibInspira.showLongToast(getContext(), e.getMessage());
             }
+            tvInformation.animate().translationYBy(-80);
+            refreshList();
             LibInspira.hideLoading();
         }
 
@@ -408,6 +409,7 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(getContext(), "Checking Document", "Loading");
+            tvInformation.setVisibility(View.VISIBLE);
         }
     }
 
@@ -474,7 +476,7 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
 //        strData = LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "");
 //        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
 //        String ActionUrl = "Scanning/getDeliveryOrderList/ ";
-//        deliveryOrderList = new DeliveryOrderList();
+//        deliveryOrderList = new DeliveryOrder();
 //        deliveryOrderList.execute(ActionUrl);
 //    }
 }

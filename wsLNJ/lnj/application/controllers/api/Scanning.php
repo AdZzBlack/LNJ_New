@@ -222,7 +222,7 @@ class Scanning extends REST_Controller {
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
         $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
-        $query = "  SELECT nomor FROM tdsuratjalan WHERE status_selesai = 0 AND nomormhadmin_driver = ? AND keterangan_batal IS NULL OR keterangan_batal = '' ";
+        $query = "  SELECT nomor FROM tdsuratjalan WHERE status_selesai = 0 AND nomormhadmin_driver = $nomormhadmin AND keterangan_batal IS NULL OR keterangan_batal = '' ";
         $result = $this->db->query($query);
         if($result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r)

@@ -23,7 +23,7 @@
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="Rescan"
+        android:text="Delivery Order List"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_above="@id/btn_done"
         android:textColor="@color/colorBlack" />
