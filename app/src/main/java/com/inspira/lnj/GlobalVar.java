@@ -60,6 +60,7 @@ public class GlobalVar {
             LibInspira.clearShared(rolepreferences);
             LibInspira.clearShared(notifpreferences);
             LibInspira.clearShared(settingpreferences); //added by Tonny @03-Aug-2017
+            LibInspira.clearShared(datapreferences); //added by Tonny @02-Jan-2018
         }
 
         public class Shared

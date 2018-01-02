@@ -375,16 +375,20 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
                         JSONObject obj = jsonarray.getJSONObject(i);
                         LibInspira.hideLoading();
                         if(!obj.has("query")){  //jika success mendapatkan data
-                            String nomor = obj.getString("nomor");
-                            if(!nomor.equals("")) {
-                                String strNomor = "D" + nomor;
-                                tempData = tempData + strNomor + "|";
-                                LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "") +
-                                        strNomor + "|");
-                            }
-                            if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "")))
-                            {
-                                LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, tempData);
+                            if(!obj.has("message")){  // jika ada message, berarti data kosong
+                                String nomor = obj.getString("nomor");
+                                if(!nomor.equals("")) {
+                                    String strNomor = "D" + nomor;
+                                    tempData = tempData + strNomor + "|";
+                                    LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "") +
+                                            strNomor + "|");
+                                }
+                                if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "")))
+                                {
+                                    LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, tempData);
+                                }
+                            }else{
+                                LibInspira.setShared(global.datapreferences, global.data.deliveryorderlist, "");
                             }
                         }
                         else
