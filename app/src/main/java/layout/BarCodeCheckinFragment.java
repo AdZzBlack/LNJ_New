@@ -1,6 +1,6 @@
 /******************************************************************************
     Author           : Tonny
-    Description      : Barcode untuk checkin
+    Description      : Fragment untuk scan barcode check in
     History          :
 
 ******************************************************************************/

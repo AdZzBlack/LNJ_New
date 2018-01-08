@@ -78,6 +78,7 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
 
     private Checkpoint checkpoint;
     private CheckInHistory checkInHistory;
+    private EndCheckIn endCheckIn;
 
     public FormTrackingFragment() {
         // Required empty public constructor
@@ -152,10 +153,20 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
         }
         else if(id==R.id.btn_done)
         {
-            LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "");
-            LibInspira.setShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, "");
-            LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
-            LibInspira.AddFragment(getFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
+            LibInspira.alertBoxYesNo("End Task " + LibInspira.getShared(global.userpreferences,global.user.checkin_kodesuratjalan, ""),
+                    "Do you want to end the document check in?", getActivity(), new Runnable() {
+                @Override
+                public void run() {
+                    String actionUrl = "Scanning/endCheckIn/";
+                    endCheckIn = new EndCheckIn();
+                    endCheckIn.execute(actionUrl);
+                }
+            }, new Runnable() {
+                @Override
+                public void run() {
+                    //do nothing
+                }
+            });
         }
         else if(id==R.id.btn_cancel)
         {
@@ -177,7 +188,8 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
             LibInspira.setShared(global.userpreferences, global.user.checkin_nomorthsuratjalan, "");
             LibInspira.setShared(global.userpreferences, global.user.checkin_nomortdsuratjalan, "");
             LibInspira.setShared(global.userpreferences, global.user.checkin_kodecontainer, "");
-            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new ChooseSuratJalanFragment());
+//            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new ChooseSuratJalanFragment());
+            LibInspira.BackFragment(getFragmentManager());
         }
     }
 
@@ -198,6 +210,7 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
         }
         if(checkpoint != null) checkpoint.cancel(true);
         if(checkInHistory != null) checkInHistory.cancel(true);
+        if(endCheckIn != null) endCheckIn.cancel(true);  //added by Tonny @02-Jan-2018
         manager.removeUpdates(this);
         managerGPS.removeUpdates(this);
         super.onDestroy();
@@ -655,6 +668,59 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(getContext(), "Retrieving data", "Loading");
+        }
+    }
+
+    private class EndCheckIn extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomorthsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
+                jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
+                jsonObject.put("kodecontainer", LibInspira.getShared(global.userpreferences,global.user.checkin_kodecontainer,""));
+                jsonObject.put("nomorsopir", LibInspira.getShared(global.userpreferences,global.user.nomor,""));
+                jsonObject.put("lat", String.valueOf(getLatitude));
+                jsonObject.put("lon", String.valueOf(getLongitude));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success
+                            LibInspira.clearShared(global.datapreferences);
+                        }
+                        else
+                        {
+                            LibInspira.showLongToast(getContext(), obj.getString("message"));
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getContext(), e.getMessage());
+                LibInspira.hideLoading();
+            }
+            LibInspira.BackFragment(getFragmentManager());
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Completing Job", "Loading");
         }
     }
 }

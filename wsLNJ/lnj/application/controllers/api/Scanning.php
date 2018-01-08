@@ -39,7 +39,7 @@ class Scanning extends REST_Controller {
         $out = strlen($string) > $cut ? substr($string,0,$cut)."..." : $string;
         return $out;
     }
-
+	
     function clean($string) {
         return preg_replace("/[^[:alnum:][:space:]]/u", '', $string); // Replaces multiple hyphens with single one.
     }
@@ -47,11 +47,11 @@ class Scanning extends REST_Controller {
     function error($string) {
         return str_replace( array("\t", "\n", "\r") , " ", $string);
     }
-
+	
 	function getGCMId($user_nomor){
-        $query = "  SELECT
+        $query = "  SELECT 
                     a.gcmid
-                    FROM whuser_mobile a
+                    FROM whuser_mobile a 
                     WHERE a.status_aktif > 0 AND (a.gcmid <> '' AND a.gcmid IS NOT NULL) AND a.nomor = $user_nomor ";
         return $this->db->query($query)->row()->gcmid;
     }
@@ -116,7 +116,7 @@ class Scanning extends REST_Controller {
 
 	// --- Save document melalui qrcode ke tabel whqrcoderequest_mobile --- //
 	function saveDoc_post()
-	{
+	{     
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
@@ -219,36 +219,27 @@ class Scanning extends REST_Controller {
     function getDeliveryOrderList_post()
     {
         $data['data'] = array();
-
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
-
-
-        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "1");
-
-
-        $query = "SELECT nomor
-                    FROM tdsuratjalan
-                    WHERE status_selesai = 0
-                        AND nomormhadmin_driver = $nomormhadmin
-                        AND (keterangan_batal IS NULL OR keterangan_batal = '') ";
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+        $query = "  SELECT nomor FROM tdsuratjalan WHERE status_selesai = 0 AND nomormhadmin_driver = $nomormhadmin AND keterangan_batal IS NULL OR keterangan_batal = '' ";
         $result = $this->db->query($query);
-
-        if( $result && $result->num_rows() > 0){
-            foreach ($result->result_array() as $r)
-            {
-                array_push($data['data'], array(
-                                                'nomor'    	    => $r['nomor']
-                                        )
-                );
+        if($result){
+            if($result->num_rows() > 0){
+                foreach ($result->result_array() as $r)
+                {
+                    array_push($data['data'], array(
+                                                    'nomor'    	    => $r['nomor']
+                                            )
+                    );
+                }
+            }else{
+                array_push($data['data'], array('message' => 'No data'));
             }
         }else{
             array_push($data['data'], array( 'query' => $this->error($query),
-                                             'message' => 'Failed to retrieve the data'
-                                    )
-            );
+                                             'message' => 'Failed to retrieve the data'));
         }
-
         if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
@@ -425,6 +416,66 @@ class Scanning extends REST_Controller {
             array_push($data['data'], array( 'query' => $this->error($query),
                                                          'message' => 'Failed to add the data'));
         }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- Check in tracking --- //
+    function endCheckIn_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+//        $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");  //BELUM DIPAKAI
+        $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
+        $nomorsopir = (isset($jsonObject["nomorsopir"]) ? $this->clean($jsonObject["nomorsopir"])     : "");
+        $type = 'SELESAI';
+        $lat = (isset($jsonObject["lat"]) ? $jsonObject["lat"]     : "");
+        $lon = (isset($jsonObject["lon"]) ? $jsonObject["lon"]     : "");
+
+        $query = "  SELECT kodecontainer FROM tdsuratjalan WHERE nomor = $nomortdsuratjalan ";
+        $result = $this->db->query($query);
+
+        if($result && $result->num_rows() > 0){
+            $row = $result->row();
+//            $nomorcontainer = $row->nomormhcontainer;
+            $kodecontainer = $row->kodecontainer;
+            $this->db->trans_begin();
+            $query = "	INSERT INTO whcheckin_mobile
+                            (nomortdsuratjalan, kodecontainer, typetracking, nomorsopir, lat, lon, dibuat_pada)
+                        VALUES
+                            ($nomortdsuratjalan, '$kodecontainer', '$type', $nomorsopir, $lat, $lon, NOW()) ";
+
+            $this->db->query($query);
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => 'Failed to submit the data'));
+            }
+            else
+            {
+                $query = "	UPDATE tdsuratjalan SET status_selesai = 1 WHERE nomor = $nomortdsuratjalan ";
+                $this->db->query($query);
+                if ($this->db->trans_status() === FALSE)
+                {
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'Failed to submit the data'));
+                }
+                else
+                {
+                    $this->db->trans_commit();
+                    array_push($data['data'], array( 'message' => 'Delivery Order has been completed' ));
+                }
+            }
+        }
+
         if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code

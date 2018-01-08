@@ -8,9 +8,9 @@ android {
     defaultConfig {
         applicationId "com.inspira.lnj"
         minSdkVersion 17
-        targetSdkVersion 24
+        targetSdkVersion 17
         versionCode 1
-        versionName "1.0.10"
+        versionName "1.0.12"
         multiDexEnabled true //important
     }
     packagingOptions {
