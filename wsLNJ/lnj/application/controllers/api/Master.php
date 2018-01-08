@@ -121,7 +121,7 @@ class Master extends REST_Controller {
 
         $value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
-		
+
 		$query = "	SELECT 
 						a.nomor AS `nomor`,
 						a.nama AS `nama`,

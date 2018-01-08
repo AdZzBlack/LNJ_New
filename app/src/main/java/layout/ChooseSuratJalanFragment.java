@@ -121,6 +121,7 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
 
         fab.setOnClickListener(this);
         fab.setVisibility(View.VISIBLE);
+
         String ActionUrl = "Scanning/getDeliveryOrderList/ ";
         deliveryOrderList = new DeliveryOrderList();
         deliveryOrderList.execute(ActionUrl);
@@ -352,20 +353,19 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
     private class DeliveryOrderList extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
             try {
-                jsonObject = new JSONObject();
                 jsonObject.put("nomormhadmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
-                Log.wtf("nomormhadmin ", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+            return LibInspira.executePost(getActivity(), urls[0], jsonObject, 20000);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.d("tes", result);
+            Log.d("tes", result + LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
             try {
                 String tempData = "";
                 JSONArray jsonarray = new JSONArray(result);
@@ -404,11 +404,11 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
             LibInspira.hideLoading();
         }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            LibInspira.showLoading(getContext(), "Checking Document", "Loading");
-        }
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            LibInspira.showLoading(getContext(), "Checking Document", "Loading");
+//        }
     }
 
     //added by Tonny @27-Dec-2017 dijalankan jika user menghapus data pada list
