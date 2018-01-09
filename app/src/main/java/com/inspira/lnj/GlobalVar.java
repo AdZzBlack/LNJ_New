@@ -75,6 +75,7 @@ public class GlobalVar {
             public String selected_nomor_user = "selected_nomor_user";
             public String selected_kode_user = "selected_kode_user";
             public String selected_nama_user = "selected_nama_user";
+            public String selected_count = "selected_count";
 
             //added by Tonny @01-Nov-2017 untuk menampung data thorderjual yg dipilih
             public String selected_nomor_doc = "selected_nomor_doc";

@@ -10,7 +10,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 17
         versionCode 1
-        versionName "1.0.12"
+        versionName "1.0.13"
         multiDexEnabled true //important
     }
     packagingOptions {

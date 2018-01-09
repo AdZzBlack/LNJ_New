@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -118,6 +119,14 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         String actionUrl = "Master/getUser/";
         getData = new GetData();
         getData.execute( actionUrl );
+
+        if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking"))
+        {
+            getView().findViewById(R.id.rlFooter).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.btnLeft).setVisibility(View.VISIBLE);
+            ((Button) getView().findViewById(R.id.btnLeft)).setText("Next");
+            ((Button) getView().findViewById(R.id.btnLeft)).setOnClickListener(this);
+        }
     }
 
     @Override
@@ -140,6 +149,33 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         if(id==R.id.ibtnSearch)
         {
             search();
+        }
+        else if(id==R.id.btnLeft)
+        {
+            String tempnomor = "";
+            String tempkode = "";
+            String tempnama = "";
+            String nama = "";
+            int countSelected = 0;
+            for(int i = 0;i<itemadapter.getCount();i++)
+            {
+                if(itemadapter.getItem(i).getIsChoosen())
+                {
+                    tempnomor += itemadapter.getItem(i).getNomor() + "|";
+                    tempkode += itemadapter.getItem(i).getKode() + "|";
+                    tempnama += itemadapter.getItem(i).getNama() + "|";
+                    nama = itemadapter.getItem(i).getNama();
+                    countSelected++;
+                }
+            }
+
+            if(countSelected>1) nama = "Mass";
+
+            LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, tempnomor);
+            LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, tempkode);
+            LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, tempnama);
+            LibInspira.setShared(global.temppreferences, global.temp.selected_count, String.valueOf(countSelected));
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new LiveTrackingFragment().newInstance(nama));
         }
     }
 
@@ -200,6 +236,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                         dataItem.setKode(kode);
                         dataItem.setNama(nama);
                         dataItem.setCantracked(cantracked);
+                        dataItem.setIsChoosen(false);
                         list.add(dataItem);
 
                         if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking")
@@ -290,6 +327,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         private String nama;
         private String kode;
         private String cantracked;
+        private Boolean isChoosen;
 
         public ItemAdapter() {}
 
@@ -304,6 +342,9 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         public String getCantracked() {return cantracked;}
         public void setCantracked(String _param) {this.cantracked = _param;}
+
+        public Boolean getIsChoosen() {return isChoosen;}
+        public void setIsChoosen(Boolean _param) {this.isChoosen = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -363,10 +404,20 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                     {
                         if(finalHolder.adapterItem.getCantracked().equals("1"))
                         {
-                            LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
-                            LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, finalHolder.adapterItem.getKode());
-                            LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
-                            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new LiveTrackingFragment().newInstance(finalHolder.adapterItem.getNama()));
+                            if(!finalHolder.adapterItem.isChoosen)
+                            {
+                                finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                                finalHolder.adapterItem.setIsChoosen(true);
+                            }
+                            else
+                            {
+                                finalRow.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                                finalHolder.adapterItem.setIsChoosen(false);
+                            }
+//                            LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
+//                            LibInspira.setShared(global.temppreferences, global.temp.selected_kode_user, finalHolder.adapterItem.getKode());
+//                            LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
+//                            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new LiveTrackingFragment().newInstance(finalHolder.adapterItem.getNama()));
                         }
                         else
                         {
@@ -381,6 +432,14 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         private void setupItem(final Holder holder, final View row) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            if(holder.adapterItem.isChoosen)
+            {
+                row.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            }
+            else
+            {
+                row.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+            }
         }
     }
 }
