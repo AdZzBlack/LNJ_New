@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -39,7 +40,7 @@ public class QRCodeDocumentFragment extends QRCodeFragment implements ZXingScann
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -79,6 +80,16 @@ public class QRCodeDocumentFragment extends QRCodeFragment implements ZXingScann
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_doc_done).setVisible(true);
+        menu.findItem(R.id.action_settings).setVisible(false);
+        menu.findItem(R.id.action_logout).setVisible(false);
+        menu.findItem(R.id.action_changepassword).setVisible(false);
+
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -147,19 +158,17 @@ public class QRCodeDocumentFragment extends QRCodeFragment implements ZXingScann
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             LibInspira.showLongToast(getContext(), "Data has been successfully submitted");
-                            LibInspira.clearShared(global.temppreferences);
                             LibInspira.hideLoading();
-                            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
                         }
                         else
                         {
                             LibInspira.showLongToast(getContext(), obj.getString("message"));
                             LibInspira.hideLoading();
-                            scannerView.resumeCameraPreview(QRCodeDocumentFragment.this);
                         }
                         Log.wtf("result ", result);
                     }
                 }
+                scannerView.resumeCameraPreview(QRCodeDocumentFragment.this);
             }
             catch(Exception e)
             {

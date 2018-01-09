@@ -1,41 +1,21 @@
 /******************************************************************************
     Author           : Tonny
-    Description      : list document selesai
+    Description      : list document yang sudah selesai
     History          :
 
 ******************************************************************************/
 package layout;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.inspira.lnj.IndexInternal.global;
-import static com.inspira.lnj.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
@@ -72,6 +52,7 @@ public class ChooseCompletedDocumentFragment extends ChoosePendingDocumentFragme
     @Override
     public void onActivityCreated(Bundle bundle){
         status = "finish";
+        LibInspira.setShared(global.datapreferences, global.data.doclist, "");
         super.onActivityCreated(bundle);
     }
 

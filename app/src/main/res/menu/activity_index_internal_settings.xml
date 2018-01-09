@@ -17,4 +17,11 @@
         android:orderInCategory="100"
         android:title="Logout"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_doc_done"
+        android:orderInCategory="100"
+        android:title="Done"
+        app:showAsAction="always"
+        android:visible="false" />
 </menu>

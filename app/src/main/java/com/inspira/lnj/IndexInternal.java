@@ -114,6 +114,15 @@ public class IndexInternal extends AppCompatActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_doc_done).setVisible(false);
+        menu.findItem(R.id.action_settings).setVisible(true);
+        menu.findItem(R.id.action_logout).setVisible(true);
+        menu.findItem(R.id.action_changepassword).setVisible(true);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -133,6 +142,10 @@ public class IndexInternal extends AppCompatActivity
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
             finish();
             return true;
+        } else if (id == R.id.action_doc_done){  //added by Tonny @09-Jan-2018 muncul pada saat digunakan di scan docs utk kembali ke dashboard
+//            LibInspira.ReplaceFragmentNoBackStack(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
+            LibInspira.clearShared(global.temppreferences);  //added by Tonny @09-Jan-2018
+            LibInspira.BackFragment(getSupportFragmentManager());
         }
 
         return super.onOptionsItemSelected(item);

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -88,7 +89,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
-        ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.rlSearch).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
         etSearch = (EditText) getView().findViewById(R.id.etSearch);
@@ -333,7 +334,9 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View row = convertView;
+            //remarked by Tonny @09-Jan-2018  untuk mengatasi bug pada saat scroll
+//            View row = convertView;
+            View row = null;
             Holder holder = null;
 
             if(row==null)
@@ -353,9 +356,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
             row.setTag(holder);
             setupItem(holder, row);
-
             final Holder finalHolder = holder;
-            final View finalRow = row;
 //            row.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
@@ -406,7 +407,6 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                     });
                 }
             });
-
             return row;
         }
 
