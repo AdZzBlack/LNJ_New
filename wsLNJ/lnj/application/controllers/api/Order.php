@@ -114,7 +114,7 @@ class Order extends REST_Controller {
         $this->gcm->send();
     }
 
-	// --- Update document thorderjual melalui qrcode --- //
+	// --- Update untuk menyerahkan document thorderjual ke user lain melalui qrcode --- //
 	function updateDoc_post()
 	{     
         $data['data'] = array();
@@ -162,7 +162,7 @@ class Order extends REST_Controller {
         }
     }
 
-    // --- Untuk mendapatkan list semua document yg diberikan untuk user yg login (masih pending) --- //
+    // --- Untuk mendapatkan list semua document yg dimiliki user yg login (dokumen yg masih pending / finish) --- //
     function getDocList_post()
     {
         $data['data'] = array();
@@ -187,7 +187,8 @@ class Order extends REST_Controller {
                     JOIN mhadmin b ON a.nomormhadmin_docfinal_date = b.nomor
                     WHERE a.status_aktif = 1
                     AND a.nomormhadmin_penerima = $nomor
-                    AND a.status_serahterima = $status_serahterima ";
+                    AND a.status_serahterima = $status_serahterima
+                    ORDER BY a.docfinal_date DESC ";
 
         $result = $this->db->query($query);
 

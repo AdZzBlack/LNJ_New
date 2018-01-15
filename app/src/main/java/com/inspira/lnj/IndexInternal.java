@@ -4,6 +4,7 @@ import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -142,6 +143,22 @@ public class IndexInternal extends AppCompatActivity
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
             finish();
             return true;
+        } else if (id == R.id.action_releasenote){  //added by Tonny @11-Jan-2018
+            Context context = IndexInternal.this;
+            PackageInfo pInfo = null;
+            try {
+                pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            String version = pInfo.versionName;
+            LibInspira.alertbox(LibInspira.boldText("Release Notes " + "(" + version + ")"), LibInspira.readTextFile(context, "releasenote.txt")
+                    , this, new Runnable() {
+                @Override
+                public void run() {
+                    //do nothing
+                }
+            }, null);
         } else if (id == R.id.action_doc_done){  //added by Tonny @09-Jan-2018 muncul pada saat digunakan di scan docs utk kembali ke dashboard
 //            LibInspira.ReplaceFragmentNoBackStack(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
             LibInspira.clearShared(global.temppreferences);  //added by Tonny @09-Jan-2018

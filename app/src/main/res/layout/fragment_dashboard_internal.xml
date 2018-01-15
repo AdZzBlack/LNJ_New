@@ -153,7 +153,7 @@
                         android:layout_centerHorizontal="true" />
 
                     <TextView
-                        android:id="@+id/tvMyDocument"
+                        android:id="@+id/tvPendingDocs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/ibtnPendingDocs"
@@ -164,7 +164,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/btnCompletedDocs"
+                    android:id="@+id/btnAcceptedDocs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="33.3"
@@ -185,13 +185,13 @@
                         android:tint="@color/colorGMS" />
 
                     <TextView
-                        android:id="@+id/tvFinishDocument"
+                        android:id="@+id/tvAcceptedDocument"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/ibtnCompletedDocs"
                         android:layout_marginTop="8dp"
                         android:clickable="false"
-                        android:text="Completed Docs"
+                        android:text="Accepted Docs"
                         android:textAlignment="center" />
                 </RelativeLayout>
 
@@ -217,7 +217,7 @@
                         android:tint="@color/colorGMS" />
 
                     <TextView
-                        android:id="@+id/tvDocument2"
+                        android:id="@+id/tvWaypoint"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/ibtnDocument2"

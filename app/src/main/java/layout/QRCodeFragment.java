@@ -128,7 +128,8 @@ public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultH
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
+//                                                requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
+                                                LibInspira.BackFragment(getFragmentManager());  //modified by Tonny @10-Jan-2018
                                             }
                                         });
                                 return;

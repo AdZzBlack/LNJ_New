@@ -412,7 +412,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
         private void setupItem(final Holder holder, final View row) {
             holder.tvKodeDoc.setText(holder.adapterItem.getKode().toUpperCase());
-            holder.tvTanggal.setText(LibInspira.FormatDateBasedOnInspiraDateFormat(holder.adapterItem.getTanggal(), "dd MMM yyyy"));
+            holder.tvTanggal.setText(LibInspira.FormatDateBasedOnInspiraDateFormat(holder.adapterItem.getTanggal(), "dd MMM yyyy HH:mm"));
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
         }
     }

@@ -23,6 +23,7 @@ import android.support.v4.app.Fragment; // is the Fragment class for compatibili
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
@@ -661,5 +662,30 @@ public class LibInspira {
             }
         }
         return result;
+    }
+
+    public static String readTextFile(Context _context, String _fileName){
+        String text = "";
+        List<String> mLines = new ArrayList<>();
+        InputStream inputStream = null;
+        try {
+            inputStream = _context.getAssets().open(_fileName);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) //mLines.add(line);
+                text = text + line + "\n";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return text;
+    }
+
+    public static String boldText(String _text){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            _text = Html.fromHtml("<b>"+ _text +"</b>", Html.FROM_HTML_MODE_LEGACY).toString();
+        } else {
+            _text = Html.fromHtml("<b>"+ _text +"</b>").toString();
+        }
+        return _text;
     }
 }
