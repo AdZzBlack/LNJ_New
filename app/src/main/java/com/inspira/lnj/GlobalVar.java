@@ -63,6 +63,18 @@ public class GlobalVar {
             LibInspira.clearShared(datapreferences); //added by Tonny @02-Jan-2018
         }
 
+        public static String getUploadURL(int _urltype)
+        {
+            String result;
+            String url = LibInspira.getShared(sharedpreferences, shared.server, "");
+            if(_urltype==1) result = "https://" + url + "/uploads/lnj/CONTAINER EMPTY/upload.php";
+            else if(_urltype==2) result = "https://" + url + "/uploads/lnj/CONTAINER SEALED/upload.php";
+            else if(_urltype==3) result = "https://" + url + "/uploads/lnj/CONTAINER SEALED PORT/upload.php";
+            else if(_urltype==4) result = "https://" + url + "/uploads/lnj/CONTAINER SEALED OTHERS/upload.php";
+            else  result = "";
+            return result;
+        }
+
         public class Shared
         {
             public String server = "server";
@@ -72,6 +84,8 @@ public class GlobalVar {
         //untuk shared preferences yang boleh di clean tiap saat
         public class Temp
         {
+            public String temp = "temp";
+
             public String selected_nomor_user = "selected_nomor_user";
             public String selected_kode_user = "selected_kode_user";
             public String selected_nama_user = "selected_nama_user";
@@ -83,6 +97,33 @@ public class GlobalVar {
             public String selected_nomormhadmin = "selected_nomormhadmin";
             public String selected_tanggal = "selected_nomormhadmin";
             public String selected_namamhadmin = "selected_namamhadmin";
+
+            //added by ADI @15-Jan-2018 untuk menampung data container loading yg dipilih
+            public String selected_job_nomor = "selected_job_nomor";
+            public String selected_job_kode = "selected_job_kode";
+            public String selected_job_stuffingdate = "selected_container_stuffingdate";
+            public String selected_job_invoice = "selected_container_invoice";
+            public String selected_job_pol = "selected_container_pol";
+            public String selected_job_pod = "selected_container_pod";
+
+            public String selected_container_nomor = "selected_container_nomor";
+            public String selected_container_kode = "selected_container_kode";
+            public String selected_container_size = "selected_container_size";
+            public String selected_container_type = "selected_container_type";
+            public String selected_container_seal = "selected_container_seal";
+
+            public String photo_pathraw_empty_container = "photo_pathraw_empty_container";
+            public String photo_path_empty_container = "photo_path_empty_container";
+            public String photo_photoname_empty_container = "photo_photoname_empty_container";
+            public String photo_pathraw_sealed_container = "photo_pathraw_sealed_container";
+            public String photo_path_sealed_container = "photo_path_sealed_container";
+            public String photo_photoname_sealed_container = "photo_photoname_sealed_container";
+            public String photo_pathraw_sealed_condition = "Photo_pathraw_sealed_condition";
+            public String photo_path_sealed_condition = "photo_path_sealed_condition";
+            public String photo_photoname_sealed_condition = "photo_photoname_sealed_condition";
+            public String photo_pathraw_other_picture = "Photo_pathraw_other_picture";
+            public String photo_path_other_picture = "photo_path_other_picture";
+            public String photo_photoname_other_picture = "photo_photoname_other_picture";
 
             public String nomor_doc = "nomor_doc";
             public String kode_doc = "kode_doc";
@@ -114,10 +155,12 @@ public class GlobalVar {
 
         public class Data
         {
+            public String temp = "temp";
             public String user = "user"; // nomor~nama~location~hp
             public String userlist = "userlist"; // nomor~kode~nama~cantracked
             public String doclist = "doclist"; //untuk menampung data document(thorderjual) yg diberikan pada user yg login  //nomor~kode~nomormhadmin~tanggal~nama
             public String deliveryorderlist = "deliveryorderlist"; //nomor1|nomor2 //untuk menampung list nomor surat jalan yang telah discan untuk ditampilkan di ChooseSuratJalan
+            public String job = "job"; //nomor~kode~stuffingdate~invoice~pol~pod
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

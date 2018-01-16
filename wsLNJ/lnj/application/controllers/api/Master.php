@@ -155,4 +155,94 @@ class Master extends REST_Controller {
         }
 
     }
+
+    // --- POST get job --- //
+    function getJob_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $keyword = (isset($jsonObject["keyword"]) ? $jsonObject["keyword"]     : "");
+
+        $query = "	SELECT
+                    	a.nomor AS nomor,
+                    	a.kode AS kode,
+                    	a.stuffing_date AS stuffingdate,
+                    	a.invoice_number AS invoice,
+                    	`FC_GENERATE_PORT_NAMA`(a.nomormhport_loading) AS pol,
+                    	`FC_GENERATE_PORT_NAMA`(a.nomormhport_discharge) AS pod
+                    FROM thorderjual a
+                    WHERE status_aktif = 1
+                        AND a.kode LIKE '%$keyword%'
+                    ORDER BY a.kode;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode'                  => $r['kode'],
+                                                'stuffingdate'			=> $r['stuffingdate'],
+                                                'invoice'               => $r['invoice'],
+                                                'pol'                   => $r['pol'],
+                                                'pod'                   => $r['pod'],
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+
+    }
+
+    // --- POST get job container--- //
+    function getJobContainer_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");
+
+        $query = "	SELECT
+                    	a.nomor AS nomor,
+                     	`FC_GENERATE_CONTAINER_SIZE`(a.nomormhcontainersize) AS size,
+                     	`FC_GENERATE_CONTAINER_TIPE`(a.nomormhcontainertype) AS `type`,
+                     	a.kodecontainer AS kode,
+                     	a.sealcontainer AS seal
+                    FROM tdorderjualcontainer a
+                    WHERE a.status_aktif = 1
+                        AND a.nomorthorderjual = $nomor;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'size'                  => $r['size'],
+                                                'type'      			=> $r['type'],
+                                                'kode'                  => $r['kode'],
+                                                'seal'                  => $r['seal']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
 }
