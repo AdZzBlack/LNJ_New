@@ -8,6 +8,7 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -93,6 +94,10 @@ public class ChooseJobFragment extends Fragment implements View.OnClickListener{
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
+        //added by Tonny @17-Jan-2018
+        ibtnSearch = (ImageButton) getView().findViewById(R.id.ibtnSearch);
+        ibtnSearch.setOnClickListener(this);
+
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -101,12 +106,14 @@ public class ChooseJobFragment extends Fragment implements View.OnClickListener{
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(etSearch.getText().toString().length()>=4)
-                {
-                    String actionUrl = "Master/getJob/";
-                    getData = new GetData(etSearch.getText().toString());
-                    getData.execute( actionUrl );
-                }
+                //remarked by Tonny @17-Jan-2018
+//                if(etSearch.getText().toString().length()>=4)
+//                {
+//                    String actionUrl = "Master/getJob/";
+//                    getData = new GetData(etSearch.getText().toString());
+//                    getData.execute( actionUrl );
+//                }
+//                search();
             }
 
             @Override
@@ -116,7 +123,6 @@ public class ChooseJobFragment extends Fragment implements View.OnClickListener{
         });
 
         refreshList();
-
     }
 
     @Override
@@ -138,7 +144,11 @@ public class ChooseJobFragment extends Fragment implements View.OnClickListener{
 
         if(id==R.id.ibtnSearch)
         {
-            search();
+//            search();
+            //added by Tonny @17-Jan-2018
+            String actionUrl = "Master/getJob/";
+            getData = new GetData(etSearch.getText().toString());
+            getData.execute( actionUrl );
         }
     }
 
@@ -273,18 +283,21 @@ public class ChooseJobFragment extends Fragment implements View.OnClickListener{
                     }
                 }
                 tvInformation.animate().translationYBy(-80);
+                LibInspira.hideLoading();
             }
             catch(Exception e)
             {
                 e.printStackTrace();
-                tvInformation.animate().translationYBy(-80);
+//                tvInformation.animate().translationYBy(-80);
+                LibInspira.hideLoading();
             }
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            tvInformation.setVisibility(View.VISIBLE);
+//            tvInformation.setVisibility(View.VISIBLE);
+            LibInspira.showLoading(getContext(), "Searching", "Loading");
         }
     }
 
