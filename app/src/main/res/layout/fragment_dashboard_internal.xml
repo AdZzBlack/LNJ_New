@@ -228,6 +228,121 @@
                 </RelativeLayout>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:id="@+id/menu_line3"
+                android:layout_below="@id/menu_line2">
+
+                <RelativeLayout
+                    android:id="@+id/btnContainerLoadingReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnContainerLoadingReport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/container"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:backgroundTint="@color/colorBackground"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" />
+
+                    <TextView
+                        android:id="@+id/tvLoadingReport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnContainerLoadingReport"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Container Loading"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnContainerLoadingReport2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true"
+                    android:visibility="invisible">
+
+                    <ImageButton
+                        android:id="@+id/ibtnContainerLoadingReport2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/container"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:backgroundTint="@color/colorBackground"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" />
+
+                    <TextView
+                        android:id="@+id/tvLoadingReport2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnContainerLoadingReport2"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Pending Docs"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnContainerLoadingReport1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true"
+                    android:visibility="invisible">
+
+                    <ImageButton
+                        android:id="@+id/ibtnContainerLoadingReport1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/container"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:backgroundTint="@color/colorBackground"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" />
+
+                    <TextView
+                        android:id="@+id/tvLoadingReport1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnContainerLoadingReport1"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Pending Docs"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
