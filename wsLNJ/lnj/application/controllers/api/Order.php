@@ -123,6 +123,7 @@ class Order extends REST_Controller {
 		$jsonObject = (json_decode($value , true));
 
         $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
+        $nomormhcabang = (isset($jsonObject["nomormhcabang"]) ? $this->clean($jsonObject["nomormhcabang"])     : "");
         $kodedoc = (isset($jsonObject["kodedoc"]) ? $jsonObject["kodedoc"]     : "");
         $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
         $nomorpenerima = (isset($jsonObject["nomorpenerima"]) ? $this->clean($jsonObject["nomorpenerima"])     : "");
@@ -148,8 +149,70 @@ class Order extends REST_Controller {
             }
             else
             {
-                $this->db->trans_commit();
-                array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+                $query = "	SELECT COUNT(*) as datarow, MONTH(NOW()) as month, YEAR(NOW()) as year FROM tlaporan_dokumen_distribusi ";
+                $result = $this->db->query($query);
+                if($result && $result->num_rows() > 0){
+                    $row = $result->row();
+                    $datarow = $row->datarow;
+                    $newkode = "";
+                    $month = $row->month;
+                    $year = $row->year;
+                    $prefix = "DOC";
+                    $suffix = substr($year, 2);
+                    $numeric = "00001";
+                    if($month < 10){
+                       $suffix = $suffix . "0" . $month;
+                    }else{
+                       $suffix = $suffix . $month;
+                    }
+                    if($datarow > 0){
+                        $query = "	SELECT MAX(nomor) AS nomor FROM tlaporan_dokumen_distribusi";
+                        $result = $this->db->query($query);
+                        if($result && $result->num_rows() > 0){
+                            $row = $result->row();
+                            $maxnomor = $row->nomor;
+                            if($maxnomor < 10){
+                                $numeric = "0000" . $maxnomor;
+                            }else if($maxnomor < 100){
+                                $numeric = "000" . $maxnomor;
+                            }else if($maxnomor < 1000){
+                                $numeric = "00" . $maxnomor;
+                            }else if($maxnomor < 10000){
+                                $numeric = "0" . $maxnomor;
+                            }else{
+                                $numeric = $maxnomor;
+                            }
+                            $newkode = $prefix . $suffix . $numeric;
+                        }else{
+                            $this->db->trans_rollback();
+                            array_push($data['data'], array( 'query' => $this->error($query),
+                                                             'message' => 'Failed to update the data'));
+                            if ($data){
+                                // Set the response and exit
+                                $this->response($data['data']); // OK (200) being the HTTP response code
+                            }
+                            die();
+                        }
+                    }else{
+                        $newkode = $prefix . $suffix . $numeric;
+                    }
+                    $action = 'SUBMIT';
+                    $query = " INSERT INTO tlaporan_dokumen_distribusi (nomormhcabang, nomormhadmin_from, nomormhadmin_to, kode, action, tanggal, status_aktif) ".
+                             " VALUES ($nomormhcabang, $nomormhadmin, $nomorpenerima, $newkode, $action, NOW(), '1')";
+                    $result = $this->db->query($query);
+                    if($result){
+                        $this->db->trans_commit();
+                        array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+                    }else{
+                        $this->db->trans_rollback();
+                        array_push($data['data'], array( 'query' => $this->error($query),
+                                                         'message' => 'Failed to insert the data'));
+                    }
+                }else{
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'Failed to update the data'));
+                }
             }
         }else{
             array_push($data['data'], array('query' => $this->error($query),
