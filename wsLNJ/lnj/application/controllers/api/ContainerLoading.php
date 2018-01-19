@@ -137,10 +137,21 @@ class ContainerLoading extends REST_Controller {
         $this->db->query($query);
 
         $pieces = explode("|", $photoempty);
+
+        //added by tonny --> untuk mendapatkan nomorfile, yang merupakan nomor dari tabel tdorderjualcontainer
+        $query = "SELECT nomor FROM tdorderjualcontainer WHERE nomor = '$nomorcontainer' ";
+        $result = $this->db->query($query);
+        $nomorfile = '0';
+        if($result && $result->num_rows() > 0){
+            $row = $result->row();
+            $nomorfile = $row->nomor;
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+
         for ($i = 0; $i < count($pieces) - 1; $i++) {
             $query1 = " INSERT INTO mharchievedfiles (nomorfile, kodefile, namatable, kode, kategori, nama, directory, status_aktif, dibuat_oleh, dibuat_pada)
                         VALUES
-                        (0, '$kodecontainer', 'tdorderjualcontainer', 'test', 'CONTAINER EMPTY', '" . $pieces[$i] . "', 'CONTAINER EMPTY/" . $pieces[$i]. "', 1, $user_nomor, NOW()) ";
+                        ('$nomorfile', '$kodecontainer', 'tdorderjualcontainer', 'test', 'CONTAINER EMPTY', '" . $pieces[$i] . "', 'CONTAINER EMPTY/" . $pieces[$i]. "', 1, $user_nomor, NOW()) ";
             $this->db->query($query1);
         }
 
@@ -148,7 +159,7 @@ class ContainerLoading extends REST_Controller {
         for ($i = 0; $i < count($pieces) - 1; $i++) {
             $query = " INSERT INTO mharchievedfiles (nomorfile, kodefile, namatable, kode, kategori, nama, directory, status_aktif, dibuat_oleh, dibuat_pada)
                         VALUES
-                        (0, '$kodecontainer', 'tdorderjualcontainer', 'test', 'CONTAINER SEALED', '" . $pieces[$i] . "', 'CONTAINER SEALED/" . $pieces[$i]. "', 1, $user_nomor, NOW()) ";
+                        ('$nomorfile', '$kodecontainer', 'tdorderjualcontainer', 'test', 'CONTAINER SEALED', '" . $pieces[$i] . "', 'CONTAINER SEALED/" . $pieces[$i]. "', 1, $user_nomor, NOW()) ";
             $this->db->query($query);
         }
 
@@ -156,7 +167,7 @@ class ContainerLoading extends REST_Controller {
         for ($i = 0; $i < count($pieces) - 1; $i++) {
             $query = " INSERT INTO mharchievedfiles (nomorfile, kodefile, namatable, kode, kategori, nama, directory, status_aktif, dibuat_oleh, dibuat_pada)
                         VALUES
-                        (0, '$kodecontainer', 'tdorderjualcontainer', 'test', 'CONTAINER SEALED PORT', '" . $pieces[$i] . "', 'CONTAINER SEALED PORT/" . $pieces[$i]. "', 1, $user_nomor, NOW()) ";
+                        ('$nomorfile', '$kodecontainer', 'tdorderjualcontainer', 'test', 'CONTAINER SEALED PORT', '" . $pieces[$i] . "', 'CONTAINER SEALED PORT/" . $pieces[$i]. "', 1, $user_nomor, NOW()) ";
             $this->db->query($query);
         }
 
@@ -164,7 +175,7 @@ class ContainerLoading extends REST_Controller {
         for ($i = 0; $i < count($pieces) - 1; $i++) {
             $query = " INSERT INTO mharchievedfiles (nomorfile, kodefile, namatable, kode, kategori, nama, directory, status_aktif, dibuat_oleh, dibuat_pada)
                         VALUES
-                        (0, '$kodecontainer', 'tdorderjualcontainer', 'test', 'CONTAINER OTHERS', '" . $pieces[$i] . "', 'CONTAINER OTHERS/" . $pieces[$i]. "', 1, $user_nomor, NOW()) ";
+                        ('$nomorfile', '$kodecontainer', 'tdorderjualcontainer', 'test', 'CONTAINER OTHERS', '" . $pieces[$i] . "', 'CONTAINER OTHERS/" . $pieces[$i]. "', 1, $user_nomor, NOW()) ";
             $this->db->query($query);
         }
 

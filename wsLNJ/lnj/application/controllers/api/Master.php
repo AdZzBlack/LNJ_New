@@ -164,19 +164,38 @@ class Master extends REST_Controller {
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
+        $nomormhcabang = (isset($jsonObject["nomormhcabang"]) ? $jsonObject["nomormhcabang"]     : "");
         $keyword = (isset($jsonObject["keyword"]) ? $jsonObject["keyword"]     : "");
 
-        $query = "	SELECT
-                    	a.nomor AS nomor,
-                    	a.kode AS kode,
-                    	a.stuffing_date AS stuffingdate,
-                    	a.invoice_number AS invoice,
-                    	`FC_GENERATE_PORT_NAMA`(a.nomormhport_loading) AS pol,
-                    	`FC_GENERATE_PORT_NAMA`(a.nomormhport_discharge) AS pod
-                    FROM thorderjual a
-                    WHERE status_aktif = 1
-                        AND a.kode LIKE '%$keyword%'
-                    ORDER BY a.kode;";
+//        $query = "	SELECT
+//                    	a.nomor AS nomor,
+//                    	a.kode AS kode,
+//                    	a.stuffing_date AS stuffingdate,
+//                    	a.invoice_number AS invoice,
+//                    	`FC_GENERATE_PORT_NAMA`(a.nomormhport_loading) AS pol,
+//                    	`FC_GENERATE_PORT_NAMA`(a.nomormhport_discharge) AS pod
+//                    FROM thorderjual a
+//                    WHERE status_aktif = 1
+//                        AND a.kode LIKE '%$keyword%'
+//                    ORDER BY a.kode;";
+
+        $query = "SELECT  a.nomor,
+                   a.kode,
+                   a.stuffing_date,
+                   a.invoice_number,
+                   `FC_GENERATE_PORT_NAMA`(a.nomormhport_loading) AS pol,
+                   `FC_GENERATE_PORT_NAMA`(a.nomormhport_discharge) AS pod
+                  FROM thorderjual a
+                  WHERE a.status_aktif = 1
+                   AND a.status_selesai = 0
+                   AND a.status_cancel = 0
+                   AND a.tipe_order = 1
+                   AND a.typeofshipment = 1
+                   AND a.nomormhcabang = '$nomormhcabang'
+                   AND `FC_GENERATE_JUMLAHCONTAINER_FROM_NOMORTHORDERJUAL`(a.nomor) > 0
+                   AND DATEDIFF(NOW(),a.tanggal) <= 365
+                   AND a.kode LIKE '%$keyword%' ";
+
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){
