@@ -32,6 +32,17 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/ll">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/tvJob"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:paddingStart="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="Job No. " />
+
                 <Button
                     android:text="Add Picture"
                     android:layout_width="match_parent"

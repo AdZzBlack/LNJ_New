@@ -51,6 +51,7 @@ public class FormPhotoEmptyContainer extends Fragment implements View.OnClickLis
 
     private Button btnSend;
     protected Button btnAdd;
+    protected TextView tvJob;
 
     protected ArrayList<ImageView> mImageView_;
     protected ArrayList<ImageButton> mImageButton_;
@@ -406,6 +407,9 @@ public class FormPhotoEmptyContainer extends Fragment implements View.OnClickLis
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //added by Tonny @19-Jan-2018 menampilkan kode JOB pada textView
+        tvJob = (TextView) getView().findViewById(R.id.tvJob);
+        tvJob.setText("Job No. " + LibInspira.getShared(global.temppreferences, global.temp.selected_job_kode, ""));
     }
 
     public interface OnFragmentInteractionListener {

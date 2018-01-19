@@ -28,10 +28,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-
-import static com.inspira.lnj.IndexInternal.global;
-
 //import android.app.Fragment;
 
 public class FormContainerLoadingDetailFragment extends Fragment implements View.OnClickListener{
@@ -39,7 +35,7 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
     private GlobalVar global;
     private JSONObject jsonObject;
 
-    private TextView tvContainer, tvContainerSize, tvContainerType;
+    private TextView tvJob, tvContainer, tvContainerSize, tvContainerType;
     private EditText edtContainerCode;
     private Button btnEmptyContainer, btnSealedContainer, btnSealedCondition, btnOtherPicture;
 
@@ -80,6 +76,9 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
         super.onActivityCreated(bundle);
         global = new GlobalVar(getActivity());
 
+        //added by Tonny @19-Jan-2018 menambahkan tampilan kode job yg sudah dipilih
+        tvJob = (TextView) getView().findViewById(R.id.tvJob);
+        tvJob.setText(LibInspira.getShared(global.temppreferences, global.temp.selected_job_kode, ""));
         tvContainer = (TextView) getView().findViewById(R.id.tvContainer);
         tvContainerSize = (TextView) getView().findViewById(R.id.tvContainerSize);
         tvContainerType = (TextView) getView().findViewById(R.id.tvContainerType);
@@ -125,6 +124,9 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
             LibInspira.setShared(global.temppreferences, global.temp.temp, "");
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseJobContainerFragment());
         }
+        else if(LibInspira.getShared(global.temppreferences, global.temp.selected_container_nomor, "").equals("")){ //added by Tonny @19-Jan-2018 jika belum memilih container, tampilkan warning
+            LibInspira.showShortToast(getContext(), "Container Required");
+        }
         else if(id==R.id.btnEmptyContainer)
         {
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoEmptyContainer());
@@ -132,6 +134,12 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
         else if(id==R.id.btnSealedContainer)
         {
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoSealedContainerFragment());
+        }
+        else if(id==R.id.btnSealedCondition){
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoSealedConditionFragment());
+        }
+        else if(id==R.id.btnOtherPicture){
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoOtherPictureFragment());
         }
         else if(id==R.id.btnDone)
         {

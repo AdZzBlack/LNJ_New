@@ -178,8 +178,8 @@ public class IndexInternal extends AppCompatActivity
         LibInspira.clearShared(global.temppreferences);
 
         if (id == R.id.nav_dashboard) {
-//            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FormPhotoEmptyContainer());  //added by Tonny @01-Aug-2017
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
+//            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FormPhotoEmptyContainer());
         }
         else if (id == R.id.nav_tracking) {
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "tracking");
