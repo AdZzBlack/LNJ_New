@@ -85,7 +85,21 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
         tvContainerSize = (TextView) getView().findViewById(R.id.tvContainerSize);
         tvContainerType = (TextView) getView().findViewById(R.id.tvContainerType);
         edtContainerCode = (EditText) getView().findViewById(R.id.edtContainerCode);
-        edtContainerCode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        //------------------------------------added by Tonny @19-Jan-2018 add input filter
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                String filtered = "";
+                for (int i = start; i < end; i++) {
+                    char character = source.charAt(i);
+                    if (!Character.isWhitespace(character)) {
+                        filtered += character;
+                    }
+                }
+                return filtered;
+            }
+        };
+        edtContainerCode.setFilters(new InputFilter[]{filter, new InputFilter.AllCaps()});
+        //---------------------------------------------------------------------------------
         btnEmptyContainer = (Button) getView().findViewById(R.id.btnEmptyContainer);
         btnSealedContainer = (Button) getView().findViewById(R.id.btnSealedContainer);
         btnSealedCondition = (Button) getView().findViewById(R.id.btnSealedCondition);
