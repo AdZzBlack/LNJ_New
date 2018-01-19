@@ -181,8 +181,8 @@ class Master extends REST_Controller {
 
         $query = "SELECT  a.nomor,
                    a.kode,
-                   a.stuffing_date,
-                   a.invoice_number,
+                   a.stuffing_date AS stuffingdate,
+                   a.invoice_number AS invoice,
                    `FC_GENERATE_PORT_NAMA`(a.nomormhport_loading) AS pol,
                    `FC_GENERATE_PORT_NAMA`(a.nomormhport_discharge) AS pod
                   FROM thorderjual a

@@ -1,6 +1,3 @@
 Container Loading Fix
-* Fixed nothing happened when button Sealed Condition and button Other Picture clicked
-* Fixed dashboard navigation
-* Shows Job Code in Container Loading Report and all Form Photos
-* Shows alert "Container required" before taking photo
-* Set input Container Number to Uppercase
+* Improved job search by adding filter based on user branch
+* Fixes submitting photo
