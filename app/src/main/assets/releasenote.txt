@@ -1,6 +1,6 @@
-Pending Documents
--. Showing date and time on the list
-
-Completed Documents -> Accepted Documents
-
-Container Loading Report
+Container Loading Fix
+* Fixed nothing happened when button Sealed Condition and button Other Picture clicked
+* Fixed dashboard navigation
+* Shows Job Code in Container Loading Report and all Form Photos
+* Shows alert "Container required" before taking photo
+* Set input Container Number to Uppercase

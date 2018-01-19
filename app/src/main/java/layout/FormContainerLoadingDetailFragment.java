@@ -12,6 +12,8 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,6 +85,7 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
         tvContainerSize = (TextView) getView().findViewById(R.id.tvContainerSize);
         tvContainerType = (TextView) getView().findViewById(R.id.tvContainerType);
         edtContainerCode = (EditText) getView().findViewById(R.id.edtContainerCode);
+        edtContainerCode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         btnEmptyContainer = (Button) getView().findViewById(R.id.btnEmptyContainer);
         btnSealedContainer = (Button) getView().findViewById(R.id.btnSealedContainer);
         btnSealedCondition = (Button) getView().findViewById(R.id.btnSealedCondition);
