@@ -6,11 +6,13 @@ import android.util.Log;
 import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.IndexInternal;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,6 +38,7 @@ public class doFileUpload extends AsyncTask<String, Void, Void> {
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
         DataInputStream inStream = null;
+        BufferedReader bufferedReader;
         String existingFileName = params[0];
         String lineEnd = "\r\n";
         String twoHyphens = "--";
@@ -102,10 +105,19 @@ public class doFileUpload extends AsyncTask<String, Void, Void> {
         //------------------ read the SERVER RESPONSE
         try {
 
-            inStream = new DataInputStream(conn.getInputStream());
+            //inStream = new DataInputStream(conn.getInputStream());
+            bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String str;
 
-            while ((str = inStream.readLine()) != null) {
+            //remarked by Tonny @23-Jan-2018 inStream.readLine() is deprecated
+//            while ((str = inStream.readLine()) != null) {
+//                if(!str.contains("error"))
+//                {
+//                    listener.postTaskMethod();
+//                }
+//                Log.e("Debug", "Server Response " + str);
+//            }
+            while ((str = bufferedReader.readLine()) != null) {
                 if(!str.contains("error"))
                 {
                     listener.postTaskMethod();

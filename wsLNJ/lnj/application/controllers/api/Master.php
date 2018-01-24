@@ -190,11 +190,13 @@ class Master extends REST_Controller {
                    AND a.status_selesai = 0
                    AND a.status_cancel = 0
                    AND a.tipe_order = 1
-                   AND a.typeofshipment = 1
+                   AND `FC_GENERATE_RFQ_TYPEOFSHIPMENT_FROM_NOMORTHRFQ`(a.nomorthrfq) = 'FCL'
                    AND a.nomormhcabang = '$nomormhcabang'
                    AND `FC_GENERATE_JUMLAHCONTAINER_FROM_NOMORTHORDERJUAL`(a.nomor) > 0
                    AND DATEDIFF(NOW(),a.tanggal) <= 365
-                   AND a.kode LIKE '%$keyword%' ";
+                   AND a.kode LIKE '%$keyword%'
+                   ORDER BY kode DESC
+                   LIMIT 100 ";
 
         $result = $this->db->query($query);
 

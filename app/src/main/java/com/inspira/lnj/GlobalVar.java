@@ -70,7 +70,7 @@ public class GlobalVar {
             if(_urltype==1) result = "https://" + url + "/uploads/lnj/CONTAINER EMPTY/upload.php";
             else if(_urltype==2) result = "https://" + url + "/uploads/lnj/CONTAINER SEALED/upload.php";
             else if(_urltype==3) result = "https://" + url + "/uploads/lnj/CONTAINER SEALED PORT/upload.php";
-            else if(_urltype==4) result = "https://" + url + "/uploads/lnj/CONTAINER SEALED OTHERS/upload.php";
+            else if(_urltype==4) result = "https://" + url + "/uploads/lnj/CONTAINER OTHERS/upload.php";  //modified by Tonny @23-Jan-2018 CONTAINER SEALED OTHERS --> CONTAINER OTHERS
             else  result = "";
             return result;
         }
