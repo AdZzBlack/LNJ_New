@@ -132,7 +132,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 jsonObject.put("password", password);
                 jsonObject.put("token", LibInspira.getShared(global.userpreferences,global.user.token, ""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(Login.this, urls[0], jsonObject);
@@ -194,7 +193,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 jsonObject.put("hash", LibInspira.getShared(global.userpreferences,global.user.hash,""));
                 jsonObject.put("token", LibInspira.getShared(global.userpreferences,global.user.token, ""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(Login.this, urls[0], jsonObject);

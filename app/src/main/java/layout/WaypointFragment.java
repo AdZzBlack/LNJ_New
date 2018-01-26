@@ -152,7 +152,6 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(final Place place) {
-                // TODO: Get info about the selected place.
 //                mGoogleMap.clear();
                 removeCurrentLocationMarker();
 
@@ -208,7 +207,6 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
                 placeName = "";
                 Log.wtf("Error: ", "An error occurred: " + status);
             }
@@ -266,7 +264,7 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
         int id = view.getId();
         if(id==R.id.btn_set)
         {
-            // TODO: Get lat lng and save it to tempmapspreferences and then go to FormSetDetailLocation
+            // Get lat lng and save it to tempmapspreferences and then go to FormSetDetailLocation
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormSetDetailLocationFragment());
         }
     }
@@ -442,7 +440,6 @@ public class WaypointFragment extends Fragment implements GoogleMap.OnInfoWindow
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                // TODO Auto-generated method stub
 //                lstLatLngs.add(point);
 //                mGoogleMap.clear();
 //                mGoogleMap.addMarker(new MarkerOptions().position(point));

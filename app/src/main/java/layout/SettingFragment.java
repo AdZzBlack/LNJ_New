@@ -209,7 +209,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
                 jsonObject.put("jam_awal", jam_awal);
                 jsonObject.put("jam_akhir", jam_akhir);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

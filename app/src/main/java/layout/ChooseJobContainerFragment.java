@@ -217,7 +217,6 @@ public class ChooseJobContainerFragment extends Fragment implements View.OnClick
                 jsonObject = new JSONObject();
                 jsonObject.put("nomor", LibInspira.getShared(global.temppreferences,global.temp.selected_job_nomor,""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

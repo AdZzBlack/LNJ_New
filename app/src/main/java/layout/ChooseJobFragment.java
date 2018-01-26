@@ -239,7 +239,6 @@ public class ChooseJobFragment extends Fragment implements View.OnClickListener{
                 jsonObject.put("nomormhcabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));  //added by Tonny @19-Jan-2018
                 jsonObject.put("keyword", keyword);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

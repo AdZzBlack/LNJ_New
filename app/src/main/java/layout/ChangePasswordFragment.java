@@ -139,7 +139,6 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
                 Log.d("oldpass: ", oldpass);
                 Log.d("newpass: ", newpass);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 

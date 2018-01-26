@@ -358,7 +358,6 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
                 jsonObject.put("nomormhadmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
                 Log.wtf("nomormhadmin ", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

@@ -294,7 +294,6 @@ public class LocationService extends Service implements LocationListener,
                 jsonObject.put("latitude", latitude);
                 jsonObject.put("longitude", longitude);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 

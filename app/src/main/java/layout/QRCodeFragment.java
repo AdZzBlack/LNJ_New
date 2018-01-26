@@ -215,7 +215,6 @@ public class QRCodeFragment extends Fragment implements ZXingScannerView.ResultH
                 jsonObject.put("kodedokumen", kodeDokumen);
                 jsonObject.put("urldokumen", urlDokumen);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

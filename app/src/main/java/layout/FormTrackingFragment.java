@@ -471,7 +471,6 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
                 jsonObject.put("lat", String.valueOf(getLatitude));
                 jsonObject.put("lon", String.valueOf(getLongitude));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
@@ -530,7 +529,6 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
                 jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
                 jsonObject.put("doctype", docType);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
@@ -581,7 +579,6 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
                 jsonObject.put("nomorthsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
                 jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

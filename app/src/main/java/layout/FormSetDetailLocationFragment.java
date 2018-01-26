@@ -184,12 +184,12 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                 LibInspira.alertBoxYesNo("Save Waypoint", "Do you want to save this waypoint data?", getActivity(), new Runnable() {
                     @Override
                     public void run() {
-                        // TODO: Saving selected events into a var
+                        // Saving selected events into a var
                         String strEvent = "";
                         for (Object value: arrNomorCheckPoint){
                             strEvent = strEvent + value + "~";
                         }
-                        // TODO: Save the data to preferences and database, and go back to previous fragment
+                        // Save the data to preferences and database, and go back to previous fragment
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.event, strEvent);
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.placename, etPlace.getText().toString());
                         LibInspira.setShared(global.tempmapspreferences, global.tempMaps.latitude, etLatitude.getText().toString());
@@ -358,7 +358,6 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                 jsonObject.put("longitude", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.longitude,""));
                 jsonObject.put("keterangan", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.notes,""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
@@ -409,7 +408,6 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                 jsonObject = new JSONObject();
                 jsonObject.put("nomor", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.nomor,""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
@@ -459,7 +457,6 @@ public class FormSetDetailLocationFragment extends Fragment implements View.OnCl
                 jsonObject = new JSONObject();
                 jsonObject.put("nomormhwaypoint", LibInspira.getShared(global.tempmapspreferences,global.tempMaps.nomor,""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

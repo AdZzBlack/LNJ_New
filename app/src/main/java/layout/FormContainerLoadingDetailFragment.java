@@ -305,7 +305,6 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
                 jsonObject.put("photoother", LibInspira.getShared(global.temppreferences,global.temp.photo_photoname_other_picture,""));
                 jsonObject.put("user_nomor", LibInspira.getShared(global.userpreferences,global.user.nomor,""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

@@ -254,7 +254,6 @@ public class LiveTrackingFragment extends Fragment implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        // TODO Auto-generated method stub
         if(mMyLocationMarker!=null)
         {
             mMyLocationMarker.remove();

@@ -107,7 +107,6 @@ public class FormChooseCheckIn extends Dialog implements View.OnClickListener {
                 jsonObject = new JSONObject();
                 jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);

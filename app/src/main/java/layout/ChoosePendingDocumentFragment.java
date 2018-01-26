@@ -191,12 +191,14 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                     String[] parts = pieces[i].trim().split("~");
 
                     String nomor = parts[0];
-                    String kode = parts[1];
-                    String nomormhadmin = parts[2];
-                    String tanggal = parts[3];
-                    String nama = parts[4];
+                    String nomortlaporan_ref = parts[1];
+                    String kode = parts[2];
+                    String nomormhadmin = parts[3];
+                    String tanggal = parts[4];
+                    String nama = parts[5];
 
                     if(nomor.equals("")) nomor = "null";
+                    if(nomortlaporan_ref.equals("")) nomortlaporan_ref = "null";
                     if(kode.equals("")) kode = "null";
                     if(nomormhadmin.equals("")) nomormhadmin = "null";
                     if(tanggal.equals("")) tanggal = "null";
@@ -204,6 +206,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
+                    dataItem.setNomorRef(nomortlaporan_ref);
                     dataItem.setKode(kode);
                     dataItem.setNomormhadmin(nomormhadmin);
                     dataItem.setTanggal(tanggal);
@@ -242,18 +245,20 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
+                            String nomortlaporan_ref = (obj.getString("nomortlaporan_ref"));  //added by Tonny @25-Jan-2018
                             String kode = (obj.getString("kode"));
                             String nomormhadmin = (obj.getString("nomormhadmin"));
                             String tanggal = (obj.getString("tanggal"));
                             String nama = (obj.getString("nama"));
 
                             if(nomor.equals("")) nomor = "null";
+                            if(nomortlaporan_ref.equals("")) nomortlaporan_ref = "null";
                             if(kode.equals("")) kode = "null";
                             if(nomormhadmin.equals("")) nomormhadmin = "null";
                             if(tanggal.equals("")) tanggal = "null";
                             if(nama.equals("")) nama = "null";
 
-                            tempData = tempData + nomor + "~" + kode + "~" + nomormhadmin + "~" + tanggal + "~" + nama + "|";
+                            tempData = tempData + nomor + "~" + nomortlaporan_ref + "~" + kode + "~" + nomormhadmin + "~" + tanggal + "~" + nama + "|";
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.doclist, "")))
@@ -285,6 +290,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
     public class ItemAdapter {
 
         private String nomor;
+        private String nomortlaporanref;
         private String nama;
         private String nomormhadmin;
         private String tanggal;
@@ -295,6 +301,9 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
         public String getNomor() {return nomor;}
         public void setNomor(String _param) {this.nomor = _param;}
+
+        public String getNomorRef() {return nomortlaporanref;}
+        public void setNomorRef(String _param) {this.nomortlaporanref = _param;}
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}

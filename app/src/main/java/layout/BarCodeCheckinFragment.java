@@ -128,7 +128,6 @@ public class BarCodeCheckinFragment extends QRCodeFragment implements ZXingScann
                 jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
                 jsonObject.put("doctype", docType);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
