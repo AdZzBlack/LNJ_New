@@ -117,6 +117,7 @@ public class doFileUpload extends AsyncTask<String, Void, Void> {
 //                }
 //                Log.e("Debug", "Server Response " + str);
 //            }
+//            inStream.close();
             while ((str = bufferedReader.readLine()) != null) {
                 if(!str.contains("error"))
                 {
@@ -124,8 +125,6 @@ public class doFileUpload extends AsyncTask<String, Void, Void> {
                 }
                 Log.e("Debug", "Server Response " + str);
             }
-
-            inStream.close();
 
         } catch (IOException ioex) {
             Log.e("Debug", "error: " + ioex.getMessage(), ioex);

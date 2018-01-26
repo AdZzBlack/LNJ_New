@@ -401,6 +401,14 @@ public class ChooseJobFragment extends Fragment implements View.OnClickListener{
                         LibInspira.setShared(global.temppreferences, global.temp.selected_job_pol, pol);
                         LibInspira.setShared(global.temppreferences, global.temp.selected_job_pod, pod);
 
+                        //added by Tonny @26-Jan-2018 reset cache container pada saat ganti job
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_container_nomor, "");
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_container_kode, "");
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_container_size, "");
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_container_type, "");
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_container_seal, "");
+                        ///////////////////////////////////////////////////////////////////////
+
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                 }

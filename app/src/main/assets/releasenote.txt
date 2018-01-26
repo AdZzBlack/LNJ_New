@@ -1,2 +1,3 @@
 Container Fix
-* Fixes submitting photo for Container Other
+* Fixes uppercase input for container code
+* Minor fixes
