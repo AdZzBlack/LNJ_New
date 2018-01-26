@@ -285,7 +285,7 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
     private class Save extends AsyncTask<String, Void, String> {
         JSONObject jsonObject;
 
-        String kode = edtContainerCode.getText().toString();
+        String kode = edtContainerCode.getText().toString().toUpperCase();  //modified by Tonny @26-Jan-2018 toUpperCase
         Boolean next;
 
         public Save(Boolean _next)
