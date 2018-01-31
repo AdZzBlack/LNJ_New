@@ -95,6 +95,8 @@ public class GlobalVar {
             public String selected_nomor_doc = "selected_nomor_doc";
             public String selected_kode_doc = "selected_kode_doc";
             public String selected_nomormhadmin = "selected_nomormhadmin";
+            public String selected_nomormhadmin_from = "selected_nomormhadmin_from";  //added by Tonny @30-Jan-2018
+            public String selected_nomortlaporan_ref = "selected_nomortlaporan_ref";  //added by Tonny @30-Jan-2018
             public String selected_tanggal = "selected_nomormhadmin";
             public String selected_namamhadmin = "selected_namamhadmin";
 

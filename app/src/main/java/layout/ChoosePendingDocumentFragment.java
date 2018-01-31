@@ -11,6 +11,7 @@ import android.content.Context;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -53,6 +54,9 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
     private SetDocumentStatus setDocumentStatus;
 
     protected String status = "Pending";
+    protected String action = "";
+    protected final String DOC_ACCEPT = "ACCEPT";
+    protected final String DOC_REJECT = "REJECT";
 
     public ChoosePendingDocumentFragment() {
         // Required empty public constructor
@@ -171,8 +175,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
         }
     }
 
-    protected void refreshList()
-    {
+    protected void refreshList(){
         itemadapter.clear();
         list.clear();
 
@@ -192,13 +195,15 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
                     String nomor = parts[0];
                     String nomortlaporan_ref = parts[1];
-                    String kode = parts[2];
-                    String nomormhadmin = parts[3];
-                    String tanggal = parts[4];
-                    String nama = parts[5];
+                    String nomormhadmin_from = parts[2];
+                    String kode = parts[3];
+                    String nomormhadmin = parts[4];
+                    String tanggal = parts[5];
+                    String nama = parts[6];
 
                     if(nomor.equals("")) nomor = "null";
                     if(nomortlaporan_ref.equals("")) nomortlaporan_ref = "null";
+                    if(nomormhadmin_from.equals("")) nomormhadmin_from = "null";
                     if(kode.equals("")) kode = "null";
                     if(nomormhadmin.equals("")) nomormhadmin = "null";
                     if(tanggal.equals("")) tanggal = "null";
@@ -207,6 +212,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setNomorRef(nomortlaporan_ref);
+                    dataItem.setNomormhadminFrom(nomormhadmin_from);
                     dataItem.setKode(kode);
                     dataItem.setNomormhadmin(nomormhadmin);
                     dataItem.setTanggal(tanggal);
@@ -246,6 +252,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
                             String nomortlaporan_ref = (obj.getString("nomortlaporan_ref"));  //added by Tonny @25-Jan-2018
+                            String nomormhadmin_from = (obj.getString("nomormhadmin_from"));  //added by Tonny @30-Jan-2018
                             String kode = (obj.getString("kode"));
                             String nomormhadmin = (obj.getString("nomormhadmin"));
                             String tanggal = (obj.getString("tanggal"));
@@ -253,12 +260,14 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
                             if(nomor.equals("")) nomor = "null";
                             if(nomortlaporan_ref.equals("")) nomortlaporan_ref = "null";
+                            if(nomormhadmin_from.equals("")) nomormhadmin_from = "null";
                             if(kode.equals("")) kode = "null";
                             if(nomormhadmin.equals("")) nomormhadmin = "null";
                             if(tanggal.equals("")) tanggal = "null";
                             if(nama.equals("")) nama = "null";
 
-                            tempData = tempData + nomor + "~" + nomortlaporan_ref + "~" + kode + "~" + nomormhadmin + "~" + tanggal + "~" + nama + "|";
+                            tempData = tempData + nomor + "~" + nomortlaporan_ref + "~" + nomormhadmin_from + "~" + kode + "~" + nomormhadmin + "~" + tanggal + "~" + nama + "|";
+                            Log.wtf("message", obj.getString("message"));
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.doclist, "")))
@@ -291,6 +300,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
         private String nomor;
         private String nomortlaporanref;
+        private String nomormhadminfrom;
         private String nama;
         private String nomormhadmin;
         private String tanggal;
@@ -304,6 +314,9 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
         public String getNomorRef() {return nomortlaporanref;}
         public void setNomorRef(String _param) {this.nomortlaporanref = _param;}
+
+        public String getNomormhadminFrom() {return nomormhadminfrom;}
+        public void setNomormhadminFrom(String _param) {this.nomormhadminfrom = _param;}
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
@@ -387,7 +400,10 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                             @Override
                             public void run() {
                                 LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_doc, finalHolder.adapterItem.getNomor());
-                                setStatus(1);
+                                LibInspira.setShared(global.temppreferences, global.temp.selected_kode_doc, finalHolder.adapterItem.getKode());
+                                LibInspira.setShared(global.temppreferences, global.temp.selected_nomormhadmin_from, finalHolder.adapterItem.getNomormhadminFrom());
+                                LibInspira.setShared(global.temppreferences, global.temp.selected_nomortlaporan_ref, finalHolder.adapterItem.getNomorRef());
+                                setStatus(DOC_ACCEPT);
                             }
                         }, new Runnable() {
                             @Override
@@ -406,7 +422,10 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                         @Override
                         public void run() {
                             LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_doc, finalHolder.adapterItem.getNomor());
-                            setStatus(0);
+                            LibInspira.setShared(global.temppreferences, global.temp.selected_kode_doc, finalHolder.adapterItem.getKode());
+                            LibInspira.setShared(global.temppreferences, global.temp.selected_nomormhadmin_from, finalHolder.adapterItem.getNomormhadminFrom());
+                            LibInspira.setShared(global.temppreferences, global.temp.selected_nomortlaporan_ref, finalHolder.adapterItem.getNomorRef());
+                            setStatus(DOC_REJECT);
                         }
                     }, new Runnable() {
                         @Override
@@ -427,11 +446,9 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
     }
 
     //added by Tonny @02-Nov-2017
-    private void setStatus(int _doAccept){
-        String actionUrl = "Order/acceptDoc/";
-        if(_doAccept == 0){
-            actionUrl = "Order/rejectDoc/";
-        }
+    private void setStatus(String _action){
+        action = _action;
+        String actionUrl = "Order/acceptRejectDoc/";
         setDocumentStatus = new SetDocumentStatus();
         setDocumentStatus.execute(actionUrl);
     }
@@ -441,8 +458,13 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
             try {
+                jsonObject.put("action", action);
+                jsonObject.put("nomormhcabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
                 jsonObject.put("nomordoc", LibInspira.getShared(global.temppreferences, global.temp.selected_nomor_doc, ""));
+                jsonObject.put("kodedoc", LibInspira.getShared(global.temppreferences, global.temp.selected_kode_doc, ""));
+                jsonObject.put("nomortlaporan_ref", LibInspira.getShared(global.temppreferences, global.temp.selected_nomortlaporan_ref, ""));
                 jsonObject.put("nomormhadmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                jsonObject.put("nomormhadmin_from", LibInspira.getShared(global.temppreferences, global.temp.selected_nomormhadmin_from, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

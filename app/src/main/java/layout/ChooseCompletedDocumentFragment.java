@@ -34,7 +34,7 @@ public class ChooseCompletedDocumentFragment extends ChoosePendingDocumentFragme
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Completed Document");
+        getActivity().setTitle("Accepted Document");
         return v;
     }
 
