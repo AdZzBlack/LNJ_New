@@ -69,7 +69,7 @@ public class GlobalVar {
             String url = LibInspira.getShared(sharedpreferences, shared.server, "");
             if(_urltype==1) result = "https://" + url + "/uploads/lnj/CONTAINER%20EMPTY/upload.php";
             else if(_urltype==2) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED/upload.php";
-            else if(_urltype==3) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED PORT/upload.php";
+            else if(_urltype==3) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED%20PORT/upload.php";
             else if(_urltype==4) result = "https://" + url + "/uploads/lnj/CONTAINER%20OTHERS/upload.php";  //modified by Tonny @23-Jan-2018 CONTAINER SEALED OTHERS --> CONTAINER OTHERS
             else  result = "";
 
