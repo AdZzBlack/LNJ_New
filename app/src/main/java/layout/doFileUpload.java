@@ -48,6 +48,8 @@ public class doFileUpload extends AsyncTask<String, Void, Void> {
         int maxBufferSize = 1 * 1024 * 1024;
         String responseFromServer = "";
         String urlString = IndexInternal.global.getUploadURL(urltype);
+//        String urlString = "https://sub.pt-lnj.com/wsLNJ/upload.php";
+//        String urlString = "http://gmr.inspiraworld.com/wsGMR/upload.php";A
         Log.d("tes", urlString);
         try {
 
