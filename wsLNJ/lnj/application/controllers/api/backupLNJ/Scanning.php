@@ -341,7 +341,7 @@ class Scanning extends REST_Controller {
         $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");
         $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
         $nomoruser = (isset($jsonObject["nomoruser"]) ? $this->clean($jsonObject["nomoruser"])     : "");
-        $query = "  SELECT kodecontainer, checkpoint, nomorsopir, lat, lon, dibuat_pada AS tanggal FROM whcheckin_mobile WHERE nomortdsuratjalan = $nomortdsuratjalan AND nomorsopir = $nomoruser";
+        $query = "  SELECT kodecontainer, typetracking, nomorsopir, lat, lon, dibuat_pada AS tanggal FROM whcheckin_mobile WHERE nomortdsuratjalan = $nomortdsuratjalan AND nomorsopir = $nomoruser";
         $result = $this->db->query($query);
         if($result){
             if($result->num_rows() > 0){
@@ -349,7 +349,7 @@ class Scanning extends REST_Controller {
                 {
                     array_push($data['data'], array(
                                                     'kodecontainer'    	    => $r['kodecontainer'],
-                                                    'checkpoint'    	    => $r['checkpoint'],
+                                                    'typetracking'    	    => $r['typetracking'],
                                                     'lat'            	    => $r['lat'],
                                                     'lon'    	            => $r['lon'],
                                                     'tanggal'    	        => $r['tanggal']
@@ -370,7 +370,7 @@ class Scanning extends REST_Controller {
         }
     }
 
-	// --- TIDAK DIPAKAI --- //
+	// --- Check in tracking --- //
     function checkIn_post()
     {
         $data['data'] = array();
@@ -380,8 +380,9 @@ class Scanning extends REST_Controller {
 
         $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");
         $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
+        //$kodecontainer = (isset($jsonObject["kodecontainer"]) ? $this->clean($jsonObject["kodecontainer"])     : "");
         $nomorsopir = (isset($jsonObject["nomorsopir"]) ? $this->clean($jsonObject["nomorsopir"])     : "");
-        $checkpoint = (isset($jsonObject["checkpoint"]) ? $this->clean($jsonObject["checkpoint"])     : "");
+        $type = (isset($jsonObject["type"]) ? $this->clean($jsonObject["type"])     : "");
         $lat = (isset($jsonObject["lat"]) ? $jsonObject["lat"]     : "");
         $lon = (isset($jsonObject["lon"]) ? $jsonObject["lon"]     : "");
 
@@ -394,9 +395,9 @@ class Scanning extends REST_Controller {
             $kodecontainer = $row->kodecontainer;
             $this->db->trans_begin();
             $query = "	INSERT INTO whcheckin_mobile
-                            (nomortdsuratjalan, kodecontainer, checkpoint, nomorsopir, lat, lon, dibuat_pada)
+                            (nomortdsuratjalan, kodecontainer, typetracking, nomorsopir, lat, lon, dibuat_pada)
                         VALUES
-                            ($nomortdsuratjalan, '$kodecontainer', '$checkpoint', $nomorsopir, $lat, $lon, NOW()) ";
+                            ($nomortdsuratjalan, '$kodecontainer', '$type', $nomorsopir, $lat, $lon, NOW()) ";
 
             $this->db->query($query);
 
@@ -432,7 +433,7 @@ class Scanning extends REST_Controller {
 //        $nomorthsuratjalan = (isset($jsonObject["nomorthsuratjalan"]) ? $this->clean($jsonObject["nomorthsuratjalan"])     : "");  //BELUM DIPAKAI
         $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
         $nomorsopir = (isset($jsonObject["nomorsopir"]) ? $this->clean($jsonObject["nomorsopir"])     : "");
-        $checkpoint = 'SELESAI';
+        $type = 'SELESAI';
         $lat = (isset($jsonObject["lat"]) ? $jsonObject["lat"]     : "");
         $lon = (isset($jsonObject["lon"]) ? $jsonObject["lon"]     : "");
 
@@ -445,9 +446,9 @@ class Scanning extends REST_Controller {
             $kodecontainer = $row->kodecontainer;
             $this->db->trans_begin();
             $query = "	INSERT INTO whcheckin_mobile
-                            (nomortdsuratjalan, kodecontainer, checkpoint, nomorsopir, lat, lon, dibuat_pada)
+                            (nomortdsuratjalan, kodecontainer, typetracking, nomorsopir, lat, lon, dibuat_pada)
                         VALUES
-                            ($nomortdsuratjalan, '$kodecontainer', '$checkpoint', $nomorsopir, $lat, $lon, NOW()) ";
+                            ($nomortdsuratjalan, '$kodecontainer', '$type', $nomorsopir, $lat, $lon, NOW()) ";
 
             $this->db->query($query);
 
@@ -473,159 +474,6 @@ class Scanning extends REST_Controller {
                     array_push($data['data'], array( 'message' => 'Delivery Order has been completed' ));
                 }
             }
-        }
-
-        if ($data){
-            // Set the response and exit
-            $this->response($data['data']); // OK (200) being the HTTP response code
-        }
-    }
-
-    // --- Get lat lon, and radius from next waypoint --- //
-    function GetNextWP_post()
-    {
-        $data['data'] = array();
-
-        $value = file_get_contents('php://input');
-        $jsonObject = (json_decode($value , true));
-
-        $user_nomor = (isset($jsonObject["user_nomor"]) ? $this->clean($jsonObject["user_nomor"])     : "");
-        $job_nomor = (isset($jsonObject["job_nomor"]) ? $this->clean($jsonObject["job_nomor"])     : "");
-
-        //get current nomormdskenario
-        $query = "SELECT FC_GENERATE_NOMORMDSKENARIO_CHECKPOINT_NOW('$job_nomor','AUTO') AS nomormdskenario_now ";
-        $result = $this->db->query($query);
-        $nomormdskenario_now = '0';
-        if($result && $result->num_rows() > 0){
-            $row = $result->row();
-            $nomormdskenario_now = $row->nomormdskenario_now;
-        }else{
-            array_push($data['data'], array( 'query' => $this->error($query),
-                                             'message' => 'Failed to retrieve the last scenario'));
-            if ($data){
-                // Set the response and exit
-                $this->response($data['data']); // OK (200) being the HTTP response code
-            }
-            die();
-        }
-
-        //if there is no nomormdskenario_now
-        if($nomormdskenario_now == '0' || $nomormdskenario_new == ''){
-            array_push($data['data'], array( 'query' => $this->error($query),
-                                             'message' => 'Failed to retrieve the last scenario'));
-        }else{
-            //get next DO checkpoint, waypoint, radius
-            $query = " SELECT a.nomor AS nomormdskenario, a.nomormhwaypoint, a.tipe, b.nama AS namacheckpoint, d.radius, d.latitude, d.longitude
-                       FROM mdskenario a
-                       LEFT JOIN mhcheckpoint b
-                         ON b.nomor = a.nomormhcheckpoint
-                       JOIN mhwaypoint d
-                         ON d.nomor = a.nomormhwaypoint
-                       WHERE c.nomortdsuratjalan = '$job_nomor' AND a.nomor = '$nomormdskenario_now'
-                       LIMIT 1 ";
-            $result = $this->db->query($query);
-            if($result){
-                if($result->num_rows() > 0){
-                    foreach ($result->result_array() as $r)
-                    {
-                        array_push($data['data'], array(
-                                                        'nomormdskenario_next'	=> $r['nomormdskenario'],
-                                                        'nomormhwaypoint_next'  => $r['nomormhwaypoint'],
-                                                        'namacheckpoint_next'   => $r['namacheckpoint'],
-                                                        'checkin_type'          => $r['tipe'],
-                                                        'radius_next'           => $r['radius'],
-                                                        'latitude_next'         => $r['latitude'],
-                                                        'longitude_next'        => $r['longitude']
-                                                )
-                        );
-                    }
-                }else{
-                    array_push($data['data'], array( 'query' => $this->error($query),
-                                                     'message' => 'No new waypoint'));
-                }
-            }else{
-                array_push($data['data'], array( 'query' => $this->error($query),
-                                                 'message' => 'Failed to get next waypoint'));
-            }
-        }
-
-        if ($data){
-            // Set the response and exit
-            $this->response($data['data']); // OK (200) being the HTTP response code
-        }
-    }
-
-    //--- Checkin to next skenario --- //  FROM LIANA (TEST)
-    function InsertCheckin_post()
-    {
-        $data['data'] = array();
-
-        $value = file_get_contents('php://input');
-        $jsonObject = (json_decode($value , true));
-
-        $nomorsopir = (isset($jsonObject["nomorsopir"]) ? $this->clean($jsonObject["nomorsopir"])     : "");
-        $nomortdsuratjalan = (isset($jsonObject["nomortdsuratjalan"]) ? $this->clean($jsonObject["nomortdsuratjalan"])     : "");
-        $checkpoint = (isset($jsonObject["checkpoint"]) ? $this->clean($jsonObject["checkpoint"])     : "");
-        $checkin_type = (isset($jsonObject["checkin_type"]) ? $this->clean($jsonObject["checkin_type"])     : "");
-        $checkin_mode = (isset($jsonObject["checkin_mode"]) ? $this->clean($jsonObject["checkin_mode"])     : "");
-        $lat = (isset($jsonObject["latitude"]) ? $jsonObject["latitude"]     : "");
-        $lon = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
-
-        //get next nomormdskenario AUTO
-        $query = "SELECT FC_GENERATE_NOMORMDSKENARIO_CHECKPOINT_NOW('$nomortdsuratjalan','AUTO') AS nomormdskenario_new ";
-        if($checkin_mode == 'MANUAL'){
-            $query = "SELECT FC_GENERATE_NOMORMDSKENARIO_CHECKPOINT_NOW('$nomortdsuratjalan','MANUAL') AS nomormdskenario_new ";
-        }
-        $result = $this->db->query($query);
-
-        if($result && $result->num_rows() > 0){
-            $row = $result->row();
-            $nomormdskenario_new = $row->nomormdskenario_new;
-            if($nomormdskenario_new == 0 || $nomormdskenario_new == ''){
-                array_push($data['data'], array('query' => $this->error($query),
-                                                'message' => 'No scenario auto for this DO'));
-            }else{
-                if($checkin_mode == 'MANUAL'){
-                    $query = "SELECT tipe FROM mdskenario WHERE nomor = '$nomormdskenario_new' ";
-                    $result = $this->db->query($query);
-                    $checkin_type = "IN";
-                    if($result && $result->num_rows() > 0){
-                        $row = $result->row();
-                        $checkin_type = $row->tipe;
-                    }else{
-                        array_push($data['data'], array('message' => 'Failed to retrieve checkin_type'));
-                        if ($data){
-                            // Set the response and exit
-                            $this->response($data['data']); // OK (200) being the HTTP response code
-                        }
-                        die();
-                    }
-                }
-                $query = "SELECT kodecontainer FROM tdsuratjalan WHERE nomor = $nomortdsuratjalan ";
-                $result = $this->db->query($query);
-                if($result && $result->num_rows() > 0){
-                    $row = $result->row();
-                    $kodecontainer = $row->kodecontainer;
-                    $this->db->trans_begin();
-                    $query = "	INSERT INTO whcheckin_mobile
-                                    (nomortdsuratjalan, nomormdskenario, kodecontainer, checkpoint, checkin_type, checkin_mode, nomorsopir, lat, lon, dibuat_pada)
-                                VALUES
-                                    ('$nomortdsuratjalan', '$nomormdskenario_new', '$kodecontainer', '$checkpoint', '$checkin_type', '$checkin_mode', '$nomorsopir', '$lat', '$lon', NOW()) ";
-                    $this->db->query($query);
-                    if ($this->db->trans_status() === FALSE)
-                    {
-                        $this->db->trans_rollback();
-                        array_push($data['data'], array('query' => $this->error($query),
-                                                        'message' => 'Failed to insert whcheckin'));
-                    }else{
-                        $this->db->trans_commit();
-                        array_push($data['data'], array('message' => 'insert whcheckin success'));
-                    }
-                }
-            }
-        }else{
-            array_push($data['data'], array('query' => $this->error($query),
-                                            'message' => 'No scenario data'));
         }
 
         if ($data){

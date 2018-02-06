@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -31,20 +30,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,6 +61,7 @@ public class LocationService extends Service implements LocationListener,
     private boolean isMock;
     private boolean isNewLocation;
     private boolean canSave;
+    private boolean isCheckin;
 
     private String trackingMode, jam_awal, jam_akhir;
 
@@ -119,6 +109,7 @@ public class LocationService extends Service implements LocationListener,
 
         isMock = false;
         isNewLocation = true;
+        isCheckin = false;  //added by Tonny @06-Feb-2018
 
         Message msg = mServiceHandler.obtainMessage();
         msg.arg1 = startId;
@@ -184,6 +175,27 @@ public class LocationService extends Service implements LocationListener,
                     {
                         String actionUrl = "Track/InsertHistory/";
                         new updateLocation().execute(actionUrl);
+                    }
+                }
+
+                //added by Tonny @01-Feb-2018
+                //check driver position radius for insert, update on whcheckin (check in/out)
+                if(LibInspira.getShared(global.userpreferences, global.user.role_isdriver, "").equals("1"))
+                {
+                    double radius = getRadius(oldLatitude, oldLongitude, getLatitude, getLongitude);
+                    if(radius >= 0.1 && !LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "").equals(""))
+                    {
+                        String data = LibInspira.getShared(global.datapreferences, global.data.deliveryorderlist, "");
+                        String[] pieces = data.trim().split("\\|");
+                        if(pieces.length > 1 && !pieces[0].equals(""))
+                        {
+                            for(int i=0 ; i < pieces.length ; i++) {
+                                if (!pieces[i].equals("")) {
+                                    String actionUrl = "Scanning/GetNextWP/";
+                                    new GetNextWP(pieces[i]).execute(actionUrl);
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -322,6 +334,126 @@ public class LocationService extends Service implements LocationListener,
         public void handleMessage(Message msg) {
 
             //stopSelf(msg.arg1); <- don't use, ur gonna kill this
+        }
+    }
+
+    private class GetNextWP extends AsyncTask<String, Void, String> {
+        private String job_nomor;
+        private GetNextWP(String _nomorDO)
+        {
+            job_nomor = _nomorDO;
+        }
+        String user_nomor = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
+//        String job_nomor = LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,"");
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("user_nomor", user_nomor);
+                jsonObject.put("job_nomor", job_nomor);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return LibInspira.executePost(getApplicationContext(), urls[0], jsonObject);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success
+                            LibInspira.showShortToast(getApplicationContext(), "Next Checkpoint: " + obj.getString("namacheckpoint_next"));
+                            String checkin_type = obj.getString("checkin_type");
+                            double wpRadius = obj.getDouble("radius_next") / 1000;
+                            double wpLat = obj.getDouble("latitude_next");
+                            double wpLon = obj.getDouble("longitude_next");
+                            double radius = getRadius(wpLat, wpLon, getLatitude, getLongitude);
+                            String actionUrl = "Scanning/InsertCheckin/";
+                            if((checkin_type == "IN" && radius <= wpRadius && !isCheckin)
+                                    || (checkin_type == "OUT" && radius > wpRadius && isCheckin)){
+                                new InsertCheckin(checkin_type, job_nomor).execute(actionUrl);
+                            }
+                        }
+                        else
+                        {
+                            Log.wtf("getNextWP: ", obj.getString("message"));
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getApplicationContext(), e.getMessage());
+            }
+        }
+    }
+
+    private class InsertCheckin extends AsyncTask<String, Void, String> {
+        private String checkinType, job_nomor;
+        private InsertCheckin(String _type, String _nomorDO)
+        {
+            checkinType = _type;
+            job_nomor = _nomorDO;
+        }
+        String user_nomor = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
+        //        String job_nomor = LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,"");
+        String latitude = String.valueOf(getLatitude);
+        String longitude = String.valueOf(getLongitude);
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomorsopir", user_nomor);
+                jsonObject.put("nomortdsuratjalan", job_nomor);
+                jsonObject.put("latitude", latitude);
+                jsonObject.put("longitude", longitude);
+                jsonObject.put("checkin_type", checkinType);
+                jsonObject.put("checkin_mode", "AUTO");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return LibInspira.executePost(getApplicationContext(), urls[0], jsonObject);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        LibInspira.hideLoading();
+                        if(!obj.has("query")){  //jika success
+                            Log.wtf("Insert CheckIn: ","insert history success");
+                            if(checkinType.equals("IN")){
+                                isCheckin = true;
+                            }else{
+                                isCheckin = false;
+                            }
+                        }
+                        else
+                        {
+                            Log.wtf("Checkin error: ", obj.getString("message"));
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.showLongToast(getApplicationContext(), e.getMessage());
+            }
         }
     }
 }

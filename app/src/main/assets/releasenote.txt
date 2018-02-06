@@ -1,3 +1,3 @@
-Document
-* Adding log when user submit, accept, and reject documents
-* Fixes accepted documents title
+Check IN
+* Improves saving the check in history based on DO scenario
+* Fixes UI on Delivery Order List

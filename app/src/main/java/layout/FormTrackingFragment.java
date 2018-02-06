@@ -145,7 +145,8 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
             chooseCheckIn.setDialogResult(new FormChooseCheckIn.OnMyDialogResult() {
                 @Override
                 public void finish(String jenis) {
-                    String actionUrl = "Scanning/checkIn/";
+                    //String actionUrl = "Scanning/checkIn/";
+                    String actionUrl = "Scanning/InsertCheckIn/";
                     new CheckIn(jenis).execute(actionUrl);
                 }
             });
@@ -452,24 +453,23 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
     }
 
     private class CheckIn extends AsyncTask<String, Void, String> {
-        String type;
+        String checkpoint;
 
         private CheckIn(String _type)
         {
-            type = _type;
+            checkpoint = _type;
         }
 
         @Override
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
-                jsonObject.put("nomorthsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomorthsuratjalan,""));
                 jsonObject.put("nomortdsuratjalan", LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,""));
-                jsonObject.put("kodecontainer", LibInspira.getShared(global.userpreferences,global.user.checkin_kodecontainer,""));
                 jsonObject.put("nomorsopir", LibInspira.getShared(global.userpreferences,global.user.nomor,""));
-                jsonObject.put("type", type);
-                jsonObject.put("lat", String.valueOf(getLatitude));
-                jsonObject.put("lon", String.valueOf(getLongitude));
+                jsonObject.put("checkpoint", checkpoint);
+                jsonObject.put("latitude", String.valueOf(getLatitude));
+                jsonObject.put("longitude", String.valueOf(getLongitude));
+                jsonObject.put("checkin_mode", "MANUAL");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -601,7 +601,7 @@ public class FormTrackingFragment extends Fragment implements OnMapReadyCallback
                             LatLng latLng = new LatLng(Double.parseDouble(obj.getString("lat")), Double.parseDouble(obj.getString("lon")));
                             MarkerOptions markerOptions = new MarkerOptions();
                             markerOptions.position(latLng);
-                            markerOptions.title(obj.getString("typetracking"));
+                            markerOptions.title(obj.getString("checkpoint"));
                             markerOptions.snippet(snippet);
                             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                             mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
