@@ -271,20 +271,19 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/btnContainerLoadingReport2"
+                    android:id="@+id/btnReport"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="33.3"
-                    android:clickable="true"
-                    android:visibility="invisible">
+                    android:clickable="true">
 
                     <ImageButton
-                        android:id="@+id/ibtnContainerLoadingReport2"
+                        android:id="@+id/ibtnReport"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:src="@drawable/container"
+                        android:src="@drawable/report"
                         android:clickable="false"
                         android:elevation="10dp"
                         android:backgroundTint="@color/colorBackground"
@@ -295,13 +294,13 @@
                         android:layout_centerHorizontal="true" />
 
                     <TextView
-                        android:id="@+id/tvLoadingReport2"
+                        android:id="@+id/tvReport"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/ibtnContainerLoadingReport2"
+                        android:layout_below="@+id/ibtnReport"
                         android:layout_marginTop="8dp"
                         android:clickable="false"
-                        android:text="Pending Docs"
+                        android:text="Report"
                         android:textAlignment="center" />
                 </RelativeLayout>
 

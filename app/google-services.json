@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "776964204279-ppgg9ca51rmvq9pom1544aealeuq1ktu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inspira.lnj",
+            "certificate_hash": "8c46a6c61983c3966ddb57b06143f3a394e55694"
+          }
+        },
+        {
           "client_id": "776964204279-ans50rltam459bhd1du97c8ngq0pv7m6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

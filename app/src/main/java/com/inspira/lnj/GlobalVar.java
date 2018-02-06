@@ -130,6 +130,11 @@ public class GlobalVar {
 
             public String nomor_doc = "nomor_doc";
             public String kode_doc = "kode_doc";
+
+            public String report_startdate = "report_startdate";
+            public String report_enddate = "report_enddate";
+            public String report_job = "report_job";
+            public String report_user = "report_user";
         }
 
         public class User

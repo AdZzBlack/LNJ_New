@@ -162,7 +162,7 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Container Loading Report");
-            builder.setMessage("Are you sure want to upload report?");
+            builder.setMessage("Are you sure want to upload fragment_report?");
 
             // Set up the buttons
             builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -183,7 +183,7 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Container Loading Report");
-            builder.setMessage("Are you sure want to upload report?");
+            builder.setMessage("Are you sure want to upload fragment_report?");
 
             // Set up the buttons
             builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
