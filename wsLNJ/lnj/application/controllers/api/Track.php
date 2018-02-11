@@ -124,8 +124,8 @@ class Track extends REST_Controller {
 
         $user_nomor = (isset($jsonObject["user_nomor"]) ? $this->clean($jsonObject["user_nomor"])     : "");
         $job_nomor = (isset($jsonObject["job_nomor"]) ? $this->clean($jsonObject["job_nomor"])     : "");
-        $latitude = (isset($jsonObject["latitude"]) ? $this->clean($jsonObject["latitude"])     : "");
-        $longitude = (isset($jsonObject["longitude"]) ? $this->clean($jsonObject["longitude"])     : "");
+        $latitude = (isset($jsonObject["latitude"]) ? $jsonObject["latitude"]     : "");
+        $longitude = (isset($jsonObject["longitude"]) ? $jsonObject["longitude"]     : "");
 
         $this->db->trans_begin();
         $query = " INSERT INTO whhistory_mobile
