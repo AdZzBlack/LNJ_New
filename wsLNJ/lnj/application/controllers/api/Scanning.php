@@ -510,18 +510,18 @@ class Scanning extends REST_Controller {
         }
 
         //if there is no nomormdskenario_now
-        if($nomormdskenario_now == '0' || $nomormdskenario_new == ''){
+        if($nomormdskenario_now == '0' || $nomormdskenario_now == ''){
             array_push($data['data'], array( 'query' => $this->error($query),
-                                             'message' => 'Failed to retrieve the last scenario'));
+                                             'message' => 'There is no new scenario '. $nomormdskenario_now));
         }else{
             //get next DO checkpoint, waypoint, radius
-            $query = " SELECT a.nomor AS nomormdskenario, a.nomormhwaypoint, a.tipe, b.nama AS namacheckpoint, d.radius, d.latitude, d.longitude
+            $query = " SELECT a.nomor AS nomormdskenario, a.nomormhwaypoint, a.tipe, b.nama AS namacheckpoint, c.radius, c.latitude, c.longitude
                        FROM mdskenario a
                        LEFT JOIN mhcheckpoint b
                          ON b.nomor = a.nomormhcheckpoint
-                       JOIN mhwaypoint d
-                         ON d.nomor = a.nomormhwaypoint
-                       WHERE c.nomortdsuratjalan = '$job_nomor' AND a.nomor = '$nomormdskenario_now'
+                       JOIN mhwaypoint c
+                         ON c.nomor = a.nomormhwaypoint
+                       WHERE a.nomor = '$nomormdskenario_now'
                        LIMIT 1 ";
             $result = $this->db->query($query);
             if($result){

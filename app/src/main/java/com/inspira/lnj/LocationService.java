@@ -192,7 +192,7 @@ public class LocationService extends Service implements LocationListener,
                             for(int i=0 ; i < pieces.length ; i++) {
                                 if (!pieces[i].equals("")) {
                                     String actionUrl = "Scanning/GetNextWP/";
-                                    new GetNextWP(pieces[i]).execute(actionUrl);
+                                    new GetNextWP(pieces[i].replace("D", "")).execute(actionUrl);
                                 }
                             }
                         }
@@ -375,15 +375,15 @@ public class LocationService extends Service implements LocationListener,
                             double wpLat = obj.getDouble("latitude_next");
                             double wpLon = obj.getDouble("longitude_next");
                             double radius = getRadius(wpLat, wpLon, getLatitude, getLongitude);
+                            String namacheckpoint = obj.getString("namacheckpoint_next");
                             String actionUrl = "Scanning/InsertCheckin/";
                             if((checkin_type == "IN" && radius <= wpRadius && !isCheckin)
                                     || (checkin_type == "OUT" && radius > wpRadius && isCheckin)){
-                                new InsertCheckin(checkin_type, job_nomor).execute(actionUrl);
+                                new InsertCheckin(namacheckpoint, checkin_type, job_nomor).execute(actionUrl);
                             }
-                        }
-                        else
-                        {
-                            Log.wtf("getNextWP: ", obj.getString("message"));
+                            Log.wtf("getNextWP: ", obj.getString("namacheckpoint_next"));
+                        }else{
+                            Log.wtf("error: ", obj.getString("message"));
                         }
                     }
                 }
@@ -397,11 +397,12 @@ public class LocationService extends Service implements LocationListener,
     }
 
     private class InsertCheckin extends AsyncTask<String, Void, String> {
-        private String checkinType, job_nomor;
-        private InsertCheckin(String _type, String _nomorDO)
+        private String checkpoint, checkinType, job_nomor;
+        private InsertCheckin(String _checkpoint, String _type, String _nomorDO)
         {
             checkinType = _type;
             job_nomor = _nomorDO;
+            checkpoint = _checkpoint;
         }
         String user_nomor = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
         //        String job_nomor = LibInspira.getShared(global.userpreferences,global.user.checkin_nomortdsuratjalan,"");
@@ -416,6 +417,7 @@ public class LocationService extends Service implements LocationListener,
                 jsonObject.put("nomortdsuratjalan", job_nomor);
                 jsonObject.put("latitude", latitude);
                 jsonObject.put("longitude", longitude);
+                jsonObject.put("checkpoint", checkpoint);
                 jsonObject.put("checkin_type", checkinType);
                 jsonObject.put("checkin_mode", "AUTO");
             } catch (JSONException e) {
