@@ -129,7 +129,8 @@ public class LibPDF {
 
                 JSONArray jsonarray = new JSONArray(data);
                 if(jsonarray.length() > 0){
-                    for (int i = 0; i < jsonarray.length(); i++) {
+                    for (int i = 0; i < jsonarray.length(); i++)
+                    {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         String job = (obj.getString("job").equals("null") ? "" : obj.getString("job"));
                         String tgldelivery = (obj.getString("tgldelivery").equals("null") ? "" : obj.getString("tgldelivery"));
@@ -211,6 +212,7 @@ public class LibPDF {
                             headertable.addCell(cell);
 
                             event.setHeader(headertable);
+                            jobnow = job;
                         }
 
                         cell = new PdfPCell(new Phrase(datetracking, f));

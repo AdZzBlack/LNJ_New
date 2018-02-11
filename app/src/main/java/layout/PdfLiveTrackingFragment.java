@@ -108,18 +108,23 @@ public class PdfLiveTrackingFragment extends Fragment implements View.OnClickLis
         @Override
         protected void onPostExecute(String result) {
             Log.d("resultQuery", result);
+            Boolean error = false;
             try
             {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("error")){
-                            Calendar cal = Calendar.getInstance();
-                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-                            new LibPDF(getActivity()).createPDF_livetracking(result, format.format(cal.getTime()));
+                        if(obj.has("error")){
+                            error = true;
                         }
+                    }
+                    if(!error)
+                    {
+                        Calendar cal = Calendar.getInstance();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+                        new LibPDF(getActivity()).createPDF_livetracking(result, format.format(cal.getTime()));
                     }
                 }
             }
