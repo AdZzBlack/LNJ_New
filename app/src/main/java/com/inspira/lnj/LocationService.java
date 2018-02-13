@@ -369,7 +369,7 @@ public class LocationService extends Service implements LocationListener,
                         JSONObject obj = jsonarray.getJSONObject(i);
                         LibInspira.hideLoading();
                         if(!obj.has("query")){  //jika success
-                            LibInspira.showShortToast(getApplicationContext(), "Next Checkpoint: " + obj.getString("namacheckpoint_next"));
+//                            LibInspira.showShortToast(getApplicationContext(), "Next Checkpoint: " + obj.getString("namacheckpoint_next"));
                             String checkin_type = obj.getString("checkin_type");
                             double wpRadius = obj.getDouble("radius_next") / 1000;
                             double wpLat = obj.getDouble("latitude_next");
@@ -377,8 +377,9 @@ public class LocationService extends Service implements LocationListener,
                             double radius = getRadius(wpLat, wpLon, getLatitude, getLongitude);
                             String namacheckpoint = obj.getString("namacheckpoint_next");
                             String actionUrl = "Scanning/InsertCheckin/";
-                            if((checkin_type == "IN" && radius <= wpRadius && !isCheckin)
-                                    || (checkin_type == "OUT" && radius > wpRadius && isCheckin)){
+                            if((checkin_type.equals("IN") && radius <= wpRadius && !isCheckin)
+                                    || (checkin_type.equals("OUT") && radius > wpRadius && isCheckin)){
+                                Log.wtf("status", "inserting");
                                 new InsertCheckin(namacheckpoint, checkin_type, job_nomor).execute(actionUrl);
                             }
                             Log.wtf("getNextWP: ", obj.getString("namacheckpoint_next"));

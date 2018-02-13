@@ -349,7 +349,7 @@ public class ChooseSuratJalanFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    //added by Tonny @05-Dec-2017 untuk cek suatu dokumen sudah selesai atau belum
+    //added by Tonny @05-Dec-2017 untuk mendapatkan list document DO
     private class DeliveryOrder extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
