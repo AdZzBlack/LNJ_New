@@ -1,6 +1,6 @@
 /******************************************************************************
     Author           : ADI
-    Description      : dashboard untuk internal
+    Description      : PDF converter for Live Tracking report
     History          :
 
 ******************************************************************************/
@@ -26,10 +26,6 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import static com.inspira.lnj.IndexInternal.jsonObject;
-
-//import android.app.Fragment;
 
 public class PdfLiveTrackingFragment extends Fragment implements View.OnClickListener{
 

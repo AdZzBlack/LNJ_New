@@ -147,7 +147,58 @@ class Report extends REST_Controller {
                                                 'driver'                  => $r['driver'],
                                                 'latitude'                => $r['latitude'],
                                                 'longitude'               => $r['longitude'],
-                                                'datetracking'            => $r['datetracking'],
+                                                'datetracking'            => $r['datetracking']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'error' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- Report Deviation--- //
+    function GetDeviationTracking_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $driver = (isset($jsonObject["driver"]) ? $this->clean($jsonObject["driver"])     : "%");
+        $job_nomor = (isset($jsonObject["job_nomor"]) ? $this->clean($jsonObject["job_nomor"])     : "%");
+        $startdate = (isset($jsonObject["startdate"]) ? $this->clean($jsonObject["startdate"])     : "2000-01-01");
+        $enddate = (isset($jsonObject["enddate"]) ? $this->clean($jsonObject["enddate"])     : "3000-01-01");
+
+        if($driver=="") $driver = "%";
+        if($job_nomor=="") $job_nomor = "%";
+        if($startdate=="") $startdate = "2000-01-01";
+        if($enddate=="") $enddate = "3000-01-01";
+
+        $query = "CALL RP_DEVIATION_TRACKING('$job_nomor', '$driver', '$startdate', '$enddate') ";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'job'					  => $r['job'],
+                                                'tgldelivery'             => $r['tgldelivery'],
+                                                'vehicleid'			      => $r['vehicleid'],
+                                                'kodecontainer'           => $r['kodecontainer'],
+                                                'weight'                  => $r['weight'],
+                                                'driver'                  => $r['driver'],
+                                                'latitude'                => $r['latitude'],
+                                                'longitude'               => $r['longitude'],
+                                                'cp_latitude'             => $r['cp_latitude'],
+                                                'cp_longitude'            => $r['cp_longitude'],
+                                                'radius_km'               => $r['radius(km)'],
+                                                'distance_km'             => $r['distance(km)'],
+                                                'datetracking'            => $r['datetracking']
                                                 )
                 );
             }

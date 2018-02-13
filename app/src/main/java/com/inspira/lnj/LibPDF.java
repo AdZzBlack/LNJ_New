@@ -247,6 +247,196 @@ public class LibPDF {
         }
     }
 
+    //added by Tonny @13-Feb-2018
+    public static void createPDF_deviation(String data, String tanggal) throws FileNotFoundException, DocumentException
+    {
+        //create document file
+        Document doc = new Document(PageSize.A4, 36, 36, 115, 36);
+        int numColumns = 8;
+        try {
+            String pdfname = "temp.pdf";
+
+            file = new File(dir, pdfname);
+            FileOutputStream fOut = new FileOutputStream(file);
+            PdfWriter writer = PdfWriter.getInstance(doc, fOut);
+
+            TableHeader event = new TableHeader();
+            writer.setPageEvent(event);
+
+            //open the document
+            doc.open();
+
+            try {
+                String jobnow = "";
+
+                PdfPTable headertable = new PdfPTable(numColumns);
+                PdfPTable bodytable = new PdfPTable(numColumns);
+                bodytable.setWidthPercentage(100);
+                float[] columnWidth = new float[]{20, 10, 10, 10, 10, 10, 10, 20};
+                headertable.setWidths(columnWidth);
+                bodytable.setWidths(columnWidth);
+
+                JSONArray jsonarray = new JSONArray(data);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++)
+                    {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        String job = (obj.getString("job").equals("null") ? "" : obj.getString("job"));
+                        String tgldelivery = (obj.getString("tgldelivery").equals("null") ? "" : obj.getString("tgldelivery"));
+                        String vehicleid = (obj.getString("vehicleid").equals("null") ? "" : obj.getString("vehicleid"));
+                        String kodecontainer = (obj.getString("kodecontainer").equals("null") ? "" : obj.getString("kodecontainer"));
+                        String weight = (obj.getString("weight").equals("null") ? "" : obj.getString("weight"));
+                        String driver = (obj.getString("driver").equals("null") ? "" : obj.getString("driver"));
+                        String latitude = (obj.getString("latitude").equals("null") ? "" : obj.getString("latitude"));
+                        String longitude = (obj.getString("longitude").equals("null") ? "" : obj.getString("longitude"));
+                        String cp_latitude = (obj.getString("cp_latitude").equals("null") ? "" : obj.getString("cp_latitude"));
+                        String cp_longitude = (obj.getString("cp_longitude").equals("null") ? "" : obj.getString("cp_longitude"));
+                        String radius_km = (obj.getString("radius_km").equals("null") ? "" : obj.getString("radius_km"));
+                        String distance_km = (obj.getString("distance_km").equals("null") ? "" : obj.getString("distance_km"));
+                        String datetracking = (obj.getString("datetracking").equals("null") ? "" : obj.getString("datetracking"));
+
+                        if(!jobnow.equals(job))
+                        {
+                            if(!jobnow.equals(""))
+                            {
+                                doc.add(bodytable);
+                                columnWidth = new float[]{20, 10, 10, 10, 10, 10, 10, 20};
+                                headertable = new PdfPTable(numColumns);
+                                headertable.setWidths(columnWidth);
+                                bodytable = new PdfPTable(numColumns);
+                                bodytable.setWidths(columnWidth);
+                                bodytable.setWidthPercentage(100);
+
+                                doc.newPage();
+                            }
+
+                            cell = new PdfPCell(new Phrase("DEVIATION REPORT", fheader));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(8);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("Per Tanggal " + LibInspira.FormatDateBasedOnInspiraDateFormat(tanggal, "dd-MM-yyyy"), f));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(8);
+                            headertable.addCell(cell);
+
+                            headertable.addCell(spacecell(numColumns));
+
+                            cell = new PdfPCell(new Phrase("Delivery Date: " + tgldelivery, fsubheader));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(8);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("Container: " + kodecontainer.toUpperCase(), fsubheader));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(5);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("Driver: " + driver, fsubheader));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(3);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("Weight: " + weight, fsubheader));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(5);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("Vehicle ID: " + vehicleid, fsubheader));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(3);
+                            headertable.addCell(cell);
+
+                            headertable.addCell(spacecell(numColumns));
+
+                            cell = new PdfPCell(new Phrase("DATE TRACKING", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("LAT", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("LON", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("CP LAT", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("CP LON", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("RADIUS (KM)", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("DISTANCE (KM)", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("DESCRIPTION", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            event.setHeader(headertable);
+                            jobnow = job;
+                        }
+
+                        cell = new PdfPCell(new Phrase(datetracking, f));
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(latitude, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(longitude, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(cp_latitude, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(cp_longitude, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(radius_km, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(distance_km, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase("", f));
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+                    }
+                    doc.add(bodytable);
+                }
+                Toast.makeText(fragmentActivity, "PDF Created", Toast.LENGTH_LONG).show();
+                displaypdf(file);
+            } catch (DocumentException de) {
+                Log.e("PDFCreator", "DocumentException:" + de);
+            } finally {
+                doc.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //CONTOH LENGKAP
     public static void createPDF_stockrandomperbarang(String data, String tanggal) throws FileNotFoundException, DocumentException
     {

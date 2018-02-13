@@ -41,10 +41,14 @@
                         android:textSize="12dp"
                         android:scaleType="fitCenter" />
 
-                    <View
-                        android:layout_height="0dp"
+                    <Button
+                        android:id="@+id/btnDeviation"
                         android:layout_width="0dp"
-                        android:layout_weight=".3" />
+                        android:layout_height="match_parent"
+                        android:layout_weight=".30"
+                        android:scaleType="fitCenter"
+                        android:text="Deviation"
+                        android:textSize="12dp" />
 
                     <View
                         android:layout_height="0dp"

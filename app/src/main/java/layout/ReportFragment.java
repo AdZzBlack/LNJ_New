@@ -62,6 +62,7 @@ public class ReportFragment extends Fragment implements View.OnClickListener{
         global = new GlobalVar(getActivity());
 
         getView().findViewById(R.id.btnLiveTracking).setOnClickListener(this);
+        getView().findViewById(R.id.btnDeviation).setOnClickListener(this);
     }
 
     @Override
@@ -77,6 +78,10 @@ public class ReportFragment extends Fragment implements View.OnClickListener{
         {
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "report livetracking");
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new PdfLiveTrackingFragment());
+        }else if(id==R.id.btnDeviation)
+        {
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "report deviation");
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new PdfDeviationFragment());
         }
     }
 }
