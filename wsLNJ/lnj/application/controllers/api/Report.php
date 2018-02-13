@@ -162,7 +162,7 @@ class Report extends REST_Controller {
     }
 
     // --- Report Deviation--- //
-    function GetDeviationTracking_post()
+    function GetReportDeviationTracking_post()
     {
         $data['data'] = array();
 

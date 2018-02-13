@@ -51,17 +51,12 @@ public class PdfDeviationFragment extends PdfParentFragment implements View.OnCl
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
     public void onClick(View view) {
         int id = view.getId();
 
         if(id==R.id.btnGetReport)
         {
-            setActionUrl("Report/GetDeviationTracking/");
+            setActionUrl("Report/GetReportDeviationTracking/");
             new getData().execute( getActionUrl() );
         }
     }
