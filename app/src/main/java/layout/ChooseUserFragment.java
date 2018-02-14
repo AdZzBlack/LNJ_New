@@ -424,6 +424,12 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                             LibInspira.showLongToast(getContext(), "This user can't be tracked");
                         }
                     }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("report livetracking"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.report_user, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.report_user_name, finalHolder.adapterItem.getNama());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    }
                 }
             });
 

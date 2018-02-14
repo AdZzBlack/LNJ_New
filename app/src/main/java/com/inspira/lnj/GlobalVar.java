@@ -135,6 +135,7 @@ public class GlobalVar {
             public String report_enddate = "report_enddate";
             public String report_job = "report_job";
             public String report_user = "report_user";
+            public String report_user_name = "report_user_name";
         }
 
         public class User

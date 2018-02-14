@@ -55,7 +55,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="0dp"
@@ -85,10 +86,12 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     style="@android:style/Widget.Button"
                     android:textColor="@color/colorPrimaryDark"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"/>
 
                 <ImageButton
-                    android:id="@+id/btn_clear_suratjalan"
+                    android:id="@+id/btnClearSuratjalan"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
@@ -132,10 +135,12 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     style="@android:style/Widget.Button"
                     android:textColor="@color/colorPrimaryDark"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"/>
 
                 <ImageButton
-                    android:id="@+id/btn_clear_driver"
+                    android:id="@+id/btnClearDriver"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
@@ -179,10 +184,12 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     style="@android:style/Widget.Button"
                     android:textColor="@color/colorPrimaryDark"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"/>
 
                 <ImageButton
-                    android:id="@+id/btn_clear_startdate"
+                    android:id="@+id/btnClearStartDate"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
@@ -226,10 +233,12 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     style="@android:style/Widget.Button"
                     android:textColor="@color/colorPrimaryDark"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"/>
 
                 <ImageButton
-                    android:id="@+id/btn_clear_enddate"
+                    android:id="@+id/btnClearEndDate"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
