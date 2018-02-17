@@ -70,6 +70,10 @@ public class LocationService extends Service implements LocationListener,
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     DatabaseReference mLocationRef = mRootRef.child("location");
 
+    public int idleTime = 0;
+    public int idleTimeNow = 0;
+    private Boolean runIdle = false;
+
     @Override
     public IBinder onBind(Intent intent) {
         // A client is binding to the service with bindService()
@@ -99,7 +103,33 @@ public class LocationService extends Service implements LocationListener,
         else {
             buildGoogleApiClient();
         }
+
+        timerHandler.postDelayed(timerRunnable, 0);
     }
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            if(runIdle)
+            {
+                idleTime++;
+                Log.d("runnn", "run: " + idleTime);
+
+                if(idleTime==idleTimeNow)
+                {
+                    LibInspira.createNotification(getApplication(), getApplicationContext(), "Batas Waktu", "Anda melewati batas yang ditentukan dalam waypoint");
+                }
+                else if(idleTime==idleTimeNow * 2)
+                {
+                    LibInspira.createNotification(getApplication(), getApplicationContext(), "Batas Waktu", "Anda melewati batas yang ditentukan dalam waypoint");
+                }
+            }
+
+            timerHandler.postDelayed(this, 1000);
+        }
+    };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -120,6 +150,8 @@ public class LocationService extends Service implements LocationListener,
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        timerHandler.removeCallbacks(timerRunnable);
+
         DatabaseReference mChildRef = mLocationRef.child(LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
         mChildRef.child("lat").setValue("0");
         mChildRef.child("lon").setValue("0");
@@ -138,6 +170,7 @@ public class LocationService extends Service implements LocationListener,
 
     @Override
     public void onDestroy() {
+        timerHandler.removeCallbacks(timerRunnable);
         DatabaseReference mChildRef = mLocationRef.child(LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
         mChildRef.child("lat").setValue("0");
         mChildRef.child("lon").setValue("0");
@@ -362,6 +395,7 @@ public class LocationService extends Service implements LocationListener,
         @Override
         protected void onPostExecute(String result) {
             Log.d("tes", result);
+            Boolean inWaypoint = false; //ADI 17-02-2018 (untuk idle time)
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
@@ -375,17 +409,30 @@ public class LocationService extends Service implements LocationListener,
                             double wpLat = obj.getDouble("latitude_next");
                             double wpLon = obj.getDouble("longitude_next");
                             double radius = getRadius(wpLat, wpLon, getLatitude, getLongitude);
+                            idleTimeNow = obj.getInt("idletime_next");
                             String namacheckpoint = obj.getString("namacheckpoint_next");
                             String actionUrl = "Scanning/InsertCheckin/";
                             if((checkin_type.equals("IN") && radius <= wpRadius && !isCheckin)
                                     || (checkin_type.equals("OUT") && radius > wpRadius && isCheckin)){
                                 Log.wtf("status", "inserting");
+                                inWaypoint = true;
                                 new InsertCheckin(namacheckpoint, checkin_type, job_nomor).execute(actionUrl);
                             }
                             Log.wtf("getNextWP: ", obj.getString("namacheckpoint_next"));
                         }else{
                             Log.wtf("error: ", obj.getString("message"));
                         }
+                    }
+
+                    //ADI 17-02-2018 (untuk idle time)
+                    if(!inWaypoint)
+                    {
+                        idleTime = 0;
+                        runIdle = false;
+                    }
+                    else
+                    {
+                        runIdle = true;
                     }
                 }
             }

@@ -10,13 +10,18 @@ package com.inspira.lnj;
 //import android.app.Fragment;  // is the Fragment class in the native version of the Android SDK. It was introduced in Android 3 (API 11)
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -25,6 +30,7 @@ import android.support.v4.app.Fragment; // is the Fragment class for compatibili
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
+import android.support.v7.app.NotificationCompat;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
@@ -217,6 +223,24 @@ public class LibInspira {
             ex.printStackTrace();
             _tv.addTextChangedListener(_tw);
         }
+    }
+
+    public static void createNotification(Application _activity, Context  _context, String _title, String _content)
+    {
+        final Intent emptyIntent = new Intent();
+        PendingIntent pendingIntent = PendingIntent.getActivity(_context, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        android.support.v4.app.NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(_activity)
+                        .setSmallIcon(R.drawable.lnj_logo)
+                        .setContentTitle(_title)
+                        .setContentText(_content)
+                        .setContentIntent(pendingIntent);
+        mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+        NotificationManager notificationManager = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, mBuilder.build());
+
     }
 
     //added by ADI @26-Jul-2017

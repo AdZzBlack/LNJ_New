@@ -515,7 +515,7 @@ class Scanning extends REST_Controller {
                                              'message' => 'There is no new scenario '. $nomormdskenario_now));
         }else{
             //get next DO checkpoint, waypoint, radius
-            $query = " SELECT a.nomor AS nomormdskenario, a.nomormhwaypoint, a.tipe, b.nama AS namacheckpoint, c.radius, c.latitude, c.longitude
+            $query = " SELECT a.nomor AS nomormdskenario, a.nomormhwaypoint, a.tipe, b.nama AS namacheckpoint, c.radius, c.latitude, c.longitude, c.idle_time
                        FROM mdskenario a
                        LEFT JOIN mhcheckpoint b
                          ON b.nomor = a.nomormhcheckpoint
@@ -535,7 +535,8 @@ class Scanning extends REST_Controller {
                                                         'checkin_type'          => $r['tipe'],
                                                         'radius_next'           => $r['radius'],
                                                         'latitude_next'         => $r['latitude'],
-                                                        'longitude_next'        => $r['longitude']
+                                                        'longitude_next'        => $r['longitude'],
+                                                        'idletime_next'         => $r['idle_time']
                                                 )
                         );
                     }
