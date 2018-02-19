@@ -246,7 +246,8 @@
                     android:layout_centerHorizontal="true"
                     android:layout_weight=".1"
                     android:scaleType="fitXY"
-                    android:src="@drawable/clearbutton" />
+                    android:src="@drawable/clearbutton"
+                    android:visibility="invisible" />
             </TableRow>
 
             <TableRow

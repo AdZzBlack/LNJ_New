@@ -181,12 +181,17 @@ public class PdfDocDistributionFragment extends PdfParentFragment implements Vie
             flag = "enddate";
             new DatePickerDialog(getActivity(), date, calDate.get(Calendar.YEAR), calDate.get(Calendar.MONTH), calDate.get(Calendar.DAY_OF_MONTH)).show();
         }
-        else if(id == R.id.btnClearDriver){
+        else if(id == R.id.btnClearFrom){
             etFrom.setText("");
-            LibInspira.setShared(global.temppreferences, global.temp.report_user, "");
-            LibInspira.setShared(global.temppreferences, global.temp.report_user_name, "");
+            LibInspira.setShared(global.temppreferences, global.temp.report_user_from, "");
+            LibInspira.setShared(global.temppreferences, global.temp.report_user_from_name, "");
         }
-        else if(id == R.id.btnClearStartDate){
+        else if(id == R.id.btnClearTo){
+            etTo.setText("");
+            LibInspira.setShared(global.temppreferences, global.temp.report_user_to, "");
+            LibInspira.setShared(global.temppreferences, global.temp.report_user_to_name, "");
+        }
+        else if(id == R.id.btnClearTo){
             etStartDate.setText("");
             LibInspira.setShared(global.temppreferences, global.temp.report_startdate, "");
         }

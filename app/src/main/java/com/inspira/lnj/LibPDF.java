@@ -440,7 +440,7 @@ public class LibPDF {
     public static void createPDF_docdistribution(String _data, String _tanggal) throws FileNotFoundException, DocumentException
     {
         //create document file
-        Document doc = new Document(PageSize.A4, 36, 36, 115, 36);
+        Document doc = new Document(PageSize.A4, 36, 36, 95, 36);
         int numColumns = 7;
         try {
             String pdfname = "temp.pdf";
