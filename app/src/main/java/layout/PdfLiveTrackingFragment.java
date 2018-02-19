@@ -124,7 +124,7 @@ public class PdfLiveTrackingFragment extends PdfParentFragment implements View.O
             new PdfParentFragment.getData().execute( getActionUrl() );
         }
         else if(id == R.id.etDriver){
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseDriverFragment());  //modified by Tonny @19-Feb-2018
         }
         else if(id == R.id.etStartDate){
             flag = "startdate";

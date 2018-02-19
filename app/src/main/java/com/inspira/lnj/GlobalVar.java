@@ -92,6 +92,11 @@ public class GlobalVar {
             public String selected_nama_user = "selected_nama_user";
             public String selected_count = "selected_count";
 
+            //added by Tonny @16-Feb-2018 untuk choose driver
+            public String selected_nomor_driver = "selected_nomor_user";
+            public String selected_kode_driver = "selected_kode_user";
+            public String selected_nama_driver = "selected_nama_user";
+
             //added by Tonny @01-Nov-2017 untuk menampung data thorderjual yg dipilih
             public String selected_nomor_doc = "selected_nomor_doc";
             public String selected_kode_doc = "selected_kode_doc";

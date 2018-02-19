@@ -52,6 +52,16 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
     private ArrayList<ItemAdapter> list;
     private GetData getData;
 
+    private String actionUrl;
+
+    public String getActionUrl() {
+        return actionUrl;
+    }
+
+    public void setActionUrl(String actionUrl) {
+        this.actionUrl = actionUrl;
+    }
+
     public ChooseUserFragment() {
         // Required empty public constructor
     }
@@ -116,7 +126,8 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         refreshList();
 
-        String actionUrl = "Master/getUser/";
+        //modified by Tonny @19-Feb-2018
+        if(actionUrl.equals("")) actionUrl = "Master/getUser/";
         getData = new GetData();
         getData.execute( actionUrl );
 

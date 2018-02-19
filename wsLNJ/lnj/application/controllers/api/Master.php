@@ -153,7 +153,47 @@ class Master extends REST_Controller {
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
+    }
 
+    // --- POST get user --- //
+    function getDriver_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.nama AS `nama`,
+                        a.kode AS kode,
+                        b.cantracked AS cantracked
+                    FROM mhadmin a
+                    JOIN whrole_mobile b ON b.nomor = a.role_android
+                    WHERE a.status_aktif = 1
+                    AND a.role_android = 3
+                    ORDER BY a.nama;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'nama' 					=> $r['nama'],
+                                                'kode'                  => $r['kode'],
+                                                'cantracked'            => $r['cantracked']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
     }
 
     // --- POST get job --- //
@@ -261,6 +301,37 @@ class Master extends REST_Controller {
             array_push($data['data'], array( 'query' => $this->error($query) ));
         }
 
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //-- get all DO list
+    function getAllDeliveryOrder_post()
+    {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+        $query = "  SELECT nomor FROM tdsuratjalan";
+        $result = $this->db->query($query);
+        if($result){
+            if($result->num_rows() > 0){
+                foreach ($result->result_array() as $r)
+                {
+                    array_push($data['data'], array(
+                                                    'nomor'    	    => $r['nomor']
+                                            )
+                    );
+                }
+            }else{
+                array_push($data['data'], array('message' => 'No data'));
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to retrieve the data'));
+        }
         if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
