@@ -391,6 +391,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 //            });
 
             if(status == "finish"){
+                holder.ibtnAccept.setOnClickListener(null);
                 holder.ibtnAccept.setVisibility(View.INVISIBLE);
             }else{
                 holder.ibtnAccept.setOnClickListener(new View.OnClickListener() {
@@ -421,11 +422,26 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                     LibInspira.alertBoxYesNo("Reject Document", "Do you want to reject this document?", getActivity(), new Runnable() {
                         @Override
                         public void run() {
-                            LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_doc, finalHolder.adapterItem.getNomor());
-                            LibInspira.setShared(global.temppreferences, global.temp.selected_kode_doc, finalHolder.adapterItem.getKode());
-                            LibInspira.setShared(global.temppreferences, global.temp.selected_nomormhadmin_from, finalHolder.adapterItem.getNomormhadminFrom());
-                            LibInspira.setShared(global.temppreferences, global.temp.selected_nomortlaporan_ref, finalHolder.adapterItem.getNomorRef());
-                            setStatus(DOC_REJECT);
+                            LibInspira.showInputDialog("Reason to delete", "Please enter your reason", getActivity(), getContext(), new Runnable() {
+                                @Override
+                                public void run() {
+                                    LibInspira.setShared(global.temppreferences, global.temp.delete_reason, LibInspira.getDialogValue(false));
+                                    if(!LibInspira.getShared(global.temppreferences, global.temp.delete_reason, "").trim().equals("")){
+                                        LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_doc, finalHolder.adapterItem.getNomor());
+                                        LibInspira.setShared(global.temppreferences, global.temp.selected_kode_doc, finalHolder.adapterItem.getKode());
+                                        LibInspira.setShared(global.temppreferences, global.temp.selected_nomormhadmin_from, finalHolder.adapterItem.getNomormhadminFrom());
+                                        LibInspira.setShared(global.temppreferences, global.temp.selected_nomortlaporan_ref, finalHolder.adapterItem.getNomorRef());
+                                        setStatus(DOC_REJECT);
+                                    }else{
+                                        LibInspira.showShortToast(getContext(), "Please fill in the reason to delete the document");
+                                    }
+                                }
+                            }, new Runnable() {
+                                @Override
+                                public void run() {
+                                    //do nothing
+                                }
+                            });
                         }
                     }, new Runnable() {
                         @Override
@@ -465,6 +481,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
                 jsonObject.put("nomortlaporan_ref", LibInspira.getShared(global.temppreferences, global.temp.selected_nomortlaporan_ref, ""));
                 jsonObject.put("nomormhadmin", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
                 jsonObject.put("nomormhadmin_from", LibInspira.getShared(global.temppreferences, global.temp.selected_nomormhadmin_from, ""));
+                jsonObject.put("keterangan", LibInspira.getShared(global.temppreferences, global.temp.delete_reason, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

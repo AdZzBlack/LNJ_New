@@ -149,7 +149,7 @@ class Order extends REST_Controller {
             }
             else
             {
-                //cek apakah dokumen ini sudah pernah disubmit ke tabel tlaporan_dokumen_distribusi
+                //cek apakah dokumen ini sudah pernah disubmit DAN belum direject ke tabel tlaporan_dokumen_distribusi
                 $query = "  SELECT * FROM tlaporan_dokumen_distribusi WHERE nomorthorderjual = '$nomordoc' AND nomormhadmin_from = '$nomormhadmin' AND nomormhadmin_to = '$nomorpenerima' AND action = 'SUBMIT' ";
                 $result = $this->db->query($query);
                 if($result){
@@ -219,10 +219,33 @@ class Order extends REST_Controller {
                                                              'message' => 'Failed to update the data'));
                         }
                     }else{
-                        array_push($data['data'], array('query' => $this->error($query),
-                                                        'message' => 'This document has already been scanned'));
+                        $query = "  SELECT * FROM tlaporan_dokumen_distribusi WHERE nomorthorderjual = '$nomordoc' AND nomormhadmin_from = '$nomormhadmin' AND nomormhadmin_to = '$nomorpenerima' AND action = 'REJECT' ";
+                        $result = $this->db->query($query);
+                        if($result && $result->num_rows() > 0){
+                            $query = "	UPDATE thorderjual SET
+                                            nomormhadmin_docfinal_date = $nomormhadmin, status_serahterima = 1, nomormhadmin_penerima = $nomorpenerima, docfinal_date = NOW()
+                                        WHERE
+                                            nomor = $nomordoc
+                                        AND kode = '$kodedoc' ";
+
+                            $this->db->query($query);
+                            if ($this->db->trans_status() === FALSE)
+                            {
+                                $this->db->trans_rollback();
+                                array_push($data['data'], array( 'query' => $this->error($query),
+                                                                 'message' => 'Failed to update the data'));
+                            }else{
+                                $this->db->trans_commit();
+                                array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+                            }
+                        }else{
+                            $this->db->trans_rollback();
+                            array_push($data['data'], array('query' => $this->error($query),
+                                                            'message' => 'This document has already been scanned'));
+                        }
                     }
                 }else{
+                    $this->db->trans_rollback();
                     array_push($data['data'], array('query' => $this->error($query),
                                                     'message' => 'Failed to update the data'));
                 }
@@ -359,6 +382,7 @@ class Order extends REST_Controller {
         $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
         $nomormhadmin_from = (isset($jsonObject["nomormhadmin_from"]) ? $this->clean($jsonObject["nomormhadmin_from"])     : "0");
         $action = (isset($jsonObject["action"]) ? $this->clean($jsonObject["action"])     : "");
+        $keterangan = (isset($jsonObject["keterangan"]) ? $jsonObject["keterangan"]     : "");
 
         $this->db->trans_begin();
         $query = "";
@@ -464,8 +488,8 @@ class Order extends REST_Controller {
                         die();
                     }
                 }
-                $query = " INSERT INTO tlaporan_dokumen_distribusi (nomormhcabang, nomormhadmin_from, nomormhadmin_to, nomortlaporan_ref, nomorthorderjual, kodethorderjual, kode, action, tanggal, status_aktif) ".
-                         " VALUES ('$nomormhcabang', '$nomormhadmin_from', '$nomormhadmin', '$nomortlaporan_ref', '$nomordoc', '$kodedoc', '$newkode', '$action', NOW(), '1') ";
+                $query = " INSERT INTO tlaporan_dokumen_distribusi (nomormhcabang, nomormhadmin_from, nomormhadmin_to, nomortlaporan_ref, nomorthorderjual, kodethorderjual, kode, action, tanggal, keterangan, status_aktif) ".
+                         " VALUES ('$nomormhcabang', '$nomormhadmin_from', '$nomormhadmin', '$nomortlaporan_ref', '$nomordoc', '$kodedoc', '$newkode', '$action', NOW(), '$keterangan', '1') ";
                 $result = $this->db->query($query);
                 if($result){
                     $this->db->trans_commit();

@@ -105,6 +105,7 @@ public class GlobalVar {
             public String selected_nomortlaporan_ref = "selected_nomortlaporan_ref";  //added by Tonny @30-Jan-2018
             public String selected_tanggal = "selected_nomormhadmin";
             public String selected_namamhadmin = "selected_namamhadmin";
+            public String delete_reason = "delete_reason";  //added by Tonny @19-Feb-2018
 
             //added by ADI @15-Jan-2018 untuk menampung data container loading yg dipilih
             public String selected_job_nomor = "selected_job_nomor";
@@ -141,6 +142,13 @@ public class GlobalVar {
             public String report_job = "report_job";
             public String report_user = "report_user";
             public String report_user_name = "report_user_name";
+            public String report_user_from_name = "report_user_from_name";
+            public String report_user_from = "report_user_from";
+            public String report_user_to_name = "report_user_to_name";
+            public String report_user_to = "report_user_to";
+            public String report_doc_action_index = "report_user_action_index";
+            public String report_doc_action = "report_user_action";
+
         }
 
         public class User

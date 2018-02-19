@@ -50,10 +50,14 @@
                         android:text="Deviation"
                         android:textSize="12dp" />
 
-                    <View
-                        android:layout_height="0dp"
+                    <Button
+                        android:id="@+id/btnDocDistribution"
                         android:layout_width="0dp"
-                        android:layout_weight=".3" />
+                        android:layout_height="match_parent"
+                        android:layout_weight=".30"
+                        android:scaleType="fitCenter"
+                        android:text="Doc Distribution"
+                        android:textSize="12dp" />
 
                     <View
                         android:layout_height="0dp"
@@ -65,9 +69,10 @@
 
             <ListView
                 android:id="@+id/list"
-                android:layout_below="@+id/report_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_below="@+id/report_container"
+                android:visibility="gone">
 
             </ListView>
         </RelativeLayout>

@@ -437,6 +437,161 @@ public class LibPDF {
         }
     }
 
+    public static void createPDF_docdistribution(String _data, String _tanggal) throws FileNotFoundException, DocumentException
+    {
+        //create document file
+        Document doc = new Document(PageSize.A4, 36, 36, 115, 36);
+        int numColumns = 7;
+        try {
+            String pdfname = "temp.pdf";
+
+            file = new File(dir, pdfname);
+            FileOutputStream fOut = new FileOutputStream(file);
+            PdfWriter writer = PdfWriter.getInstance(doc, fOut);
+
+            TableHeader event = new TableHeader();
+            writer.setPageEvent(event);
+
+            //open the document
+            doc.open();
+
+            try {
+                String jobnow = "";
+
+                PdfPTable headertable = new PdfPTable(numColumns);
+                PdfPTable bodytable = new PdfPTable(numColumns);
+                bodytable.setWidthPercentage(100);
+                float[] columnWidth = new float[]{15, 15, 10, 15, 15, 10, 20};
+                headertable.setWidths(columnWidth);
+                bodytable.setWidths(columnWidth);
+
+                JSONArray jsonarray = new JSONArray(_data);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++)
+                    {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        String kode = (obj.getString("kode").equals("null") ? "" : obj.getString("kode"));
+                        String job = (obj.getString("job").equals("null") ? "" : obj.getString("job"));
+                        String ref = (obj.getString("ref").equals("null") ? "" : obj.getString("ref"));
+                        String nama_from = (obj.getString("nama_from").equals("null") ? "" : obj.getString("nama_from"));
+                        String tanggal = (obj.getString("tanggal").equals("null") ? "" : obj.getString("tanggal"));
+                        String action = (obj.getString("action").equals("null") ? "" : obj.getString("action"));
+                        String nama_to = (obj.getString("nama_to").equals("null") ? "" : obj.getString("nama_to"));
+                        String keterangan = (obj.getString("keterangan").equals("null") ? "" : obj.getString("keterangan"));
+
+                        if(!jobnow.equals(job))
+                        {
+                            if(!jobnow.equals(""))
+                            {
+                                doc.add(bodytable);
+                                columnWidth = new float[]{15, 15, 10, 15, 15, 10, 20};
+                                headertable = new PdfPTable(numColumns);
+                                headertable.setWidths(columnWidth);
+                                bodytable = new PdfPTable(numColumns);
+                                bodytable.setWidths(columnWidth);
+                                bodytable.setWidthPercentage(100);
+
+                                doc.newPage();
+                            }
+
+                            cell = new PdfPCell(new Phrase("DOCUMENT DISTRIBUTION REPORT", fheader));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(7);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("Per Tanggal " + LibInspira.FormatDateBasedOnInspiraDateFormat(_tanggal, "dd-MM-yyyy"), f));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(7);
+                            headertable.addCell(cell);
+
+                            headertable.addCell(spacecell(numColumns));
+
+                            cell = new PdfPCell(new Phrase("Job: " + job, fsubheader));
+                            cell.setBorder(Border.noborder);
+                            cell.setColspan(7);
+                            headertable.addCell(cell);
+
+                            headertable.addCell(spacecell(numColumns));
+
+                            cell = new PdfPCell(new Phrase("DOCUMENT", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("REFERENCE", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("DATE TIME", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("FROM", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("TO", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("ACTION", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            cell = new PdfPCell(new Phrase("NOTES", fsubheader));
+                            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                            headertable.addCell(cell);
+
+                            event.setHeader(headertable);
+                            jobnow = job;
+                        }
+
+                        cell = new PdfPCell(new Phrase(kode, f));
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(ref, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(tanggal, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(nama_from, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(nama_to, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(action, f));
+                        cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+
+                        cell = new PdfPCell(new Phrase(keterangan, f));
+                        cell.setBorder(Border.full);
+                        bodytable.addCell(cell);
+                    }
+                    doc.add(bodytable);
+                }
+                Toast.makeText(fragmentActivity, "PDF Created", Toast.LENGTH_LONG).show();
+                displaypdf(file);
+            } catch (DocumentException de) {
+                Log.e("PDFCreator", "DocumentException:" + de);
+            } finally {
+                doc.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //CONTOH LENGKAP
     public static void createPDF_stockrandomperbarang(String data, String tanggal) throws FileNotFoundException, DocumentException
     {

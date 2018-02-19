@@ -211,4 +211,56 @@ class Report extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
+
+    // --- Report Document Distribution--- //
+    function GetReportDocDistribution_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomormhadmin_from = (isset($jsonObject["nomormhadmin_from"]) ? $this->clean($jsonObject["nomormhadmin_from"])     : "%");
+        $nomormhadmin_to = (isset($jsonObject["nomormhadmin_to"]) ? $this->clean($jsonObject["nomormhadmin_to"])     : "%");
+        $action = (isset($jsonObject["action"]) ? $this->clean($jsonObject["action"])     : "%");
+        $startdate = (isset($jsonObject["startdate"]) ? $this->clean($jsonObject["startdate"])     : "2000-01-01");
+        $enddate = (isset($jsonObject["enddate"]) ? $this->clean($jsonObject["enddate"])     : "3000-01-01");
+        $nomorcabang = (isset($jsonObject["nomorcabang"]) ? $this->clean($jsonObject["nomorcabang"])     : "0");
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "%");
+
+        if($nomormhadmin_from == "") $nomormhadmin_from = "%";
+        if($nomormhadmin_to == "") $nomormhadmin_to = "%";
+        if($action == "") $action = "%";
+        if($startdate == "") $startdate = "2000-01-01";
+        if($enddate == "") $enddate = "3000-01-01";
+        if($nomorcabang == "") $nomorcabang = "0";
+        if($nomormhadmin == "") $nomormhadmin = "%";
+
+        $query = "CALL RP_DOC_DIST_20180210('$nomormhadmin_from', '$nomormhadmin_to', '$action', '$startdate', '$enddate', '$nomorcabang', '$nomormhadmin') ";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'kode'					  => $r['kode'],
+                                                'job'					  => $r['job'],
+                                                'ref'					  => $r['ref'],
+                                                'nama_from'			      => $r['nama_from'],
+                                                'tanggal'				  => $r['tanggal'],
+                                                'action'				  => $r['action'],
+                                                'nama_to'			      => $r['nama_to'],
+                                                'keterangan'              => $r['keterangan']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'error' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
 }

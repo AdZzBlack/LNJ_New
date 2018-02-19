@@ -126,10 +126,11 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         refreshList();
 
+        if(actionUrl == null) actionUrl = "";
         //modified by Tonny @19-Feb-2018
-        if(actionUrl.equals("")) actionUrl = "Master/getUser/";
+        if(actionUrl.equals("")) setActionUrl("Master/getUser/");
         getData = new GetData();
-        getData.execute( actionUrl );
+        getData.execute( getActionUrl() );
 
         if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking"))
         {
@@ -435,10 +436,22 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                             LibInspira.showLongToast(getContext(), "This user can't be tracked");
                         }
                     }
-                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("report livetracking"))
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("report livetracking") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("report deviation"))
                     {
                         LibInspira.setShared(global.temppreferences, global.temp.report_user, finalHolder.adapterItem.getNomor());
                         LibInspira.setShared(global.temppreferences, global.temp.report_user_name, finalHolder.adapterItem.getNama());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("report doc_from"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.report_user_from, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.report_user_from_name, finalHolder.adapterItem.getNama());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("report doc_to"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.report_user_to, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.report_user_to_name, finalHolder.adapterItem.getNama());
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                 }
