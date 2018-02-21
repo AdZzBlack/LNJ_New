@@ -20,20 +20,33 @@ import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.LibPDF;
 import com.inspira.lnj.R;
+import com.itextpdf.text.DocumentException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class PdfParentFragment extends Fragment implements View.OnClickListener{
     protected GlobalVar global;
     protected JSONObject jsonObject;
+    protected LibPDF libPDF;
 
     private String actionUrl;
     private int layout;
+    private SimpleDateFormat format;
+    private Calendar cal;
+
+    public SimpleDateFormat getFormat() {
+        return format;
+    }
+
+    public Calendar getCal() {
+        return cal;
+    }
 
     public String getActionUrl() {
         return actionUrl;
@@ -109,9 +122,10 @@ public class PdfParentFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    protected void onPostExecuteGetData(String result){
+    protected void onPostExecuteGetData(String result) throws FileNotFoundException, DocumentException {
         Log.d("resultQuery", result);
         Boolean error = false;
+        String strError = "";
         try
         {
             JSONArray jsonarray = new JSONArray(result);
@@ -120,15 +134,17 @@ public class PdfParentFragment extends Fragment implements View.OnClickListener{
                     JSONObject obj = jsonarray.getJSONObject(i);
                     if(obj.has("error")){
                         error = true;
+                        strError = obj.getString("error");
                     }
                 }
                 if(!error)
                 {
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-                    new LibPDF(getActivity()).createPDF_livetracking(result, format.format(cal.getTime()));
+                    OnGeneratePDF(result);
+                }else{
+                    LibInspira.showShortToast(getContext(), strError);
                 }
+            }else{
+                LibInspira.showShortToast(getContext(), strError);
             }
         }
         catch(Exception e)
@@ -148,7 +164,15 @@ public class PdfParentFragment extends Fragment implements View.OnClickListener{
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            onPostExecuteGetData(result);
+            cal = Calendar.getInstance();
+            format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                onPostExecuteGetData(result);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -156,5 +180,9 @@ public class PdfParentFragment extends Fragment implements View.OnClickListener{
             super.onPreExecute();
             onPreExecuteGetData();
         }
+    }
+
+    protected void OnGeneratePDF(String _result) throws FileNotFoundException, DocumentException {
+        //accessed by children only
     }
 }

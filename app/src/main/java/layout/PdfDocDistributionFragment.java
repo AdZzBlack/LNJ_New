@@ -23,11 +23,13 @@ import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.LibPDF;
 import com.inspira.lnj.R;
+import com.itextpdf.text.DocumentException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,7 +60,7 @@ public class PdfDocDistributionFragment extends PdfParentFragment implements Vie
         setLayout(R.layout.fragment_form_pdf_doc_distribution);
         // Inflate the layout for this fragment
         View v = inflater.inflate(getLayout(), container, false);
-        getActivity().setTitle("Deviation Report Filter");
+        getActivity().setTitle("Documents Distribution Report Filter");
         return v;
     }
 
@@ -224,33 +226,12 @@ public class PdfDocDistributionFragment extends PdfParentFragment implements Vie
     }
 
     @Override
-    protected void onPostExecuteGetData(String result){
-        Log.d("resultQuery", result);
-        Boolean error = false;
-        try
-        {
-            JSONArray jsonarray = new JSONArray(result);
-            if(jsonarray.length() > 0){
-                for (int i = 0; i < jsonarray.length(); i++) {
-                    JSONObject obj = jsonarray.getJSONObject(i);
-                    if(obj.has("error")){
-                        error = true;
-                    }
-                }
-                if(!error)
-                {
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    protected void onPostExecuteGetData(String result) throws FileNotFoundException, DocumentException {
+        super.onPostExecuteGetData(result);
+    }
 
-                    new LibPDF(getActivity()).createPDF_docdistribution(result, format.format(cal.getTime()));
-                }
-            }
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        LibInspira.hideLoading();
+    @Override
+    protected void OnGeneratePDF(String _result) throws FileNotFoundException, DocumentException {
+        new LibPDF(getActivity()).createPDF_docdistribution(_result, getFormat().format(getCal().getTime()));
     }
 }

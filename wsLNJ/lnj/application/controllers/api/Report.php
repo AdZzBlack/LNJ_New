@@ -135,21 +135,25 @@ class Report extends REST_Controller {
         $query = "CALL RP_HISTORY_TRACKING('$job_nomor', '$driver', '$startdate', '$enddate') ";
         $result = $this->db->query($query);
 
-        if( $result && $result->num_rows() > 0){
-            foreach ($result->result_array() as $r){
-
-                array_push($data['data'], array(
-                                                'job'					  => $r['job'],
-                                                'tgldelivery'             => $r['tgldelivery'],
-                                                'vehicleid'			      => $r['vehicleid'],
-                                                'kodecontainer'           => $r['kodecontainer'],
-                                                'weight'                  => $r['weight'],
-                                                'driver'                  => $r['driver'],
-                                                'latitude'                => $r['latitude'],
-                                                'longitude'               => $r['longitude'],
-                                                'datetracking'            => $r['datetracking']
-                                                )
-                );
+        if($result){
+            if($result->num_rows() > 0){
+                foreach ($result->result_array() as $r){
+                    array_push($data['data'], array(
+                                                    'job'					  => $r['job'],
+                                                    'tgldelivery'             => $r['tgldelivery'],
+                                                    'vehicleid'			      => $r['vehicleid'],
+                                                    'kodecontainer'           => $r['kodecontainer'],
+                                                    'weight'                  => $r['weight'],
+                                                    'driver'                  => $r['driver'],
+                                                    'latitude'                => $r['latitude'],
+                                                    'longitude'               => $r['longitude'],
+                                                    'datetracking'            => $r['datetracking']
+                                                    )
+                    );
+                }
+            }else{
+                $errormsg = "There is no data to show";
+                array_push($data['data'], array( 'error' => $errormsg));
             }
         }else{
             array_push($data['data'], array( 'error' => $this->error($query) ));
@@ -182,25 +186,29 @@ class Report extends REST_Controller {
         $query = "CALL RP_DEVIATION_TRACKING('$job_nomor', '$driver', '$startdate', '$enddate') ";
         $result = $this->db->query($query);
 
-        if( $result && $result->num_rows() > 0){
-            foreach ($result->result_array() as $r){
-
-                array_push($data['data'], array(
-                                                'job'					  => $r['job'],
-                                                'tgldelivery'             => $r['tgldelivery'],
-                                                'vehicleid'			      => $r['vehicleid'],
-                                                'kodecontainer'           => $r['kodecontainer'],
-                                                'weight'                  => $r['weight'],
-                                                'driver'                  => $r['driver'],
-                                                'latitude'                => $r['latitude'],
-                                                'longitude'               => $r['longitude'],
-                                                'cp_latitude'             => $r['cp_latitude'],
-                                                'cp_longitude'            => $r['cp_longitude'],
-                                                'radius_km'               => $r['radius(km)'],
-                                                'distance_km'             => $r['distance(km)'],
-                                                'datetracking'            => $r['datetracking']
-                                                )
-                );
+        if($result){
+            if($result->num_rows() > 0){
+                foreach ($result->result_array() as $r){
+                    array_push($data['data'], array(
+                                                    'job'					  => $r['job'],
+                                                    'tgldelivery'             => $r['tgldelivery'],
+                                                    'vehicleid'			      => $r['vehicleid'],
+                                                    'kodecontainer'           => $r['kodecontainer'],
+                                                    'weight'                  => $r['weight'],
+                                                    'driver'                  => $r['driver'],
+                                                    'latitude'                => $r['latitude'],
+                                                    'longitude'               => $r['longitude'],
+                                                    'cp_latitude'             => $r['cp_latitude'],
+                                                    'cp_longitude'            => $r['cp_longitude'],
+                                                    'radius_km'               => $r['radius(km)'],
+                                                    'distance_km'             => $r['distance(km)'],
+                                                    'datetracking'            => $r['datetracking']
+                                                    )
+                    );
+                }
+            }else{
+                $errormsg = "There is no data to show";
+                array_push($data['data'], array( 'error' => $errormsg));
             }
         }else{
             array_push($data['data'], array( 'error' => $this->error($query) ));
@@ -239,20 +247,24 @@ class Report extends REST_Controller {
         $query = "CALL RP_DOC_DIST_20180210('$nomormhadmin_from', '$nomormhadmin_to', '$action', '$startdate', '$enddate', '$nomorcabang', '$nomormhadmin') ";
         $result = $this->db->query($query);
 
-        if( $result && $result->num_rows() > 0){
-            foreach ($result->result_array() as $r){
-
-                array_push($data['data'], array(
-                                                'kode'					  => $r['kode'],
-                                                'job'					  => $r['job'],
-                                                'ref'					  => $r['ref'],
-                                                'nama_from'			      => $r['nama_from'],
-                                                'tanggal'				  => $r['tanggal'],
-                                                'action'				  => $r['action'],
-                                                'nama_to'			      => $r['nama_to'],
-                                                'keterangan'              => $r['keterangan']
-                                                )
-                );
+        if($result){
+            if($result->num_rows() > 0){
+                foreach ($result->result_array() as $r){
+                    array_push($data['data'], array(
+                                                    'kode'					  => $r['kode'],
+                                                    'job'					  => $r['job'],
+                                                    'ref'					  => $r['ref'],
+                                                    'nama_from'			      => $r['nama_from'],
+                                                    'tanggal'				  => $r['tanggal'],
+                                                    'action'				  => $r['action'],
+                                                    'nama_to'			      => $r['nama_to'],
+                                                    'keterangan'              => $r['keterangan']
+                                                    )
+                    );
+                }
+            }else{
+                $errormsg = "There is no data to show";
+                array_push($data['data'], array( 'error' => $errormsg));
             }
         }else{
             array_push($data['data'], array( 'error' => $this->error($query) ));
