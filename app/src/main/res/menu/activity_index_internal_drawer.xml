@@ -8,6 +8,10 @@
             android:icon="@drawable/dashboard"
             android:title="Dashboard" />
         <item
+            android:id="@+id/nav_chat"
+            android:icon="@drawable/user"
+            android:title="Chat" />
+        <item
             android:id="@+id/nav_tracking"
             android:icon="@drawable/salestracking"
             android:title="Live Tracking" />

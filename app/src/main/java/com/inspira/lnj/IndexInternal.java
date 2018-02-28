@@ -29,7 +29,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
+import layout.ChatFragment;
 import layout.ChooseUserFragment;
+import layout.ContactFragment;
 import layout.DashboardInternalFragment;
 import layout.FormPhotoEmptyContainer;
 import layout.SettingFragment;
@@ -44,11 +46,17 @@ public class IndexInternal extends AppCompatActivity
     public static NavigationView navigationView;
     private static Context context;  //added by Tonny @02-Aug-2017
 
+    public static ChatFragment chatFrag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_index_internal);
+
+        startService(new Intent(getApplicationContext(), BackgroundTask.class));
+        chatFrag = new ChatFragment();
+        chatFrag.setup(this.getApplicationContext());
 
         // Start Registering FCM
         Intent intent = new Intent(this, MyFirebaseInstanceIDService.class);
@@ -180,6 +188,10 @@ public class IndexInternal extends AppCompatActivity
         if (id == R.id.nav_dashboard) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
 //            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FormPhotoEmptyContainer());
+        }
+        else if (id == R.id.nav_chat) {
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "contact");
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());
         }
         else if (id == R.id.nav_tracking) {
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "tracking");
