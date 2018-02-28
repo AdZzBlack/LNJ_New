@@ -177,6 +177,9 @@ public class GlobalVar {
         public String role_cantracked = "role_cantracked"; //role apakah user dapat ditrack atau tidak (0/1)
         public String role_cantracking = "role_cantracking"; //role apakah user dapat menggunakan fitur track atau tidak (0/1)
 
+        //belum ambil dari database!!!!!!!
+        public String role_creategroup = "role_creategroup";
+
         public String checkin_nomorthsuratjalan = "checkin_nomorthsuratjalan"; //added by ADI @05-Oct-2017
         public String checkin_nomortdsuratjalan = "checkin_nomortdsuratjalan"; //added by Tonny @04-Dec-2017
         public String checkin_kodesuratjalan = "checkin_kodesuratjalan"; //added by Tonny @16-Dec-2017
@@ -192,6 +195,10 @@ public class GlobalVar {
         public String doclist = "doclist"; //untuk menampung data document(thorderjual) yg diberikan pada user yg login  //nomor~kode~nomormhadmin~tanggal~nama
         public String deliveryorderlist = "deliveryorderlist"; //nomor1|nomor2 //untuk menampung list nomor surat jalan yang telah discan untuk ditampilkan di ChooseSuratJalan
         public String job = "job"; //nomor~kode~stuffingdate~invoice~pol~pod
+        public String groups = "groups";
+
+        public String selectedUsers = "selectedUsers";
+        public String selectedGroup = "selectedGroup";
     }
 
     public class Sales  //added by Tonny @01-Aug-2017

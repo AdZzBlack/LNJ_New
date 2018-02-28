@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
 import layout.ChatFragment;
+import layout.ChooseGroupFragment;
 import layout.ChooseUserFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
@@ -192,6 +193,10 @@ public class IndexInternal extends AppCompatActivity
         else if (id == R.id.nav_chat) {
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "contact");
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());
+        }
+        else if (id==R.id.nav_groupmessage){  //added by Tonny @23-Aug-2017
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "conversation");
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());
         }
         else if (id == R.id.nav_tracking) {
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "tracking");

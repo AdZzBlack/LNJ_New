@@ -8,12 +8,14 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +55,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
     private GetData getData;
 
     private String actionUrl;
+    private String tempSelectedUsers;
 
     public String getActionUrl() {
         return actionUrl;
@@ -64,6 +67,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
     public ChooseUserFragment() {
         // Required empty public constructor
+        tempSelectedUsers = LibInspira.getShared(global.datapreferences, global.data.selectedUsers, "");
     }
 
     @Override
@@ -106,6 +110,13 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
+
+        if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("conversation")) {
+            ((RelativeLayout) getView().findViewById(R.id.rlFooter)).setVisibility(View.VISIBLE);
+            ((Button) getView().findViewById(R.id.btnCenter)).setVisibility(View.VISIBLE);
+            ((Button) getView().findViewById(R.id.btnCenter)).setText("Invite");
+            ((Button) getView().findViewById(R.id.btnCenter)).setOnClickListener(this);
+        }
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -155,6 +166,24 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("conversation"))
+                        LibInspira.setShared(global.datapreferences, global.data.selectedUsers, tempSelectedUsers);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
     public void onClick(View view) {
         int id = view.getId();
 
@@ -188,6 +217,14 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
             LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, tempnama);
             LibInspira.setShared(global.temppreferences, global.temp.selected_count, String.valueOf(countSelected));
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new LiveTrackingFragment().newInstance(nama));
+        }
+        else if(id==R.id.btnCenter)
+        {
+            if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("conversation"))
+            {
+                LibInspira.setShared(global.datapreferences, global.data.selectedUsers, tempSelectedUsers);
+                LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+            }
         }
     }
 
@@ -250,6 +287,12 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                         dataItem.setCantracked(cantracked);
                         dataItem.setIsChoosen(false);
                         list.add(dataItem);
+
+                        if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("conversation"))
+                        {
+                            if (tempSelectedUsers.contains(nama))
+                                dataItem.setIsChoosen(true);
+                        }
 
                         if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking")
                                 || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("document"))
@@ -454,6 +497,20 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                         LibInspira.setShared(global.temppreferences, global.temp.report_user_to_name, finalHolder.adapterItem.getNama());
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
+                    else if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").contains("conversation")) {
+                        if(finalHolder.adapterItem.getIsChoosen()) {
+                            finalHolder.adapterItem.setIsChoosen(false);
+                            finalRow.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                            finalHolder.tvNama.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            String remove = finalHolder.adapterItem.getNomor() + "~" + finalHolder.adapterItem.getNama() + "|";
+                            tempSelectedUsers = tempSelectedUsers.replace(remove, "");
+                        } else {
+                            finalHolder.adapterItem.setIsChoosen(true);
+                            finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
+                            finalHolder.tvNama.setTextColor(Color.WHITE);
+                            tempSelectedUsers += finalHolder.adapterItem.getNomor() + "~" + finalHolder.adapterItem.getNama() + "|";
+                        }
+                    }
                 }
             });
 
@@ -465,10 +522,12 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
             if(holder.adapterItem.isChoosen)
             {
                 row.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                holder.tvNama.setTextColor(Color.WHITE);
             }
             else
             {
                 row.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                holder.tvNama.setTextColor(getResources().getColor(R.color.colorPrimary));
             }
         }
     }

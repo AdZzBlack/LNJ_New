@@ -12,6 +12,10 @@
             android:icon="@drawable/user"
             android:title="Chat" />
         <item
+            android:id="@+id/nav_groupmessage"
+            android:icon="@drawable/groupmessage"
+            android:title="Group" />
+        <item
             android:id="@+id/nav_tracking"
             android:icon="@drawable/salestracking"
             android:title="Live Tracking" />
