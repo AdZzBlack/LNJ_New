@@ -1,9 +1,6 @@
 /******************************************************************************
-    Author           : Tonny
+    Author           : Tonny (Created 08-Jul-2017)
     Description      : Library Inspira
-    History          :
-        o> 08-Jul-2017 (Tonny)
-           * Create New
 ******************************************************************************/
 package com.inspira.lnj;
 
@@ -21,6 +18,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -87,6 +85,8 @@ public class LibInspira {
 
     public static void ReplaceFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment){
         FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
+        //fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.replace(_fragmentContainerID, _fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -101,6 +101,8 @@ public class LibInspira {
 
     public static void AddFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment){
         FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
+        //fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.add(_fragmentContainerID, _fragment);
         //fragmentTransaction.addToBackStack(null);  //remarked by Tonny @08-Jul-2017, masih belum tau apakah diperlukan
         fragmentTransaction.commit();
@@ -167,8 +169,7 @@ public class LibInspira {
     public static String delimeter(String _strNumber)
     {
         DecimalFormat format=new DecimalFormat("#,###");
-
-        if(_strNumber.equals("null")) return "-";
+        if(_strNumber.equals("null") || _strNumber.equals("")) return "-";
         Double Raw = Double.parseDouble(_strNumber);
         String result = String.valueOf(format.format(Raw));
         return result;
@@ -225,14 +226,15 @@ public class LibInspira {
         }
     }
 
-    public static void createNotification(Application _activity, Context  _context, String _title, String _content)
+    public static void createNotification(Application _activity, int _icon, Context  _context, String _title, String _content)
     {
+        //contoh pengisian, _icon = R.drawable.babies_logo;
         final Intent emptyIntent = new Intent();
         PendingIntent pendingIntent = PendingIntent.getActivity(_context, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         android.support.v4.app.NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(_activity)
-                        .setSmallIcon(R.drawable.lnj_logo)
+                        .setSmallIcon(_icon)
                         .setContentTitle(_title)
                         .setContentText(_content)
                         .setContentIntent(pendingIntent);
@@ -307,63 +309,9 @@ public class LibInspira {
         loadingDialog.show();
     }
 
-    public static String decodeFile(String name, String path, int DESIREDWIDTH, int DESIREDHEIGHT) {
-        String strMyImagePath = null;
-        Bitmap scaledBitmap = null;
-
-        try {
-            // Part 1: Decode image
-            Bitmap unscaledBitmap = ScalingUtilities.decodeFile(path, DESIREDWIDTH, DESIREDHEIGHT, ScalingUtilities.ScalingLogic.FIT);
-
-            if (!(unscaledBitmap.getWidth() <= DESIREDWIDTH && unscaledBitmap.getHeight() <= DESIREDHEIGHT)) {
-                // Part 2: Scale image
-                scaledBitmap = ScalingUtilities.createScaledBitmap(unscaledBitmap, DESIREDWIDTH, DESIREDHEIGHT, ScalingUtilities.ScalingLogic.FIT);
-            } else {
-                unscaledBitmap.recycle();
-                return path;
-            }
-
-            // Store to tmp file
-
-            String extr = Environment.getExternalStorageDirectory().toString();
-            File mFolder = new File(extr + "/TMMFOLDER");
-            if (!mFolder.exists()) {
-                mFolder.mkdir();
-            }
-
-            String s = name;
-
-            File f = new File(mFolder.getAbsolutePath(), s);
-
-            strMyImagePath = f.getAbsolutePath();
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(f);
-                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 75, fos);
-                fos.flush();
-                fos.close();
-            } catch (FileNotFoundException e) {
-
-                e.printStackTrace();
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-
-            scaledBitmap.recycle();
-        } catch (Throwable e) {
-        }
-
-        if (strMyImagePath == null) {
-            return path;
-        }
-        return strMyImagePath;
-
-    }
-
     //added by ADI @26-Jul-2017
     // Execute POST JSON and Retrieve Data JSON
-    public static String  executePost(Context _context, String _targetURL, JSONObject _jsonObject){
+    public static String executePost(Context _context, String _targetURL, JSONObject _jsonObject){
         GlobalVar global = new GlobalVar(_context);
         String url = getShared(global.sharedpreferences, global.shared.server, "");
         hostUrl = "https://" + url + GlobalVar.webserviceURL;
@@ -386,6 +334,7 @@ public class LibInspira {
 
             // 3. convert JSONObject to JSON to String
             String json = _jsonObject.toString();
+            Log.d("json_obj_LibInspira",json);
 
             // 4. ** Alternative way to convert Person object to JSON string usin Jackson Lib
             // ObjectMapper mapper = new ObjectMapper();
@@ -423,7 +372,7 @@ public class LibInspira {
 
     //added by ADI @26-Jul-2017
     // Execute POST JSON and Retrieve Data JSON
-    public static String  executePost(Context _context, String _targetURL, JSONObject _jsonObject, int _timeoutMiliSecond){
+    public static String executePost(Context _context, String _targetURL, JSONObject _jsonObject, int _timeoutMiliSecond){
         GlobalVar global = new GlobalVar(_context);
         String url = getShared(global.sharedpreferences, "server", "");
         hostUrl = "https://" + url + GlobalVar.webserviceURL;
@@ -481,6 +430,65 @@ public class LibInspira {
         return result;
     }
 
+    public static String executePost_local(Context _context, String _targetURL, JSONObject _jsonObject){
+        GlobalVar global = new GlobalVar(_context);
+        //String url = getShared(global.sharedpreferences, global.shared.server, "");
+        hostUrl = GlobalVar.LOCAL_SERVER_URL+"/wsCello/cello/index.php/api/";
+
+        Log.d("host", hostUrl + _targetURL);
+
+        InputStream inputStream = null;
+        String result = "";
+        try {
+
+            // 1. create HttpClient
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpParams httpParameters = httpClient.getParams();
+            HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);  //modified by Tonny @07-Sep-2017 5000 --> 10000
+            HttpConnectionParams.setSoTimeout(httpParameters, 10000);  //modified by Tonny @07-Sep-2017 5000 --> 10000
+            HttpConnectionParams.setTcpNoDelay(httpParameters, true);
+
+            // 2. make POST request to the given URL
+            HttpPost httpPost = new HttpPost( hostUrl + _targetURL );
+
+            // 3. convert JSONObject to JSON to String
+            String json = _jsonObject.toString();
+            Log.d("json_obj_LibInspira",json);
+
+            // 4. ** Alternative way to convert Person object to JSON string usin Jackson Lib
+            // ObjectMapper mapper = new ObjectMapper();
+            // json = mapper.writeValueAsString(person);
+
+            // 5. set json to StringEntity
+            StringEntity stringEntity = new StringEntity(json);
+
+            // 6. set httpPost Entity
+            httpPost.setEntity(stringEntity);
+
+            // 7. Set some headers to inform server about the type of the content
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+
+            // 8. Execute POST request to the given URL
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+
+        } catch (Exception e) {
+//            Log.d("InputStream", e.getLocalizedMessage());
+        }
+
+        // 11. return result
+        return result;
+    }
+
     private static String convertInputStreamToString(InputStream _inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(_inputStream));
         String line = "";
@@ -490,6 +498,61 @@ public class LibInspira {
 
         _inputStream.close();
         return result;
+    }
+
+
+    public static String decodeFile(String name, String path, int DESIREDWIDTH, int DESIREDHEIGHT) {
+        String strMyImagePath = null;
+        Bitmap scaledBitmap = null;
+
+        try {
+            // Part 1: Decode image
+            Bitmap unscaledBitmap = ScalingUtilities.decodeFile(path, DESIREDWIDTH, DESIREDHEIGHT, ScalingUtilities.ScalingLogic.FIT);
+
+            if (!(unscaledBitmap.getWidth() <= DESIREDWIDTH && unscaledBitmap.getHeight() <= DESIREDHEIGHT)) {
+                // Part 2: Scale image
+                scaledBitmap = ScalingUtilities.createScaledBitmap(unscaledBitmap, DESIREDWIDTH, DESIREDHEIGHT, ScalingUtilities.ScalingLogic.FIT);
+            } else {
+                unscaledBitmap.recycle();
+                return path;
+            }
+
+            // Store to tmp file
+
+            String extr = Environment.getExternalStorageDirectory().toString();
+            File mFolder = new File(extr + "/TMMFOLDER");
+            if (!mFolder.exists()) {
+                mFolder.mkdir();
+            }
+
+            String s = name;
+
+            File f = new File(mFolder.getAbsolutePath(), s);
+
+            strMyImagePath = f.getAbsolutePath();
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(f);
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 75, fos);
+                fos.flush();
+                fos.close();
+            } catch (FileNotFoundException e) {
+
+                e.printStackTrace();
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+
+            scaledBitmap.recycle();
+        } catch (Throwable e) {
+        }
+
+        if (strMyImagePath == null) {
+            return path;
+        }
+        return strMyImagePath;
+
     }
 
     // added by shodiq @1-Aug-2017
@@ -549,8 +612,8 @@ public class LibInspira {
         if (_commandCancel != null){
             alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                        _commandCancel.run();
-            } });}
+                    _commandCancel.run();
+                } });}
         alertDialog.show();
     }
 
@@ -772,5 +835,22 @@ public class LibInspira {
             _text = Html.fromHtml("<b>"+ _text +"</b>").toString();
         }
         return _text;
+    }
+
+    public static File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), ".LNJ");
+        if(!storageDir.exists()){
+            storageDir.mkdirs();
+        }
+
+        File image = File.createTempFile(
+                imageFileName,  // prefix
+                ".jpg",         // suffix
+                storageDir      // directory
+        );
+        return image;
     }
 }

@@ -146,7 +146,8 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
         }
         else if(id==R.id.btnEmptyContainer)
         {
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoEmptyContainer());
+//            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoEmptyContainer());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoParent());
         }
         else if(id==R.id.btnSealedContainer)
         {

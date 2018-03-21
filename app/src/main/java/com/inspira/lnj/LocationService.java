@@ -119,11 +119,11 @@ public class LocationService extends Service implements LocationListener,
 
                 if(idleTime==idleTimeNow)
                 {
-                    LibInspira.createNotification(getApplication(), getApplicationContext(), "Batas Waktu", "Anda melewati batas yang ditentukan dalam waypoint");
+                    LibInspira.createNotification(getApplication(), 0, getApplicationContext(), "Batas Waktu", "Anda melewati batas yang ditentukan dalam waypoint");
                 }
                 else if(idleTime==idleTimeNow * 2)
                 {
-                    LibInspira.createNotification(getApplication(), getApplicationContext(), "Batas Waktu", "Anda melewati batas yang ditentukan dalam waypoint");
+                    LibInspira.createNotification(getApplication(), 0, getApplicationContext(), "Batas Waktu", "Anda melewati batas yang ditentukan dalam waypoint");
                 }
             }
 
