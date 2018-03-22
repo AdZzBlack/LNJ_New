@@ -197,4 +197,51 @@ class ContainerLoading extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
+
+    // --- Insert History Driver--- //
+    function getPhotos_post()
+    {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomorcontainer = (isset($jsonObject["nomorcontainer"]) ? $this->clean($jsonObject["nomorcontainer"])     : "");
+        $kategori = (isset($jsonObject["kategori"]) ? $this->clean($jsonObject["kategori"])     : "");
+        $query = "SELECT nomor FROM tdorderjualcontainer WHERE nomor = '$nomorcontainer' " ;
+        $result = $this->db->query($query);
+        $nomorfile = '0';
+        if($result && $result->num_rows() > 0){
+            $row = $result->row();
+            $nomorfile = $row->nomor;
+        }
+        $query = "  SELECT
+                        nomor, `directory`, nama, kategori
+                    FROM
+                        mharchievedfiles
+                    WHERE
+                        status_aktif > 0
+                            AND kategori = '$kategori'
+                            AND namatable = 'tdorderjualcontainer'
+                            AND nomorfile = '$nomorfile' ";
+        $result = $this->db->query($query);
+        if($result){
+            if($result->num_rows() > 0){
+                foreach ($result->result_array() as $r){
+                    array_push($data['data'], array(
+                                                    'nomor'					=> $r['nomor'],
+                                                    'directory'             => $r['directory'],
+                                                    'nama'			        => $r['nama'],
+                                                    'kategori'              => $r['kategori']
+                                                    )
+                    );
+                }
+            }
+        }else{
+            array_push($data['data'], array('query' => $this->error($query)));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
 }

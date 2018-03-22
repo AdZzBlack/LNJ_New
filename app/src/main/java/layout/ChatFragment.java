@@ -1,6 +1,7 @@
 package layout;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -430,11 +431,18 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 //                        String result = data.getStringExtra("result");
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    Picasso.with(con)
+                    //added by Tonny @23-Mar-2018
+                    Picasso.get()
                             .load(getImageUri(con,imageBitmap))
                             .resize(200, 200)
                             .centerCrop()
                             .into(ivPreview);
+                    //remarked by Tonny @23-Mar-2018  older version
+//                    Picasso.with(con)
+//                            .load(getImageUri(con,imageBitmap))
+//                            .resize(200, 200)
+//                            .centerCrop()
+//                            .into(ivPreview);
                     saveImage(con,imageBitmap);
                     encodeImagetoString(imageBitmap);
 //                    imgPath = getAbsolutePath(picUri);
@@ -558,6 +566,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     Bitmap bitmap;
     String encodedString = "";
     // AsyncTask - To convert Image to String
+    @SuppressLint("StaticFieldLeak")
     public void encodeImagetoString() {
         new AsyncTask<String, Void, String>() {
 
@@ -614,17 +623,25 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
             @Override
             protected void onPostExecute(String msg) {
-                Picasso.with(con)
+                //added by Tonny @23-Mar-2018
+                Picasso.get()
                         .load(new File(imgPath))
                         .resize(200, 200)
                         .centerCrop()
                         .into(ivPreview);
+                //remarked by Tonny @23-Mar-2018  older version
+//                Picasso.with(con)
+//                        .load(new File(imgPath))
+//                        .resize(200, 200)
+//                        .centerCrop()
+//                        .into(ivPreview);
                 //data_flag = ChatMsgContainer.message_data_type_picture;
                 setupAttachedFile(ChatMsgContainer.message_data_type_picture);
             }
         }.execute(null, null, null);
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void encodeImagetoString(Bitmap img) {
         new AsyncTask<Bitmap, Void, String>() {
 

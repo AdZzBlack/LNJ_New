@@ -26,8 +26,6 @@ import java.util.List;
  */
 
 public class ChatImageViewer extends Fragment implements View.OnClickListener{
-    Context con;
-
     public ChatImageViewer() {
         // Required empty public constructor
     }
@@ -65,7 +63,6 @@ public class ChatImageViewer extends Fragment implements View.OnClickListener{
     /*****************************************************************************/
     @Override
     public void onAttach(Context context) {
-        con = context;
         super.onAttach(context);
     }
 
@@ -99,12 +96,20 @@ public class ChatImageViewer extends Fragment implements View.OnClickListener{
         }
 
         Log.d("imgv",msgImg);
-        Picasso.with(con)
+        //added by Tonny @23-Mar-2018
+        Picasso.get()
                 .load(GlobalVar.URL_SERVER_PICTURE_PATH+msgImg)
                 .centerInside()
                 .resize(1000,1000)
                 .placeholder(R.drawable.cast_album_art_placeholder)
                 .into(imgViewer);
+        //remarked by Tonny @23-Mar-2018  older version
+//        Picasso.with(con)
+//                .load(GlobalVar.URL_SERVER_PICTURE_PATH+msgImg)
+//                .centerInside()
+//                .resize(1000,1000)
+//                .placeholder(R.drawable.cast_album_art_placeholder)
+//                .into(imgViewer);
 
     }
 
@@ -136,34 +141,43 @@ public class ChatImageViewer extends Fragment implements View.OnClickListener{
 //            }
 
             final Target tg = new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            String path = ChatFragment.saveImage(con,bitmap);
-                            LibInspira.showShortToast(con,"Saved");
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    String path = ChatFragment.saveImage(getContext(),bitmap);
+                    LibInspira.showShortToast(getContext(),"Saved");
 
 //                            ChatMsgContainer temp = new ChatMsgContainer();
 //                            temp.copy(data.get(position));
 //                            temp.setMessage(path);
 //                            replaceMessage(temp,"");
 
-                        }
+                }
 
-                        @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
-                            //set gone semua - asumsi file gambar di hapus
-                            //setAllView(viewFinal,View.GONE);
-                            LibInspira.showShortToast(con,"Download err");
-                        }
+                @Override
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                }
 
-                        }
-                    };
+                public void onBitmapFailed(Drawable errorDrawable) {
+                    //set gone semua - asumsi file gambar di hapus
+                    //setAllView(viewFinal,View.GONE);
+                    LibInspira.showShortToast(getContext(),"Download err");
+                }
 
-            Picasso.with(con)
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+
+            Picasso.get()
                     .load(GlobalVar.URL_SERVER_PICTURE_PATH+msgImg)
                     .into(tg);
+
+            //remarked by Tonny @23-Mar-2018  older version
+//            Picasso.with(con)
+//                    .load(GlobalVar.URL_SERVER_PICTURE_PATH+msgImg)
+//                    .into(tg);
 
         }
     }

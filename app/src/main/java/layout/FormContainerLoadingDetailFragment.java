@@ -147,17 +147,20 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
         else if(id==R.id.btnEmptyContainer)
         {
 //            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoEmptyContainer());
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoParent());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoViewerFragment(global.PHOTO_EMPTY));
         }
         else if(id==R.id.btnSealedContainer)
         {
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoSealedContainerFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoViewerFragment(global.PHOTO_SEALED_CONTAINER));
+//            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoSealedContainerFragment());
         }
         else if(id==R.id.btnSealedCondition){
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoSealedConditionFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoViewerFragment(global.PHOTO_SEALED_CONDITION));
+//            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoSealedConditionFragment());
         }
         else if(id==R.id.btnOtherPicture){
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoOtherPictureFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoViewerFragment(global.PHOTO_OTHER));
+//            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormPhotoOtherPictureFragment());
         }
         else if(id==R.id.btnDone)
         {

@@ -32,6 +32,7 @@ import android.support.v7.app.NotificationCompat;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -852,5 +853,11 @@ public class LibInspira {
                 storageDir      // directory
         );
         return image;
+    }
+
+    public static int ConvertDpToPx(DisplayMetrics _metrics, int _dp){
+        float logicalDensity = _metrics.density;
+        int px = (int) Math.ceil(_dp * logicalDensity);
+        return px;
     }
 }

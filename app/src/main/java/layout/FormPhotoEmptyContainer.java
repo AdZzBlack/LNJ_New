@@ -1,15 +1,11 @@
 package layout;
 
-import com.inspira.lnj.GlobalVar;
-import com.inspira.lnj.IndexInternal;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -23,15 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +30,6 @@ import java.util.Map;
 import static com.inspira.lnj.IndexInternal.global;
 
 public class FormPhotoEmptyContainer extends Fragment implements View.OnClickListener {
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int PICK_IMAGE_REQUEST = 3;
 
@@ -324,17 +311,6 @@ public class FormPhotoEmptyContainer extends Fragment implements View.OnClickLis
                     photoName = photoName + mPhotoName_.get(i) + "|";
                     path = path + mPath_.get(i) + "|";
                     pathRaw = pathRaw + mPathRaw_.get(i) + "|";
-//                    new doFileUpload().execute(decodeFile(mPhotoName_.get(i), mPathRaw_.get(i), 1920, 1080));
-//                    final int finalI = i;
-//                    new doFileUpload(new AsyncListener() {
-//                        public void postTaskMethod() {
-//                            File f = new File(mPath_.get(finalI));
-//                            f.delete();
-//                            f = new File(mPathRaw_.get(finalI));
-//                            f.delete();
-//                        }
-//
-//                    }, 1).execute(LibInspira.decodeFile(mPhotoName_.get(i), mPathRaw_.get(i), 1920, 1080));
                 }
             }
             LibInspira.setShared(global.temppreferences, global.temp.photo_pathraw_empty_container, pathRaw);
@@ -410,9 +386,5 @@ public class FormPhotoEmptyContainer extends Fragment implements View.OnClickLis
         //added by Tonny @19-Jan-2018 menampilkan kode JOB pada textView
         tvJob = (TextView) getView().findViewById(R.id.tvJob);
         tvJob.setText("Job No. " + LibInspira.getShared(global.temppreferences, global.temp.selected_job_kode, ""));
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

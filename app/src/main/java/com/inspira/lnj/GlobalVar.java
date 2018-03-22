@@ -40,6 +40,17 @@ public class GlobalVar {
     public static final String CHAT_SERVER_URL = "http://vpn.inspiraworld.com"+":3001";
     public static final String URL_SERVER_PICTURE_PATH = "http://vpn.inspiraworld.com"+":3001/";
 
+    //added by Tonny @23-Mar-2018  //constanta untuk jenis upload foto container
+    public static final int PHOTO_EMPTY = 1;
+    public static final int PHOTO_SEALED_CONTAINER = 2;
+    public static final int PHOTO_SEALED_CONDITION = 3;
+    public static final int PHOTO_OTHER = 4;
+    public static final String STRING_PHOTO_EMPTY = "CONTAINER EMPTY";
+    public static final String STRING_PHOTO_SEALED_CONTAINER = "CONTAINER SEALED";
+    public static final String STRING_PHOTO_SEALED_CONDITION = "CONTAINER SEALED PORT";
+    public static final String STRING_PHOTO_SEALED_PORT = "CONTAINER SEALED PORT"; // SEALED_PORT = SEALED_CONDITION
+    public static final String STRING_PHOTO_OTHER = "CONTAINER OTHERS";
+
     public GlobalVar(Context context)
     {
         sharedpreferences = context.getSharedPreferences("global", Context.MODE_PRIVATE);
@@ -76,9 +87,23 @@ public class GlobalVar {
         String result;
         String url = LibInspira.getShared(sharedpreferences, shared.server, "");
         if(_urltype==1) result = "https://" + url + "/uploads/lnj/CONTAINER%20EMPTY/upload.php";
-        else if(_urltype==2) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED/upload.php";
-        else if(_urltype==3) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED%20PORT/upload.php";
+        else if(_urltype==2) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED/upload.php"; //sealed container
+        else if(_urltype==3) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED%20PORT/upload.php";  //sealed condition
         else if(_urltype==4) result = "https://" + url + "/uploads/lnj/CONTAINER%20OTHERS/upload.php";  //modified by Tonny @23-Jan-2018 CONTAINER SEALED OTHERS --> CONTAINER OTHERS
+        else  result = "";
+
+        return result;
+    }
+
+    //added by Tonny @23-Mar-2018 similar to getUploadURL but without upload.php
+    public static String getUploadBaseURL(int _urltype)
+    {
+        String result;
+        String url = LibInspira.getShared(sharedpreferences, shared.server, "");
+        if(_urltype==1) result = "https://" + url + "/uploads/lnj/CONTAINER%20EMPTY/";
+        else if(_urltype==2) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED/"; //sealed container
+        else if(_urltype==3) result = "https://" + url + "/uploads/lnj/CONTAINER%20SEALED%20PORT/";  //sealed condition
+        else if(_urltype==4) result = "https://" + url + "/uploads/lnj/CONTAINER%20OTHERS/";
         else  result = "";
 
         return result;
@@ -157,6 +182,8 @@ public class GlobalVar {
         public String report_doc_action_index = "report_user_action_index";
         public String report_doc_action = "report_user_action";
 
+        //added by Tonny @23-Mar-2018
+        public String photo_url = "photo_url";
     }
 
     public class User

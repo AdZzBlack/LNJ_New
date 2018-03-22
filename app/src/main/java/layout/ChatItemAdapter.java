@@ -415,12 +415,20 @@ public class ChatItemAdapter extends BaseAdapter {
                         }
                     });
 
-                    Picasso.with(con)
+                    //added by Tonny @23-Mar-2018
+                    Picasso.get()
                             .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
                             .resize(200, 200)
                             .centerCrop()
                             .placeholder(R.drawable.cast_album_art_placeholder)
                             .into(holder.ivPicContainerYou);
+                    //remarked by Tonny @23-Mar-2018  older version
+//                    Picasso.with(con)
+//                            .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
+//                            .resize(200, 200)
+//                            .centerCrop()
+//                            .placeholder(R.drawable.cast_album_art_placeholder)
+//                            .into(holder.ivPicContainerYou);
 
 //                    final TargetClass tg = new TargetClass();
 //                    tg.setup(position);
@@ -542,12 +550,21 @@ public class ChatItemAdapter extends BaseAdapter {
                         }
                     });
 
-                    Picasso.with(con)
+                    //added by Tonny @23-Mar-2018
+                    Picasso.get()
                             .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
                             .resize(200, 200)
                             .centerCrop()
                             .placeholder(R.drawable.cast_album_art_placeholder)
                             .into(holder.ivPicContainerOther);
+
+                    //remarked by Tonny @23-Mar-2018  older version
+//                    Picasso.with(con)
+//                            .load(GlobalVar.URL_SERVER_PICTURE_PATH+data.get(position).getMessage())
+//                            .resize(200, 200)
+//                            .centerCrop()
+//                            .placeholder(R.drawable.cast_album_art_placeholder)
+//                            .into(holder.ivPicContainerOther);
 
                 }
 
