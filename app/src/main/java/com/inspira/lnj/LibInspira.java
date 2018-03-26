@@ -96,6 +96,7 @@ public class LibInspira {
     //added by Tonny @01-Nov-2017
     public static void ReplaceFragmentNoBackStack(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment){
         FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.replace(_fragmentContainerID, _fragment);
         fragmentTransaction.commit();
     }

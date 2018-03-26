@@ -104,7 +104,7 @@ public class FormPhotoOtherPictureFragment extends FormPhotoEmptyContainer {
             LibInspira.setShared(global.temppreferences, global.temp.photo_pathraw_other_picture, pathRaw);
             LibInspira.setShared(global.temppreferences, global.temp.photo_path_other_picture, path);
             LibInspira.setShared(global.temppreferences, global.temp.photo_photoname_other_picture, photoName);
-            LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new FormContainerLoadingDetailFragment());
         }
     }
 

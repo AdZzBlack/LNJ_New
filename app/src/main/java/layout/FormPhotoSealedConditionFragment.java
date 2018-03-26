@@ -104,7 +104,7 @@ public class FormPhotoSealedConditionFragment extends FormPhotoEmptyContainer {
             LibInspira.setShared(global.temppreferences, global.temp.photo_pathraw_sealed_condition, pathRaw);
             LibInspira.setShared(global.temppreferences, global.temp.photo_path_sealed_condition, path);
             LibInspira.setShared(global.temppreferences, global.temp.photo_photoname_sealed_condition, photoName);
-            LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new FormContainerLoadingDetailFragment());
         }
     }
 

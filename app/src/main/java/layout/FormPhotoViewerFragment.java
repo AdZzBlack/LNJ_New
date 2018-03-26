@@ -8,8 +8,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.math.MathUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,7 @@ import static com.inspira.lnj.GlobalVar.STRING_PHOTO_OTHER;
 import static com.inspira.lnj.GlobalVar.STRING_PHOTO_SEALED_CONDITION;
 import static com.inspira.lnj.GlobalVar.STRING_PHOTO_SEALED_CONTAINER;
 import static com.inspira.lnj.IndexInternal.global;
+import static com.inspira.lnj.LibInspira.ConvertDpToPx;
 import static com.inspira.lnj.LibInspira.ReplaceFragment;
 import static com.inspira.lnj.LibInspira.setShared;
 
@@ -195,12 +198,28 @@ public class FormPhotoViewerFragment extends Fragment implements View.OnClickLis
                     if(!obj.has("query")){
                         //create ivThumbnail programmatically
                         final ImageView newImageView = new ImageView(getContext());
-                        final RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                        final RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                        lp.setMargins(ConvertDpToPx(metrics, 10), ConvertDpToPx(metrics, 10), ConvertDpToPx(metrics, 10), ConvertDpToPx(metrics, 10));
+                        final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
                         lp.setMargins(10, 10, 10, 10);
+                        lp.gravity = Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK;
                         final String nama = obj.getString("nama");
                         newImageView.setLayoutParams(lp);
                         newImageView.setVisibility(View.VISIBLE);
                         newImageView.setClickable(true);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            newImageView.setMinimumHeight(ConvertDpToPx(metrics, 100));
+                            newImageView.setMinimumWidth(ConvertDpToPx(metrics, 100));
+                            newImageView.setMaxHeight(ConvertDpToPx(metrics, 100));
+                            newImageView.setMaxWidth(ConvertDpToPx(metrics, 100));
+                        }else{
+                            newImageView.setMinimumHeight(ConvertDpToPx(metrics, 110));
+                            newImageView.setMinimumWidth(ConvertDpToPx(metrics, 110));
+                            newImageView.setMaxHeight(ConvertDpToPx(metrics, 110));
+                            newImageView.setMaxWidth(ConvertDpToPx(metrics, 110));
+                            newImageView.setPadding(10, 10, 10, 10);
+                        }
+
                         final String photo_url = global.getUploadBaseURL(urltype) + obj.getString("nama");
                         newImageView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -214,8 +233,8 @@ public class FormPhotoViewerFragment extends Fragment implements View.OnClickLis
                         Picasso.get()
                                 .load(photo_url)
                                 .placeholder(R.drawable.failed)
-                                .centerCrop()
                                 .resize(LibInspira.ConvertDpToPx(metrics, 100), LibInspira.ConvertDpToPx(metrics, 100))
+                                .centerCrop()
                                 .into(newImageView);
                         gridPhoto.addView(newImageView);
                         Log.wtf("picasso url", photo_url);
