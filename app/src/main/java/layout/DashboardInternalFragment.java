@@ -1,8 +1,6 @@
 /******************************************************************************
     Author           : ADI
     Description      : dashboard untuk internal
-    History          :
-
 ******************************************************************************/
 package layout;
 
@@ -20,8 +18,6 @@ import com.inspira.lnj.R;
 
 import static com.inspira.lnj.IndexInternal.RefreshUserData;
 import static com.inspira.lnj.IndexInternal.global;
-
-//import android.app.Fragment;
 
 public class DashboardInternalFragment extends Fragment implements View.OnClickListener{
     public DashboardInternalFragment() {
@@ -41,7 +37,6 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         getActivity().setTitle("Dashboard");
         return v;
     }
-
 
     /*****************************************************************************/
     //OnAttach dijalankan pada saat fragment ini terpasang pada Activity penampungnya

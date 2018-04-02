@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,10 +21,12 @@ import com.inspira.lnj.GlobalVar;
 import com.inspira.lnj.LibInspira;
 import com.inspira.lnj.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.inspira.lnj.IndexInternal.global;
+import static com.inspira.lnj.IndexInternal.jsonObject;
 
 /**
  * Created by shoma on 06/09/17.
@@ -38,8 +43,44 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
     private String actionUrl;
     private String notif;
 
+    private DeleteGroup deleteGroup;
+    private String nomorgroup, namagroup;
+
     public FormGroupFragment() {
         // Required empty public constructor
+    }
+
+    //added by Tonny @02-Apr-2018 untuk mengganti layout menu pada form ini
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+//        inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.group_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_delete) {  //added by Tonny @30-Jul-2017
+            //added by Tonny @02-Apr-2018  untuk hapus group chat
+            LibInspira.alertbox("Delete Group " + namagroup, "Are you sure want to delete this group? ", getActivity(),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        deleteGroup = new DeleteGroup();
+                        String actionUrl = "Group/deleteGroup/";
+                        deleteGroup.execute(actionUrl);
+                    }
+                }
+                , new Runnable() {
+                    @Override
+                    public void run() {
+                        //do nothing
+                    }
+                });
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -48,6 +89,7 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
         tempTextUsers = "";
         actionUrl = "Group/newGroup/";
         notif = "Group Created";
+        setHasOptionsMenu(true);  //added by Tonny @02-Apr-2018 supaya onCreateOptionsMenu dijalankan
     }
 
     @Override
@@ -86,8 +128,12 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
 
         selectedGroup = LibInspira.getShared(global.datapreferences, global.data.selectedGroup, "").split("~");
         if (selectedGroup.length == 2) {
+            nomorgroup = selectedGroup[0];
+            namagroup = selectedGroup[1];
             actionUrl = "Group/updateGroup/";
-            etName.setText(selectedGroup[1]);
+            //remarked by Tonny @02-Apr-2018
+//            etName.setText(selectedGroup[1]);
+            etName.setText(namagroup);
             notif = "Group Updated";
         }
         refreshList();
@@ -178,6 +224,52 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
             LibInspira.showLongToast(getContext(), notif);
             LibInspira.BackFragment(getActivity().getSupportFragmentManager());
             BackgroundTask.mSocket.emit("loadAllRoom",LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+        }
+    }
+
+    //added by Tonny @02-Apr-2018 class yg dijalankan untuk menghapus group
+    private class DeleteGroup extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            try {
+                jsonObject.put("nomorgroup", nomorgroup);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try
+            {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    Log.d("jsonarray length: ", Integer.toString(jsonarray.length()));
+                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if (!obj.has("query")) {
+                            LibInspira.showLongToast(getContext(), obj.getString("message"));
+                        } else {
+                            Log.d("Error: ", obj.getString("query"));
+                            LibInspira.showShortToast(getContext(), obj.getString("message"));
+                        }
+                    }
+                    refreshList();
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
     }
 }

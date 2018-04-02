@@ -353,7 +353,9 @@ public class FormContainerLoadingDetailFragment extends Fragment implements View
                         else
                         {
                             LibInspira.clearShared(global.temppreferences);
-                            LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                            //modified by Tonny @30-Mar-2018
+//                            LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                            LibInspira.ReplaceFragmentNoBackStack(getFragmentManager(), R.id.fragment_container, new FormContainerLoadingHeaderFragment());
                         }
                     }
                     LibInspira.showShortToast(getContext(), message);

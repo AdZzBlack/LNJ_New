@@ -58,7 +58,7 @@ class Group extends REST_Controller {
         
         $user = (isset($jsonObject["user"]) 			? $jsonObject["user"]      	: "");
 
-  //       $query = "select he.nomor, he.nama from whtdgroup_mobile de
+    //  $query = "select he.nomor, he.nama from whtdgroup_mobile de
 		// left join whgroup_mobile he on de.nomorwhgroup = he.nomor
 		// where de.nomorwhuser = $user and he.status_aktif = true and de.status_aktif = true";
 
@@ -236,6 +236,41 @@ class Group extends REST_Controller {
 		}
 		
 		if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
+
+    //added by Tonny untuk menghapus group
+	function deleteGroup_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomorgroup = (isset($jsonObject["nomorgroup"]) ? $this->clean($jsonObject["nomorgroup"])     : "");
+
+        $this->db->trans_begin();
+        $query = "DELETE FROM whtdgroup_mobile WHERE nomorwhgroup = $nomorgroup ";
+        $result = $this->db->query($query);
+        if($result){
+            $query = "DELETE FROM whgroup_mobile WHERE nomor = $nomorgroup ";
+            $result = $this->db->query($query);
+            if($result){
+                $message = 'The group has been successfully deleted';
+                $this->db->trans_commit;
+                array_push($data['data'], array( 'success' => 'true',
+                                                 'message' => $message));
+            }else{
+                $message = 'Delete failed';
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => $message));
+            }
+        }else{
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'query' => $this->error($query)));
+        }
+
+        if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }

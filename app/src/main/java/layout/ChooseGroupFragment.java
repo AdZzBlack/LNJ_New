@@ -49,6 +49,8 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
+    private GetData getData;
+
     public ChooseGroupFragment() {
         // Required empty public constructor
     }
@@ -56,7 +58,12 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(getData != null) getData.cancel(true);
     }
 
     @Override
@@ -126,7 +133,8 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         refreshList();
 
         String actionUrl = "Group/getGroups/";
-        new getData().execute( actionUrl );
+        getData = new GetData();
+        getData.execute( actionUrl );
     }
 
     @Override
@@ -210,7 +218,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private class getData extends AsyncTask<String, Void, String> {
+    private class GetData extends AsyncTask<String, Void, String> {
         private boolean editMode = false;
         private String nomor;
 
@@ -256,7 +264,6 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
                         } else {
                             Log.d("FAILED: ", obj.getString("query"));
                         }
-
                     }
                     Log.d("tempData: ", tempData);
                     if (editMode) {
@@ -343,7 +350,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
             holder = new Holder();
             holder.adapterItem = items.get(position);
 
-            holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvNama = row.findViewById(R.id.tvName);
 
             row.setTag(holder);
             setupItem(holder);
@@ -354,7 +361,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
                     @Override
                     public boolean onLongClick(View view) {
                         String actionUrl = "Group/getDataGroup/";
-                        getData getdata = new getData();
+                        GetData getdata = new GetData();
                         getdata.setEditMode(finalHolder.adapterItem.getNomor());
                         getdata.execute(actionUrl);
                         LibInspira.setShared(global.datapreferences, global.data.selectedGroup, finalHolder.adapterItem.getNomor() + "~" + finalHolder.adapterItem.getNama());
