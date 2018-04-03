@@ -1,3 +1,3 @@
 New Features:
--. View uploaded container photos
--. Fullscreen Photo Viewer + Zoom
+-. Delete Group
+-. Fixes create new group

@@ -138,14 +138,19 @@ class Group extends REST_Controller {
         $creator = (isset($jsonObject["creator"]) 		? $jsonObject["creator"]      	: "");
         $nomor = (isset($jsonObject["nomor"]) 			? $jsonObject["nomor"]    	  	: "");
         $nama = (isset($jsonObject["nama"]) 			? $jsonObject["nama"]    	  	: "");
-        $status = (isset($jsonObject["status"]) 		? $jsonObject["status"]     	: "");
+//        $status = (isset($jsonObject["status"]) 		? $jsonObject["status"]     	: "");
         $users = (isset($jsonObject["users"]) 			? $jsonObject["users"]			: "");
         
-        $query = "UPDATE whgroup_mobile set 
-			nama = '$nama', 
-			status_aktif = $status 
+        /*$query = "UPDATE whgroup_mobile set
+			nama = '$nama',
+			status_aktif = $status
 			WHERE nomor = $nomor
-        ";
+        ";*/
+
+        $query = "UPDATE whgroup_mobile set
+                    nama = '$nama',
+                    WHERE nomor = $nomor ";
+
         $this->db->query($query);
 
         $query = "DELETE a FROM mobile_room_member a
@@ -180,6 +185,66 @@ class Group extends REST_Controller {
             $this->db->query($query);
 		}
 	}
+
+//	function newGroup_get()
+//    {
+//        $data['data'] = array();
+//
+//        $value = file_get_contents('php://input');
+//        $jsonObject = (json_decode($value , true));
+//
+//        $creator = 11;
+//        $nama = 'lnj';
+//        $status = 1;
+//        $users = 1;
+//
+//        $this->db->trans_begin();
+//
+//        $query = "INSERT INTO whgroup_mobile (nama, nomorwhuser, status_aktif) VALUES('$nama', $creator, $status)";
+//        $this->db->query($query);
+//        $id = $this->db->insert_id();
+//
+//        $query1 = "INSERT INTO mobile_room_info (roomName, type, creator, created_date, status_aktif)
+//                    VALUES('GC-$id', 'GC', $creator, NOW(), true)";
+//        $this->db->query($query1);
+//        $idChat = $this->db->insert_id();
+//
+//        $query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif)
+//        VALUES($id, $creator, $creator, NOW(), true)";
+//        $this->db->query($query);
+//
+//        $query = "INSERT INTO mobile_room_member (id_room_info, member, status_aktif)
+//                    VALUES($idChat, $creator, true)";
+//        $this->db->query($query);
+//
+//        $userArray = explode('|', $users);
+//
+//        foreach ($userArray as $user) {
+//            $query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif)
+//            VALUES($id, $user, $creator, NOW(), true)";
+//            $this->db->query($query);
+//
+//            $query = "INSERT INTO mobile_room_member (id_room_info, member, status_aktif)
+//                        VALUES($idChat, $user, true)";
+//            $this->db->query($query);
+//        }
+//
+//        if ($this->db->trans_status() === FALSE)
+//        {
+//            $this->db->trans_rollback();
+//            array_push($data['data'], array( 'query' => $this->error($query1) ));
+//        }
+//        else
+//        {
+//            $this->db->trans_commit();
+//            array_push($data['data'], array( 'success' => 'true' ));
+//        }
+//
+//        if ($data){
+//            // Set the response and exit
+//            $this->response($data['data']); // OK (200) being the HTTP response code
+//        }
+//    }
     
     function newGroup_post()
     {
@@ -190,7 +255,8 @@ class Group extends REST_Controller {
         
         $creator = (isset($jsonObject["creator"]) 		? $jsonObject["creator"]      	: "");
         $nama = (isset($jsonObject["nama"]) 			? $jsonObject["nama"]    	  	: "");
-        $status = (isset($jsonObject["status"]) 		? $jsonObject["status"]     	: "");
+//        $status = (isset($jsonObject["status"]) 		? $jsonObject["status"]     	: "");
+        $status = 1;
         $users = (isset($jsonObject["users"]) 			? $jsonObject["users"]			: "");
         
         $this->db->trans_begin();
@@ -241,30 +307,20 @@ class Group extends REST_Controller {
         }
 	}
 
-    //added by Tonny untuk menghapus group
+    //added by Tonny untuk menghapus group (penghapusan hanya untuk menonaktifkan grup, tidak menghapus sepenuhnya)
 	function deleteGroup_post(){
         $data['data'] = array();
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
-
         $nomorgroup = (isset($jsonObject["nomorgroup"]) ? $this->clean($jsonObject["nomorgroup"])     : "");
-
         $this->db->trans_begin();
-        $query = "DELETE FROM whtdgroup_mobile WHERE nomorwhgroup = $nomorgroup ";
+        $query = "UPDATE whgroup_mobile SET status_aktif = 0 WHERE nomor = $nomorgroup ";
         $result = $this->db->query($query);
         if($result){
-            $query = "DELETE FROM whgroup_mobile WHERE nomor = $nomorgroup ";
-            $result = $this->db->query($query);
-            if($result){
-                $message = 'The group has been successfully deleted';
-                $this->db->trans_commit;
-                array_push($data['data'], array( 'success' => 'true',
-                                                 'message' => $message));
-            }else{
-                $message = 'Delete failed';
-                array_push($data['data'], array( 'query' => $this->error($query),
-                                                 'message' => $message));
-            }
+            $message = 'The group has been successfully deleted';
+            $this->db->trans_commit();
+            array_push($data['data'], array( 'success' => 'true',
+                                             'message' => $message));
         }else{
             $this->db->trans_rollback();
             array_push($data['data'], array( 'query' => $this->error($query)));

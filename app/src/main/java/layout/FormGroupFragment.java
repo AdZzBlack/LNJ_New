@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import com.inspira.lnj.BackgroundTask;
 import com.inspira.lnj.GlobalVar;
@@ -33,16 +31,17 @@ import static com.inspira.lnj.IndexInternal.jsonObject;
  */
 
 public class FormGroupFragment extends Fragment implements View.OnClickListener {
-    private TextView tvStatus;
     private Button btnSave, btnInvite;
-    private Switch switchStatus;
     private EditText etName, etNames;
     private String registeredUsers;
     private String tempTextUsers;
     private String[] selectedGroup;
     private String actionUrl;
     private String notif;
+    private Boolean isCreateNew;  //added by Tonny @03-Apr-2018
 
+    //remarked by Tonny @03-Apr-2018  tidak terpakai
+//    private String status;
     private DeleteGroup deleteGroup;
     private String nomorgroup, namagroup;
 
@@ -54,8 +53,10 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
-//        inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.group_menu, menu);
+        if(!isCreateNew) {
+            inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.group_menu, menu);
+        }
     }
 
     @Override
@@ -97,7 +98,12 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_form_group, container, false);
-        getActivity().setTitle("New Group");
+        isCreateNew = this.getArguments().getBoolean("isCreateNew");  //added by Tonny @03-Apr-2018
+        if(isCreateNew) {
+            getActivity().setTitle("New Group");
+        }else{
+            getActivity().setTitle("Edit Group");
+        }
         return v;
     }
 
@@ -115,27 +121,24 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        tvStatus = (TextView) getView().findViewById(R.id.tvStatus);
-        btnSave = (Button) getView().findViewById(R.id.btnSave);
-        switchStatus = (Switch) getView().findViewById(R.id.statusSwitch);
-        etName = (EditText) getView().findViewById(R.id.tvGroupName);
-        etNames = (EditText) getView().findViewById(R.id.etNames);
-        btnInvite = (Button) getView().findViewById(R.id.btnInvite);
+        btnSave = getView().findViewById(R.id.btnSave);
+        etName = getView().findViewById(R.id.etGroupName);
+        etNames = getView().findViewById(R.id.etNames);
+        btnInvite = getView().findViewById(R.id.btnInvite);
 
         btnSave.setOnClickListener(this);
         btnInvite.setOnClickListener(this);
-        switchStatus.setOnClickListener(this);
 
         selectedGroup = LibInspira.getShared(global.datapreferences, global.data.selectedGroup, "").split("~");
         if (selectedGroup.length == 2) {
             nomorgroup = selectedGroup[0];
             namagroup = selectedGroup[1];
-            actionUrl = "Group/updateGroup/";
-            //remarked by Tonny @02-Apr-2018
-//            etName.setText(selectedGroup[1]);
+//            actionUrl = "Group/updateGroup/";  //remarked by Tonny @02-Apr-2018
+//            etName.setText(selectedGroup[1]);  //remarked by Tonny @02-Apr-2018
             etName.setText(namagroup);
             notif = "Group Updated";
         }
+
         refreshList();
     }
 
@@ -159,15 +162,16 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
             case R.id.btnSave:
                 if (etName.getText().toString().equals(""))
                     LibInspira.showLongToast(getContext(), "Please fill in Group Name");
-                else {
+                else if(isCreateNew) {  //modified by Tonny @03-Apr-2018
+                    actionUrl = "Group/newGroup/";
+                    new group().execute(actionUrl);
+                }else{
+                    actionUrl = "Group/updateGroup/";
                     new group().execute(actionUrl);
                 }
                 break;
             case R.id.btnInvite:
                 LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
-                break;
-            case R.id.statusSwitch:
-                tvStatus.setText((switchStatus.isChecked()) ? "Active" : "Not Active");
                 break;
         }
     }
@@ -198,17 +202,16 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
     }
 
     private class group extends AsyncTask<String, Void, String> {
-
         JSONObject jsonObject;
         @Override
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
                 jsonObject.put("creator", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
-                if (selectedGroup.length == 2)
+                if (selectedGroup.length == 2 && !isCreateNew)
                     jsonObject.put("nomor", selectedGroup[0]);
                 jsonObject.put("nama", etName.getText());
-                jsonObject.put("status", switchStatus.isChecked());
+//                jsonObject.put("status", status);
                 jsonObject.put("users", registeredUsers);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -258,7 +261,7 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
                             LibInspira.showShortToast(getContext(), obj.getString("message"));
                         }
                     }
-                    refreshList();
+                    LibInspira.BackFragment(getFragmentManager());
                 }
             }
             catch(Exception e)

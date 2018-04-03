@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.Fragment; // is the Fragment class for compatibility for older version < API 11
@@ -86,6 +87,16 @@ public class LibInspira {
 
     public static void ReplaceFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment){
         FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
+        //fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
+        fragmentTransaction.replace(_fragmentContainerID, _fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public static void ReplaceFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment, Bundle _bundle){
+        FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
+        _fragment.setArguments(_bundle);
         //fragmentTransaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
         fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.replace(_fragmentContainerID, _fragment);

@@ -1,17 +1,13 @@
 package com.inspira.lnj;
 
-import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -19,14 +15,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
 import layout.ChatFragment;
@@ -34,13 +27,10 @@ import layout.ChooseGroupFragment;
 import layout.ChooseUserFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
-import layout.FormPhotoEmptyContainer;
 import layout.SettingFragment;
-
 
 public class IndexInternal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
     public  static TextView tvUsername;
@@ -79,7 +69,8 @@ public class IndexInternal extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.setNavigationItemSelectedListener(this);
-        Menu navmenu = navigationView.getMenu();
+        //remarked by Tonny @03-Apr-2018 tidak terpakai
+//        Menu navmenu = navigationView.getMenu();
 
         RefreshUserData();
 
@@ -103,7 +94,7 @@ public class IndexInternal extends AppCompatActivity
 
     public static void RefreshUserData(){
         View navigationHeader = navigationView.getHeaderView(0);
-        tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
+        tvUsername = navigationHeader.findViewById(R.id.tvUsername);
         tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
     }
 
@@ -154,7 +145,7 @@ public class IndexInternal extends AppCompatActivity
             finish();
             return true;
         } else if (id == R.id.action_releasenote){  //added by Tonny @11-Jan-2018
-            Context context = IndexInternal.this;
+            context = IndexInternal.this;
             PackageInfo pInfo = null;
             try {
                 pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);

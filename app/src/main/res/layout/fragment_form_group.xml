@@ -68,7 +68,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <EditText
-                android:id="@+id/tvGroupName"
+                android:id="@+id/etGroupName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/txvColon1"
@@ -78,50 +78,10 @@
                 android:inputType="textPersonName" />
 
             <TextView
-                android:id="@+id/status"
+                android:id="@+id/tvInvited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/groupName"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
-                android:text="Status"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/txvColon2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/txvColon1"
-                android:layout_below="@id/txvColon1"
-                android:layout_marginTop="20dp"
-                android:text=":"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <Switch
-                android:id="@+id/statusSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/tvGroupName"
-                android:layout_below="@id/tvGroupName"
-                android:layout_marginTop="10dp"
-                android:checked="true" />
-
-            <TextView
-                android:id="@+id/tvStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/statusSwitch"
-                android:layout_below="@id/tvGroupName"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="7dp"
-                android:text="Active"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/invited"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/status"
+                android:layout_below="@+id/etGroupName"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:text="Invited Users"
@@ -131,19 +91,19 @@
                 android:id="@+id/txvColon3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/txvColon2"
-                android:layout_below="@id/txvColon2"
-                android:layout_marginTop="20dp"
+                android:layout_alignLeft="@id/txvColon1"
+                android:layout_below="@id/txvColon1"
+                android:layout_marginTop="30dp"
                 android:text=":"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Button
                 android:id="@+id/btnInvite"
                 style="?android:attr/buttonStyleSmall"
-                android:layout_below="@id/invited"
+                android:layout_below="@id/tvInvited"
                 android:layout_marginTop="10dp"
-                android:layout_alignRight="@+id/invited"
-                android:layout_alignLeft="@+id/invited"
+                android:layout_alignRight="@+id/tvInvited"
+                android:layout_alignLeft="@+id/tvInvited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btnstyle1"
@@ -159,8 +119,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:layout_alignLeft="@id/statusSwitch"
-                android:layout_below="@id/statusSwitch"
+                android:layout_alignLeft="@id/etGroupName"
+                android:layout_below="@id/etGroupName"
                 android:text="nama\nnama\nnama\nnama\nnama\nnama\nnama"
                 android:background="@android:color/transparent"
                 android:ems="10"

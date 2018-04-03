@@ -155,7 +155,12 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
 //            LibInspira.setShared(global.sharedpreferences, global.shared.position, "New Conversation");
             LibInspira.setShared(global.datapreferences, global.data.selectedUsers, "");
             LibInspira.setShared(global.datapreferences, global.data.selectedGroup, "");
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormGroupFragment());  //added by Shodiq @08-Sep-2017
+
+            //added by Tonny @03-Apr-2018
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isCreateNew", true);
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormGroupFragment(), bundle);
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormGroupFragment());  //added by Shodiq @08-Sep-2017 //remarked by Tonny @03-Apr-2018
         }
     }
 
@@ -272,7 +277,9 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
                                 global.data.selectedUsers,
                                 tempData
                         );
-                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormGroupFragment());
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("isCreateNew", false);
+                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormGroupFragment(), bundle);  //modified by Tonny @03-Apr-2018
                     }
                     else if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.groups, "")))
                     {

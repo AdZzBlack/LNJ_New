@@ -45,7 +45,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -68,9 +67,8 @@ public class LiveTrackingFragment extends Fragment implements OnMapReadyCallback
     private Marker mMyLocationMarker;
     private Polyline mDirection;
     private GoogleMap mMap;
-    private ChildEventListener mChildEventListener;
-    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference mLocationRef = mRootRef.child("location");
+    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference(); // untuk mendaparkan root dari database di firebase
+    private DatabaseReference mLocationRef = mRootRef.child("location");  //untuk mendapatkan node (field) by name dari database firebase
     private DatabaseReference[] mChildRef;
     private LatLng[] positionNow;
     private LatLng mylocation;
@@ -218,11 +216,11 @@ public class LiveTrackingFragment extends Fragment implements OnMapReadyCallback
         }
     }
 
-    public LatLng interpolate(float fraction, LatLng a, LatLng b) {
+    /*public LatLng interpolate(float fraction, LatLng a, LatLng b) {
         double lat = (b.latitude - a.latitude) * fraction + a.latitude;
         double lng = (b.longitude - a.longitude) * fraction + a.longitude;
         return new LatLng(lat, lng);
-    }
+    }*/
 
     public void moveCamera()
     {
@@ -396,7 +394,9 @@ public class LiveTrackingFragment extends Fragment implements OnMapReadyCallback
         cameratype = 0;
     }
 
-    public interface OnFragmentInteractionListener {
+    //remarked by Tonny @03-Apr-2018 tidak terpakai
+
+    /*public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
-    }
+    }*/
 }
