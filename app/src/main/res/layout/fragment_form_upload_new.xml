@@ -1,88 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
     android:padding="10dp">
 
     <TextView
+        android:id="@+id/tvInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:id="@+id/tvInfo"
         android:text="Info"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <TableLayout
-        android:layout_width="match_parent"
+        android:id="@+id/ll"
+        android:layout_width="342dp"
         android:layout_height="wrap_content"
-        android:id="@+id/ll">
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/tvJob"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/tvJob"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            android:paddingStart="5dp"
             android:layout_gravity="center_vertical"
-            android:text="Job No. " />
+            android:layout_marginBottom="10dp"
+            android:paddingStart="5dp"
+            android:text="Job No. "
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold" />
 
     </TableLayout>
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll"
+        android:layout_marginTop="40dp"
         android:isScrollContainer="true"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="vertical"
-        android:layout_above="@+id/tl_footer">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <GridLayout
             android:id="@+id/gridPhoto"
-            android:layout_gravity="fill"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:columnCount="3" >
+            android:alignmentMode="alignBounds"
+            android:columnCount="3">
 
         </GridLayout>
     </ScrollView>
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/tl_footer">
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="334dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="@color/colorWhite"
+        app:backgroundTint="@color/colorGMSToolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:text="Next"
-                android:id="@+id/btnNext"
-                android:background="@drawable/btnstyle1"
-                android:textColor="@color/colorWhite"
-                android:layout_weight="1"
-                android:layout_margin="0dp"
-                android:textSize="12dp"
-                android:visibility="invisible"/>
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_input_add"
-                android:tint="@color/colorWhite"
-                app:backgroundTint="@color/colorGMSToolbar" />
-        </TableRow>
-    </TableLayout>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

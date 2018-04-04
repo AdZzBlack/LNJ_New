@@ -2,24 +2,18 @@ package layout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.math.MathUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -32,20 +26,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static android.content.ContentValues.TAG;
 import static com.inspira.lnj.GlobalVar.STRING_PHOTO_EMPTY;
 import static com.inspira.lnj.GlobalVar.STRING_PHOTO_OTHER;
 import static com.inspira.lnj.GlobalVar.STRING_PHOTO_SEALED_CONDITION;
 import static com.inspira.lnj.GlobalVar.STRING_PHOTO_SEALED_CONTAINER;
 import static com.inspira.lnj.IndexInternal.global;
-import static com.inspira.lnj.LibInspira.ConvertDpToPx;
+import static com.inspira.lnj.LibInspira.convertDpToPx;
 import static com.inspira.lnj.LibInspira.ReplaceFragment;
 import static com.inspira.lnj.LibInspira.setShared;
 
 @SuppressLint("ValidFragment")
-public class FormPhotoViewerFragment extends Fragment implements View.OnClickListener {
+public class FormPhotoThumbnailFragment extends Fragment implements View.OnClickListener {
     private int urltype = 0;
-    public FormPhotoViewerFragment(int _urltype){
+    public FormPhotoThumbnailFragment(int _urltype){
         urltype = _urltype;
     }
     protected ImageView ivThumbnail;
@@ -65,7 +58,8 @@ public class FormPhotoViewerFragment extends Fragment implements View.OnClickLis
     BtmSheetUploadMethodFragment btmSheetUploadMethodFragment;
     TableLayout layout;
 
-    Boolean isImageFitToScreen = false;
+    //remarked by Tonny @03-Apr-2018 tidak terpakai
+//    Boolean isImageFitToScreen = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,8 +89,8 @@ public class FormPhotoViewerFragment extends Fragment implements View.OnClickLis
         //-----START DECLARE---------------------------------------------------------------------------------------
         ((TextView) v.findViewById(R.id.tvInfo)).setText(StrInfo);
 
-        Button btnSend = (Button) v.findViewById(R.id.btnNext);
-        btnSend.setOnClickListener(this);
+//        Button btnSend = (Button) v.findViewById(R.id.btnNext);
+//        btnSend.setOnClickListener(this);
 
 //        btnAdd = (Button) v.findViewById(R.id.btnAdd);
 //        btnAdd.setOnClickListener(this);
@@ -193,33 +187,47 @@ public class FormPhotoViewerFragment extends Fragment implements View.OnClickLis
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 DisplayMetrics metrics = getResources().getDisplayMetrics();
+                int c = 0;
+                int r = 0;
                 for (int i = jsonarray.length() - 1; i >= 0; i--) {
                     final JSONObject obj = jsonarray.getJSONObject(i);
                     if(!obj.has("query")){
                         //create ivThumbnail programmatically
                         final ImageView newImageView = new ImageView(getContext());
-//                        final RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//                        lp.setMargins(ConvertDpToPx(metrics, 10), ConvertDpToPx(metrics, 10), ConvertDpToPx(metrics, 10), ConvertDpToPx(metrics, 10));
-                        final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
-                        lp.setMargins(10, 10, 10, 10);
-                        lp.gravity = Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK;
+                        if(c == gridPhoto.getColumnCount())
+                        {
+                            c = 0;
+                            r++;
+                        }
+
+                        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+                        lp.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                        lp.width = GridLayout.LayoutParams.WRAP_CONTENT;
+                        if(c == 0) lp.leftMargin = LibInspira.convertDpToPx(metrics, 10);
+                        lp.rightMargin = LibInspira.convertDpToPx(metrics, 10);
+                        lp.topMargin = LibInspira.convertDpToPx(metrics, 10);
+                        lp.setGravity(Gravity.CENTER);
+                        lp.columnSpec = GridLayout.spec(c);
+                        lp.rowSpec = GridLayout.spec(r);
+                        c++;
+
                         final String nama = obj.getString("nama");
                         newImageView.setLayoutParams(lp);
                         newImageView.setVisibility(View.VISIBLE);
                         newImageView.setClickable(true);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            newImageView.setMinimumHeight(ConvertDpToPx(metrics, 100));
-                            newImageView.setMinimumWidth(ConvertDpToPx(metrics, 100));
-                            newImageView.setMaxHeight(ConvertDpToPx(metrics, 100));
-                            newImageView.setMaxWidth(ConvertDpToPx(metrics, 100));
-                        }else{
-                            newImageView.setMinimumHeight(ConvertDpToPx(metrics, 110));
-                            newImageView.setMinimumWidth(ConvertDpToPx(metrics, 110));
-                            newImageView.setMaxHeight(ConvertDpToPx(metrics, 110));
-                            newImageView.setMaxWidth(ConvertDpToPx(metrics, 110));
-                            newImageView.setPadding(10, 10, 10, 10);
-                        }
-
+                        newImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+//                            newImageView.setMinimumHeight(ConvertDpToPx(metrics, 100));
+//                            newImageView.setMinimumWidth(ConvertDpToPx(metrics, 100));
+//                            newImageView.setMaxHeight(ConvertDpToPx(metrics, 100));
+//                            newImageView.setMaxWidth(ConvertDpToPx(metrics, 100));
+//                        }else{
+//                            newImageView.setMinimumHeight(ConvertDpToPx(metrics, 110));
+//                            newImageView.setMinimumWidth(ConvertDpToPx(metrics, 110));
+//                            newImageView.setMaxHeight(ConvertDpToPx(metrics, 110));
+//                            newImageView.setMaxWidth(ConvertDpToPx(metrics, 110));
+//                            newImageView.setPadding(10, 10, 10, 10);
+//                        }
                         final String photo_url = global.getUploadBaseURL(urltype) + obj.getString("nama");
                         newImageView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -232,8 +240,8 @@ public class FormPhotoViewerFragment extends Fragment implements View.OnClickLis
                         });
                         Picasso.get()
                                 .load(photo_url)
-                                .placeholder(R.drawable.failed)
-                                .resize(LibInspira.ConvertDpToPx(metrics, 100), LibInspira.ConvertDpToPx(metrics, 100))
+                                .placeholder(R.drawable.broken_link_100x100)
+                                .resize(LibInspira.convertDpToPx(metrics, 100), LibInspira.convertDpToPx(metrics, 100))
                                 .centerCrop()
                                 .into(newImageView);
                         gridPhoto.addView(newImageView);

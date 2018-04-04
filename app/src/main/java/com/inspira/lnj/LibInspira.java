@@ -867,7 +867,7 @@ public class LibInspira {
         return image;
     }
 
-    public static int ConvertDpToPx(DisplayMetrics _metrics, int _dp){
+    public static int convertDpToPx(DisplayMetrics _metrics, int _dp){
         float logicalDensity = _metrics.density;
         int px = (int) Math.ceil(_dp * logicalDensity);
         return px;
