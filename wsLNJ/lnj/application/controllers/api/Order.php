@@ -274,11 +274,6 @@ class Order extends REST_Controller {
         $status = (isset($jsonObject["status"]) ? $this->clean($jsonObject["status"])     : ""); //status serah terima
         $action = 'SUBMIT';
         $status_serahterima = 1;  //status pending
-        if($status == 'finish'){
-            $status_serahterima = 2;  //status finish
-            $action = 'ACCEPT';
-        }
-
         $query = "	SELECT
                         a.nomor AS nomor,
                         c.nomortlaporan_ref AS nomortlaporan_ref,
@@ -296,6 +291,31 @@ class Order extends REST_Controller {
                     AND c.action = '$action'
                     GROUP BY a.nomor
                     ORDER BY a.docfinal_date DESC ";
+        if($status == 'finish'){
+            $status_serahterima = 2;  //status finish
+            $action = 'ACCEPT';
+        }else if($status == 'sent'){  //added by Tonny
+            $action = 'SUBMIT';
+            //query untuk mendapatkan sent document (dokumen yang terkirim)
+            $query = "	SELECT
+                            a.nomor AS nomor,
+                            c.nomortlaporan_ref AS nomortlaporan_ref,
+                            c.nomormhadmin_from AS nomormhadmin_from,
+                            a.kode AS kode,
+                            a.nomormhadmin_docfinal_date AS nomormhadmin,
+                            a.docfinal_date AS tanggal,
+                            b.nama AS nama
+                        FROM thorderjual a
+                        JOIN mhadmin b ON a.nomormhadmin_penerima = b.nomor
+                        JOIN tlaporan_dokumen_distribusi c ON a.nomormhadmin_penerima = c.nomormhadmin_to
+                        WHERE a.status_aktif = 1
+                        AND a.nomormhadmin_docfinal_date = $nomor
+                        AND a.status_serahterima = $status_serahterima
+                        #filter action diremark supaya data yang diterima atau ditolak akan tetap muncul
+                        #AND c.action = '$action'
+                        GROUP BY a.nomor
+                        ORDER BY a.docfinal_date DESC ";
+        }
 
         $result = $this->db->query($query);
 

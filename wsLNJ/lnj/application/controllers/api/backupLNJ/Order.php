@@ -116,7 +116,7 @@ class Order extends REST_Controller {
 
 	// --- Update untuk menyerahkan document thorderjual ke user lain melalui qrcode --- //
 	function updateDoc_post()
-	{     
+	{
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
@@ -149,7 +149,7 @@ class Order extends REST_Controller {
             }
             else
             {
-                //cek apakah dokumen ini sudah pernah disubmit ke tabel tlaporan_dokumen_distribusi
+                //cek apakah dokumen ini sudah pernah disubmit DAN belum direject ke tabel tlaporan_dokumen_distribusi
                 $query = "  SELECT * FROM tlaporan_dokumen_distribusi WHERE nomorthorderjual = '$nomordoc' AND nomormhadmin_from = '$nomormhadmin' AND nomormhadmin_to = '$nomorpenerima' AND action = 'SUBMIT' ";
                 $result = $this->db->query($query);
                 if($result){
@@ -219,10 +219,33 @@ class Order extends REST_Controller {
                                                              'message' => 'Failed to update the data'));
                         }
                     }else{
-                        array_push($data['data'], array('query' => $this->error($query),
-                                                        'message' => 'This document has already been scanned'));
+                        $query = "  SELECT * FROM tlaporan_dokumen_distribusi WHERE nomorthorderjual = '$nomordoc' AND nomormhadmin_from = '$nomormhadmin' AND nomormhadmin_to = '$nomorpenerima' AND action = 'REJECT' ";
+                        $result = $this->db->query($query);
+                        if($result && $result->num_rows() > 0){
+                            $query = "	UPDATE thorderjual SET
+                                            nomormhadmin_docfinal_date = $nomormhadmin, status_serahterima = 1, nomormhadmin_penerima = $nomorpenerima, docfinal_date = NOW()
+                                        WHERE
+                                            nomor = $nomordoc
+                                        AND kode = '$kodedoc' ";
+
+                            $this->db->query($query);
+                            if ($this->db->trans_status() === FALSE)
+                            {
+                                $this->db->trans_rollback();
+                                array_push($data['data'], array( 'query' => $this->error($query),
+                                                                 'message' => 'Failed to update the data'));
+                            }else{
+                                $this->db->trans_commit();
+                                array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+                            }
+                        }else{
+                            $this->db->trans_rollback();
+                            array_push($data['data'], array('query' => $this->error($query),
+                                                            'message' => 'This document has already been scanned'));
+                        }
                     }
                 }else{
+                    $this->db->trans_rollback();
                     array_push($data['data'], array('query' => $this->error($query),
                                                     'message' => 'Failed to update the data'));
                 }
@@ -239,7 +262,7 @@ class Order extends REST_Controller {
         }
     }
 
-    // --- Untuk mendapatkan list semua document yg dimiliki user yg login (dokumen yg masih pending / finish) --- //
+    // --- Untuk mendapatkan list semua document yg dimiliki user yg login (dokumen yg masih pending / finish) beserta nomor laporan referensinya --- //
     function getDocList_post()
     {
         $data['data'] = array();
@@ -249,23 +272,49 @@ class Order extends REST_Controller {
 
         $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : ""); //nomor user yg saat ini login / penerima
         $status = (isset($jsonObject["status"]) ? $this->clean($jsonObject["status"])     : ""); //status serah terima
+        $action = 'SUBMIT';
         $status_serahterima = 1;  //status pending
-        if($status == 'finish'){
-            $status_serahterima = 2;  //status finish
-        }
-
         $query = "	SELECT
                         a.nomor AS nomor,
+                        c.nomortlaporan_ref AS nomortlaporan_ref,
+                        c.nomormhadmin_from AS nomormhadmin_from,
                         a.kode AS kode,
                         a.nomormhadmin_docfinal_date AS nomormhadmin,
                         a.docfinal_date AS tanggal,
                         b.nama AS nama
                     FROM thorderjual a
                     JOIN mhadmin b ON a.nomormhadmin_docfinal_date = b.nomor
+                    JOIN tlaporan_dokumen_distribusi c ON a.nomormhadmin_penerima = c.nomormhadmin_to
                     WHERE a.status_aktif = 1
                     AND a.nomormhadmin_penerima = $nomor
                     AND a.status_serahterima = $status_serahterima
+                    AND c.action = '$action'
+                    GROUP BY a.nomor
                     ORDER BY a.docfinal_date DESC ";
+        if($status == 'finish'){
+            $status_serahterima = 2;  //status finish
+            $action = 'ACCEPT';
+        }else if($status == 'sent'){  //added by Tonny
+            $action = 'SUBMIT';
+            //query untuk mendapatkan sent document (dokumen yang terkirim)
+            $query = "	SELECT
+                            a.nomor AS nomor,
+                            c.nomortlaporan_ref AS nomortlaporan_ref,
+                            c.nomormhadmin_from AS nomormhadmin_from,
+                            a.kode AS kode,
+                            a.nomormhadmin_docfinal_date AS nomormhadmin,
+                            a.docfinal_date AS tanggal,
+                            b.nama AS nama
+                        FROM thorderjual a
+                        JOIN mhadmin b ON a.nomormhadmin_penerima = b.nomor
+                        JOIN tlaporan_dokumen_distribusi c ON a.nomormhadmin_penerima = c.nomormhadmin_to
+                        WHERE a.status_aktif = 1
+                        AND a.nomormhadmin_docfinal_date = $nomor
+                        AND a.status_serahterima = $status_serahterima
+                        AND c.action = '$action'
+                        GROUP BY a.nomor
+                        ORDER BY a.docfinal_date DESC ";
+        }
 
         $result = $this->db->query($query);
 
@@ -275,10 +324,13 @@ class Order extends REST_Controller {
             {
                 array_push($data['data'], array(
                                                     'nomor'    	    		=> $r['nomor'],
+                                                    'nomortlaporan_ref' 	=> $r['nomortlaporan_ref'],
+                                                    'nomormhadmin_from' 	=> $r['nomormhadmin_from'],
                                                     'kode'                  => $r['kode'],
                                                     'nomormhadmin'          => $r['nomormhadmin'],
                                                     'tanggal'               => $r['tanggal'],
-                                                    'nama' 					=> $r['nama']
+                                                    'nama' 					=> $r['nama'],
+                                                    'message'               => $query
                                             )
                 );
             }
@@ -304,6 +356,7 @@ class Order extends REST_Controller {
 
         $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
         $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+
 
         $this->db->trans_begin();
         $query = "	UPDATE thorderjual SET
@@ -333,8 +386,8 @@ class Order extends REST_Controller {
         }
     }
 
-    // --- accept documents--- //
-    function acceptDocTest_post()
+    // --- accept or reject documents--- //
+    function acceptRejectDoc_post()
     {
         $data['data'] = array();
 
@@ -342,11 +395,157 @@ class Order extends REST_Controller {
         $jsonObject = (json_decode($value , true));
 
         $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
+        $nomormhcabang = (isset($jsonObject["nomormhcabang"]) ? $this->clean($jsonObject["nomormhcabang"])     : "");
+        $kodedoc = (isset($jsonObject["kodedoc"]) ? $jsonObject["kodedoc"]     : "");
+        $nomortlaporan_ref = (isset($jsonObject["nomortlaporan_ref"]) ? $this->clean($jsonObject["nomortlaporan_ref"])     : "0");
+        $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
+        $nomormhadmin_from = (isset($jsonObject["nomormhadmin_from"]) ? $this->clean($jsonObject["nomormhadmin_from"])     : "0");
+        $action = (isset($jsonObject["action"]) ? $this->clean($jsonObject["action"])     : "");
+        $keterangan = (isset($jsonObject["keterangan"]) ? $jsonObject["keterangan"]     : "");
+
+        $this->db->trans_begin();
+        $query = "";
+
+        if($action == "ACCEPT"){
+            $query = "	UPDATE thorderjual SET
+                            status_serahterima = 2
+                        WHERE
+                            nomor = $nomordoc
+                        AND
+                            nomormhadmin_penerima = $nomormhadmin ";
+        }else{
+            $query = "	UPDATE thorderjual SET
+                            status_serahterima = 0
+                        WHERE
+                            nomor = $nomordoc
+                        AND
+                            nomormhadmin_penerima = $nomormhadmin ";
+        }
+
+        $this->db->query($query);
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'query' => $this->error($query),
+                                             'message' => 'Failed to update the data'));
+        }
+        else
+        {
+            $query = "	SELECT COUNT(*) as datarow, MONTH(NOW()) as month, YEAR(NOW()) as year FROM tlaporan_dokumen_distribusi ";
+            $result = $this->db->query($query);
+            if($result && $result->num_rows() > 0){
+                $row = $result->row();
+                $datarow = $row->datarow;
+                $newkode = "";
+                $month = $row->month;
+                $year = $row->year;
+                $prefix = "DOC";
+                $suffix = substr($year, 2);
+                $numeric = "00001";
+                if($month < 10){
+                   $suffix = $suffix . "0" . $month;
+                }else{
+                   $suffix = $suffix . $month;
+                }
+                if($datarow > 0){
+                    $query = "	SELECT MAX(nomor) AS nomor FROM tlaporan_dokumen_distribusi";
+                    $result = $this->db->query($query);
+                    if($result && $result->num_rows() > 0){
+                        $row = $result->row();
+                        $maxnomor = $row->nomor;
+                        if($maxnomor < 10){
+                            $numeric = "0000" . $maxnomor;
+                        }else if($maxnomor < 100){
+                            $numeric = "000" . $maxnomor;
+                        }else if($maxnomor < 1000){
+                            $numeric = "00" . $maxnomor;
+                        }else if($maxnomor < 10000){
+                            $numeric = "0" . $maxnomor;
+                        }else{
+                            $numeric = $maxnomor;
+                        }
+                        $newkode = $prefix . $suffix . $numeric;
+                    }else{
+                        $this->db->trans_rollback();
+                        array_push($data['data'], array( 'query' => $this->error($query),
+                                                         'message' => 'Failed to update the data'));
+                        if ($data){
+                            // Set the response and exit
+                            $this->response($data['data']); // OK (200) being the HTTP response code
+                        }
+                        die();
+                    }
+                }else{
+                    $newkode = $prefix . $suffix . $numeric;
+                }
+
+                if($nomortlaporan_ref == '' || $nomortlaporan_ref == '0'){  //pengecekan jika nomor referensi kosong, maka isi dengan nomortlaporan_dokumen_distribusi
+                    $query = " SELECT nomor FROM tlaporan_dokumen_distribusi WHERE nomorthorderjual = '$nomordoc' AND action = 'SUBMIT' AND nomormhadmin_from = '$nomormhadmin_from' AND nomormhadmin_to = '$nomormhadmin' ";
+                    $result = $this->db->query($query);
+                    if($result){
+                        $row = $result->row();
+                        $nomortlaporan_ref = $row->nomor;
+                        if($nomortlaporan_ref == '' || $nomortlaporan_ref == '0'){
+                            $this->db->trans_rollback();
+                            array_push($data['data'], array( 'query' => $this->error($query),
+                                                             'message' => 'Failed to retrieve nomor_ref'));
+                            if ($data){
+                                // Set the response and exit
+                                $this->response($data['data']); // OK (200) being the HTTP response code
+                            }
+                            die();
+                        }
+                    }else{
+                        $this->db->trans_rollback();
+                        array_push($data['data'], array( 'query' => $this->error($query),
+                                                         'message' => 'Failed to retrieve nomor_ref'));
+                        if ($data){
+                            // Set the response and exit
+                            $this->response($data['data']); // OK (200) being the HTTP response code
+                        }
+                        die();
+                    }
+                }
+                $query = " INSERT INTO tlaporan_dokumen_distribusi (nomormhcabang, nomormhadmin_from, nomormhadmin_to, nomortlaporan_ref, nomorthorderjual, kodethorderjual, kode, action, tanggal, keterangan, status_aktif) ".
+                         " VALUES ('$nomormhcabang', '$nomormhadmin_from', '$nomormhadmin', '$nomortlaporan_ref', '$nomordoc', '$kodedoc', '$newkode', '$action', NOW(), '$keterangan', '1') ";
+                $result = $this->db->query($query);
+                if($result){
+                    $this->db->trans_commit();
+                    array_push($data['data'], array( 'message' => 'Your data has been successfully updated' ));
+                }else{
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'message' => 'Failed to insert the data'));
+                }
+            }else{
+                $this->db->trans_rollback();
+                array_push($data['data'], array( 'query' => $this->error($query),
+                                                 'message' => 'Failed to update the data'));
+            }
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // ---reject documents--- //
+    function rejectDocTest_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomordoc = (isset($jsonObject["nomordoc"]) ? $this->clean($jsonObject["nomordoc"])     : "");
+        $nomortlaporan_ref = (isset($jsonObject["nomortlaporan_ref"]) ? $this->clean($jsonObject["nomortlaporan_ref"])     : "");
         $nomormhadmin = (isset($jsonObject["nomormhadmin"]) ? $this->clean($jsonObject["nomormhadmin"])     : "");
 
         $this->db->trans_begin();
         $query = "	UPDATE thorderjual SET
-                        status_serahterima = 2
+                        status_serahterima = 0
                     WHERE
                         nomor = $nomordoc
                     AND
@@ -409,12 +608,9 @@ class Order extends REST_Controller {
                 }else{
                     $newkode = $prefix . $suffix . $numeric;
                 }
-                //create nomor_ref, nomorcabang, nomormhadmin_from, kodethorderjual from submitted doc
-                $query = " SELECT nomor AS nomortlaporan_ref, nomormhcabang, nomormhadmin_from, kodethorderjual FROM tlaporan_dokumen_distribusi WHERE ";
-
-                $action = 'ACCEPT';
+                $action = 'REJECT';
                 $query = " INSERT INTO tlaporan_dokumen_distribusi (nomormhcabang, nomormhadmin_from, nomormhadmin_to, nomortlaporan_ref, nomorthorderjual, kodethorderjual, kode, action, tanggal, status_aktif) ".
-                         " VALUES ('$nomormhcabang', '$nomormhadmin', '$nomorpenerima', '$nomorref', '$nomordoc', '$kodedoc', '$newkode', '$action', NOW(), '1') ";
+                         " VALUES ('$nomormhcabang', '$nomormhadmin', '$nomorpenerima', '$nomortlaporan_ref', '$nomordoc', '$kodedoc', '$newkode', '$action', NOW(), '1') ";
                 $result = $this->db->query($query);
                 if($result){
                     $this->db->trans_commit();

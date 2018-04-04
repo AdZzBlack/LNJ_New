@@ -1,3 +1,6 @@
-New Features:
--. Delete Group
--. Fixes create new group
+New Feature
+* adding list sent documents
+
+Fixes photo thumbnails
+* change placeholder icon
+* layout margins

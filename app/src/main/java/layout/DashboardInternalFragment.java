@@ -59,6 +59,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         getView().findViewById(R.id.btnNewWayPoint).setOnClickListener(this);
         getView().findViewById(R.id.btnContainerLoadingReport).setOnClickListener(this);
         getView().findViewById(R.id.btnReport).setOnClickListener(this);
+        getView().findViewById(R.id.btnSentDocs).setOnClickListener(this);
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
@@ -120,6 +121,9 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         }
         else if (id == R.id.btnReport){
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ReportFragment());
+        }
+        else if (id == R.id.btnSentDocs){
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ListSentDocumentFragment());
         }
     }
 }

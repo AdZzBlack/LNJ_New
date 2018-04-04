@@ -1,3 +1,8 @@
+/******************************************************************************
+ Author           : Tonny
+ Description      : show thumbnails of uploaded container photo
+ ******************************************************************************/
+
 package layout;
 
 import android.annotation.SuppressLint;
@@ -31,7 +36,6 @@ import static com.inspira.lnj.GlobalVar.STRING_PHOTO_OTHER;
 import static com.inspira.lnj.GlobalVar.STRING_PHOTO_SEALED_CONDITION;
 import static com.inspira.lnj.GlobalVar.STRING_PHOTO_SEALED_CONTAINER;
 import static com.inspira.lnj.IndexInternal.global;
-import static com.inspira.lnj.LibInspira.convertDpToPx;
 import static com.inspira.lnj.LibInspira.ReplaceFragment;
 import static com.inspira.lnj.LibInspira.setShared;
 
@@ -41,12 +45,12 @@ public class FormPhotoThumbnailFragment extends Fragment implements View.OnClick
     public FormPhotoThumbnailFragment(int _urltype){
         urltype = _urltype;
     }
-    protected ImageView ivThumbnail;
+//    protected ImageView ivThumbnail;
     protected GridLayout gridPhoto;
     protected FloatingActionButton fab;
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int PICK_IMAGE_REQUEST = 3;
+//    static final int REQUEST_IMAGE_CAPTURE = 1;
+//    static final int PICK_IMAGE_REQUEST = 3;
 
     public String StrTitle = "Empty Container";
     public String StrInfo = "Upload Empty Container Picture";

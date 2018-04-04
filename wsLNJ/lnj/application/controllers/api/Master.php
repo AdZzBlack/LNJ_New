@@ -136,7 +136,6 @@ class Master extends REST_Controller {
 
         if( $result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
-
                 array_push($data['data'], array(
                 								'nomor'					=> $r['nomor'],
                 								'nama' 					=> $r['nama'],

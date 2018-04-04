@@ -350,7 +350,7 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
 
         public class Holder {
             ItemAdapter adapterItem;
-            TextView tvKodeDoc, tvTanggal, tvNama;
+            TextView tvKodeDoc, tvTanggal, tvNama, tvAssigned;
             ImageButton ibtnAccept, ibtnReject;
         }
 
@@ -370,29 +370,25 @@ public class ChoosePendingDocumentFragment extends Fragment implements View.OnCl
             holder = new Holder();
             holder.adapterItem = items.get(position);
 
-            holder.tvKodeDoc = (TextView) row.findViewById(R.id.tvKodeDoc);
-            holder.tvTanggal = (TextView) row.findViewById(R.id.tvTanggal);
-            holder.tvNama = (TextView) row.findViewById(R.id.tvNama);
-            holder.ibtnAccept = (ImageButton)row.findViewById(R.id.ibtnAccept);
-            holder.ibtnReject = (ImageButton)row.findViewById(R.id.ibtnReject);
+            holder.tvKodeDoc = row.findViewById(R.id.tvKodeDoc);
+            holder.tvTanggal = row.findViewById(R.id.tvTanggal);
+            holder.tvNama = row.findViewById(R.id.tvNama);
+            holder.tvAssigned = row.findViewById(R.id.tvAssigned);
+            holder.ibtnAccept = row.findViewById(R.id.ibtnAccept);
+            holder.ibtnReject = row.findViewById(R.id.ibtnReject);
 
             row.setTag(holder);
             setupItem(holder, row);
             final Holder finalHolder = holder;
-//            row.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_nomor_doc, finalHolder.adapterItem.getNomor());
-//                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_kode_doc, finalHolder.adapterItem.getKode());
-//                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_nomormhadmin, finalHolder.adapterItem.getNomormhadmin());
-//                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_tanggal, finalHolder.adapterItem.getTanggal());
-//                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_namamhadmin, finalHolder.adapterItem.getNama());
-//                }
-//            });
-
             if(status == "finish"){
                 holder.ibtnAccept.setOnClickListener(null);
                 holder.ibtnAccept.setVisibility(View.INVISIBLE);
+            }else if(status == "sent"){  //added by Tonny @04-Apr-2018  hide button accept dan reject untuk tampilan sent document
+                holder.ibtnAccept.setOnClickListener(null);
+                holder.ibtnAccept.setVisibility(View.INVISIBLE);
+                holder.ibtnReject.setOnClickListener(null);
+                holder.ibtnReject.setVisibility(View.INVISIBLE);
+                holder.tvAssigned.setText("Assigned To");
             }else{
                 holder.ibtnAccept.setOnClickListener(new View.OnClickListener() {
                     @Override
