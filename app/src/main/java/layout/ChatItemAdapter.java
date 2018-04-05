@@ -100,7 +100,7 @@ public class ChatItemAdapter extends BaseAdapter {
         // create ualng semua log. mulai dari log tanggal sampai log unreadLOH
         userId = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
 
-        if(data.size()>0) {
+        if(data != null && data.size()>0) { //modified by Tonny @06-Apr-2018 penambahan pengecekan jika data != null
             // reset log date dan unread message
             //remove semua log
             List<Integer> listDel = new ArrayList<>();

@@ -54,7 +54,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.UUID;
 
 import io.socket.emitter.Emitter;
@@ -86,6 +90,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         Log.d("msglala","size "+mChatData.getChatMsgData().size()+"");
         mitemListAdapter.reset(mChatData.getChatMsgData());
     }
+
+    //added by Tonny @06-Apr-2018 untuk reset adapter dengan tujuan mengosongkan data chat yg dibawa
+    public void resetAdapter(){
+        mitemListAdapter.reset(null);
+    }
+
     String chatRoomName="", mToUserId ="";
     public void setChatName(String name)
     {

@@ -360,8 +360,10 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                             items.get(position).getNomor()
                     );
                     Log.d("msglala","row click "+listChatData.size());
-                    for(int i=0;i < listChatData.size();i++) {
 
+                    if (chatFrag != null)chatFrag.resetAdapter();  //added by Tonny @06-Apr-2018 untuk mereset data chat (supaya tidak nyantol ke room lain)
+
+                    for(int i=0;i < listChatData.size();i++) {
                         if(listChatData.get(i).getMroomInfo().getType().equals(ChatData.roomInfo.roomTypePC))
                         {
                             Log.d("msglala","if "+listChatData.get(i).getMroomInfo().getIdRoom());
@@ -374,7 +376,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                         }
                         else
                         {
-                            //GC
+                            //Group chat
                         }
                     }
                     chatFrag.setChatName(items.get(position).getNama());
